@@ -509,7 +509,10 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response != null && response.body() != null && response.body().Data != null) {
-                    mSharedPrefEditor.putString(Constants.PREF_USER_NAME, response.body().Data.FullName);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_NAME, response.body().Data.FirstName);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, response.body().Data.Email);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, response.body().Data.PhoneNo);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, response.body().Data.Gender);
                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data.ProfilePhoto);
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();

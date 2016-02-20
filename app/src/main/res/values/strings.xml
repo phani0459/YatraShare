@@ -29,6 +29,10 @@
     <string name="dob">Date of birth</string>
     <string name="profile_updated_rationale">Profile updated successfully</string>
 
+    <string name="mobileNumber">Mobile Number:</string>
+    <string name="email">Email:</string>
+    <string name="licenceStatus">Licence Status:</string>
+
     <!-- Strings related to login -->
     <string name="prompt_userfirstname">FirstName*</string>
     <string name="prompt_userlastname">Last Name</string>
@@ -96,11 +100,6 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <array name="prefs_Update">
-        <item>Yes</item>
-        <item>No</item>
-        <item>N/A</item>
-    </array>
     <string name="title_activity_book_ride">BookRideActivity</string>
 
 </resources>

@@ -54,13 +54,13 @@ public interface YatraShareAPI {
     Call<Profile> userPublicProfile(@Query("publicUserGuid") String userGuide);
 
     @GET("/api/Profile/GetProfileInfo")
-    Call<Profile> userProfile(@Query("userGuid") String userGuide);
+    Call<Profile> userBasicProfile(@Query("userGuid") String userGuide);
 
     @POST("/api/Profile/UpdateUserProfile")
     Call<UserDataDTO> updateProfile(@Query("userGuid") String userGuide, @Body UserProfile userProfile);
 
     @GET("/api/Profile/GetBasicInfo")
-    Call<Profile> userBasicProfile(@Query("userGuid") String userGuide);
+    Call<Profile> userProfile(@Query("userGuid") String userGuide);
 
     @GET("/api/Profile/GetReceivedRatings")
     Call<Rating> userRatings(@Query("userGuid") String userGuide);

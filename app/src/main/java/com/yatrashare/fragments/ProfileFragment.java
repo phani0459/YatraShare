@@ -15,6 +15,7 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,8 +63,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public ImageView mProfileImage;
     @Bind(R.id.profileImage_drawee)
     public SimpleDraweeView mProfileImageDrawee;
-    @Bind(R.id.licenceStatus)
-    public ImageView mLicenceStatus;
+   /* @Bind(R.id.licenceStatus)
+    public ImageView mLicenceStatus;*/
     @Bind(R.id.mobileStatus)
     public ImageView mMobileStatus;
     @Bind(R.id.emailStatus)
@@ -88,13 +89,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     private static int RESULT_LOAD_IMAGE = 1;
     private String userGuide;
     private YatraShareAPI yatraShareAPI;
+    @Bind(R.id.userSince)
+    public TextView userSinceText;
+    @Bind(R.id.noOfRidesText)
+    public TextView noOfRidesText;
+    @Bind(R.id.mobileStatusHeading)
+    public TextView mobileStatusHeading;
+    @Bind(R.id.mobileStatusText)
+    public TextView mobileStatusText;
+    @Bind(R.id.emailStatusHeading)
+    public TextView emailStatusHeading;
+    @Bind(R.id.emailStatusText)
+    public TextView emailStatusText;
+    @Bind(R.id.licenceStatusHeading)
+    public TextView licenceStatusHeading;
+    @Bind(R.id.liceneceStatusText)
+    public TextView liceneceStatusText;
 
     public ProfileFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View inflatedLayout = inflater.inflate(R.layout.fragment_profile, null, false);
+        View inflatedLayout = inflater.inflate(R.layout.fragment_profile_new, null, false);
         mContext = getActivity();
         ButterKnife.bind(this, inflatedLayout);
 
@@ -249,14 +266,37 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             String userName = profile.Data.UserName;
             String lastLoginTime = profile.Data.LastLogin;
             String aboutMe = profile.Data.AboutMe;
+            String offeredRides = profile.Data.OfferedRides;
+            String userSince = profile.Data.MemberSince;
 
             try {
+                /**
+                 * 2 - verified
+                 * else - not verified
+                 */
                 String mobileStatus = profile.Data.MobileNumberStatus != null ? profile.Data.MobileNumberStatus : "0";
                 String emailStatus = profile.Data.EmailStatus != null ? profile.Data.EmailStatus : "0";
                 String licenceStatus = profile.Data.LicenceStatus != null ? profile.Data.LicenceStatus : "0";
                 mMobileStatus.setImageResource(mobileStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
                 mEmailStatus.setImageResource(emailStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
-                mLicenceStatus.setImageResource(licenceStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
+                String mobileHeading = mobileStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
+                                                                    "<font color=\"#D9534F\">Not Verified</font>";
+                String mobileSuggetionText = mobileStatus.equals("2") ? "Click here if you want to change your number" :
+                        "Your number is not verified \n Click here to verify";
+                mobileStatusHeading.setText(Html.fromHtml("Mobile Number: " + mobileHeading));
+                mobileStatusText.setText(mobileSuggetionText);
+                String emailHeading = emailStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
+                        "<font color=\"#D9534F\">Not Verified</font>";
+                String emailSuggetionText = emailStatus.equals("2") ? "Click here if you want to change your email" :
+                        "Your Email is not verified \n Click here to verify";
+                emailStatusHeading.setText(Html.fromHtml("Email: " + emailHeading));
+                emailStatusText.setText(emailSuggetionText);
+                String licenceHeading = licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Accepted</font>" :
+                        "<font color=\"#D9534F\">Rejected</font>";
+                String licenceSuggetionText = licenceStatus.equals("2") ? "Your licence is approved" :
+                        "Your Licence is rejected \n Click on Edit icon to provide Valid Licence";
+                licenceStatusHeading.setText(Html.fromHtml("Licence Status: " + licenceHeading));
+                liceneceStatusText.setText(licenceSuggetionText);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -270,11 +310,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             }
 
             if (lastLoginTime != null && !lastLoginTime.isEmpty()) {
-                lastLoginTimeText.setText("Last Login: " + lastLoginTime);
+                lastLoginTimeText.setText("Last active on " + lastLoginTime);
             }
 
             if (aboutMe != null && !aboutMe.isEmpty()) {
                 aboutMeText.setText(aboutMe);
+            }
+
+            if (offeredRides != null && !offeredRides.isEmpty()) {
+                noOfRidesText.setText(offeredRides + " ride(s) Offered");
+            } else {
+                noOfRidesText.setVisibility(View.GONE);
+            }
+
+            if (userSince != null && !userSince.isEmpty()) {
+                userSinceText.setText("User Since " + userSince);
+            } else {
+                userSinceText.setVisibility(View.GONE);
             }
 
             if (userName != null && !userName.isEmpty()) {
@@ -566,7 +618,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         dialog.show();
     }
 
-    
+
     int visible = View.VISIBLE;
     int invisible = View.INVISIBLE;
 
