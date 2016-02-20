@@ -1,0 +1,102 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="5">
+
+
+    <TextView
+        style="@android:style/TextAppearance.DeviceDefault.Large"
+        android:id="@+id/howItWorksText"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/selector"
+        android:drawableLeft="@drawable/how_it_wrks"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="16dp"
+        android:text="@string/how_it_works"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E1E1E1"/>
+
+    <TextView
+        style="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_width="match_parent"
+        android:id="@+id/faqsText"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/selector"
+        android:drawableLeft="@drawable/how_it_wrks"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="16dp"
+        android:text="@string/faq"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E1E1E1"/>
+
+    <TextView
+        style="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/selector"
+        android:drawableLeft="@drawable/feedback"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="16dp"
+        android:id="@+id/feedBackText"
+        android:text="@string/feedback"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E1E1E1"/>
+
+    <TextView
+        style="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/selector"
+        android:drawableLeft="@drawable/contact_us"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingBottom="16dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="16dp"
+        android:id="@+id/contactUsText"
+        android:text="@string/Contact_us"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E1E1E1"/>
+
+    <TextView
+        style="@android:style/TextAppearance.DeviceDefault.Large"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/selector"
+        android:drawableLeft="@drawable/conditions"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:id="@+id/termsText"
+        android:paddingBottom="16dp"
+        android:paddingLeft="4dp"
+        android:paddingTop="16dp"
+        android:text="@string/terms_n_conditions"/>
+</LinearLayout>

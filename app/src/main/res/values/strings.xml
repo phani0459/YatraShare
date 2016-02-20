@@ -1,0 +1,106 @@
+<resources>
+    <string name="app_name">Yatra Share</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_edit_profile">Edit Profile</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="going_smwr">Going Somewhere?</string>
+    <string name="share_ride_save_money">Share your ride, save money</string>
+    <string name="searchRide">Find a Ride</string>
+    <string name="offerRide">Offer a Ride</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="aboutMe">About</string>
+    <string name="retry">Retry</string>
+    <string name="ride_type">Ride Type</string>
+
+    <!-- Strings related to Edit Profile-->
+    <string name="updatePhoto">Update photo</string>
+    <string name="preferences">Preferences</string>
+    <string name="chat">Chat</string>
+    <string name="music">Music</string>
+    <string name="smoke">Smoke</string>
+    <string name="pets">Pets</string>
+    <string name="food">Food</string>
+    <string name="updateProfile">Update Profile</string>
+    <string name="dob">Date of birth</string>
+    <string name="profile_updated_rationale">Profile updated successfully</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_userfirstname">FirstName*</string>
+    <string name="prompt_userlastname">Last Name</string>
+    <string name="radio_male">Male</string>
+    <string name="radio_female">Female</string>
+    <string name="prompt_username">User Name*</string>
+    <string name="prompt_email">Email Id*</string>
+    <string name="prompt_userId">Email Id/Mobile*</string>
+    <string name="prompt_password">Password*</string>
+    <string name="prompt_mobile">Mobile*</string>
+    <string name="action_sign_in">Login with email address</string>
+    <string name="sign_up_text">Signup</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_sign_up">Not a member yet? Join us</string>
+    <string name="forgotPwd">Forgot your password?</string>
+    <string name="resetPwd">Reset</string>
+    <string name="signup_tag">If you aren\’t a member yet and you log in with Facebook, we’ll register you as a new userLogin . You\’ll also be agreeing to our Terms &amp; conditions</string>
+
+    <string name="ride_where_from">Where from?</string>
+    <string name="ride_where_to">Where to?</string>
+    <string name="ride_submit">Submit</string>
+    <string name="ride_date">Date(optional)</string>
+    <string name="Rs">\u20B9</string>
+
+    <!-- String for forgot password -->
+    <string name="old_password">Old Password*</string>
+    <string name="new_password">New Password*</string>
+    <string name="confirm_password">Confirm Password*</string>
+    <string name="enter_newPwd_error">Enter new password</string>
+    <string name="confirm_pwd_error">Enter confirm password</string>
+    <string name="pwd_do_not_match">Passowords does not match</string>
+    <string name="changedPwd">Passwords changed successfully</string>
+
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_user">UserId is invalid</string>
+    <string name="error_invalid_username">Invalid User Name</string>
+    <string name="error_invalid_phone">Invalid Phone number</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_login">Email or password entered is incorrect</string>
+    <string name="tryagain">Something went wrong. please try again!</string>
+    <string name="userid_field_required">Email/Mobile is required</string>
+    <string name="error_field_required">Email is required</string>
+    <string name="success_login">Login Successfully</string>
+    <string name="resetpwd_ratioanle">An Email is sent to registered Mail, to reset Password.</string>
+    <string name="userguide_ratioanle">There is a problem with login. Please Logout and Login Again.</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="storage_permission_rationale">"Storeage permissions are needed for providing sdcard
+        Images."
+    </string>
+    <string name="login_rationale">Log in or Sign up</string>
+    <string name="terms_and_conditions_rationale">You\'ll be agreeing to our Terms and Conditions.</string>
+    <string name="password_rationale">Your password must contain a combination of letters and numbers.</string>
+    <string name="add_user_rationale">Add a nice picture to your profile. Users with pictures get more rides!</string>
+    <string name="facebook_app_id">1505625496433838</string>
+
+    <string name="login_prompt">Please Login to see rides you\'ve booked</string>
+    <string name="how_it_works">How It Works</string>
+    <string name="faq">FAQ\'s</string>
+    <string name="feedback">Feedback</string>
+    <string name="Contact_us">Contact us</string>
+    <string name="terms_n_conditions">Terms &amp; Conditions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <array name="prefs_Update">
+        <item>Yes</item>
+        <item>No</item>
+        <item>N/A</item>
+    </array>
+    <string name="title_activity_book_ride">BookRideActivity</string>
+
+</resources>
