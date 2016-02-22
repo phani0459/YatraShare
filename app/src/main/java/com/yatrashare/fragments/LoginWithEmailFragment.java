@@ -268,7 +268,14 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     }
 
     private boolean isPhoneValid(String phoneNumber) {
-        return Patterns.PHONE.matcher(phoneNumber).matches();
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            if (phoneNumber.length() == 10)
+                return true;
+            else
+                return false;
+        } else {
+            return false;
+        }
     }
 
     private void populateAutoComplete() {

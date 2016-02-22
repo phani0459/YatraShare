@@ -66,6 +66,9 @@
     <string name="pwd_do_not_match">Passowords does not match</string>
     <string name="changedPwd">Passwords changed successfully</string>
 
+    <!-- String for update mobile fragment -->
+    <string name="mobileUpdated">Mobile number successfully updated.</string>
+
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_user">UserId is invalid</string>
     <string name="error_invalid_username">Invalid User Name</string>
@@ -101,5 +104,30 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="title_activity_book_ride">BookRideActivity</string>
+
+    <string name="validation_heading">Validate your phone number, so we can get in touch if you have any issues</string>
+    <string name="country">Country</string>
+    <string name="telephone">Telephone</string>
+    <string name="confirmation_code">Confirmation Code</string>
+    <string name="editNumber">Edit Number</string>
+    <string name="resendCode">Send Code</string>
+    <string name="verifyCode">VerifyCode</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="publish">Publish</string>
+    <string name="share_experince">Share your experience with yatra share</string>
+    <string name="journey_experience">How was your journey experience with this owner? Do you recommended this member to others?</string>
+    <string name="share_with_others">Tell other members about your journey with this member, your feedback is helpful to other members</string>
+    <string name="ride">Ride</string>
+    <string name="find_member">Find member</string>
+    <string name="phone_number">Phone number</string>
+
+    <string-array name="spinner_array">
+        <item>Connected ride 1</item>
+        <item>Connected ride 2</item>
+        <item>Connected ride 3</item>
+        <item>Connected ride 4</item>
+        <item>Connected ride 5</item>
+    </string-array>
 
 </resources>

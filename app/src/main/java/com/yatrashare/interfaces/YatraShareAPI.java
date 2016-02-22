@@ -59,6 +59,12 @@ public interface YatraShareAPI {
     @POST("/api/Profile/UpdateUserProfile")
     Call<UserDataDTO> updateProfile(@Query("userGuid") String userGuide, @Body UserProfile userProfile);
 
+    @POST("/api/Profile/ResendVerificationCode")
+    Call<UserDataDTO> sendVerificationCode(@Query("userGuid") String userGuide);
+
+    @POST("/api/Profile/ResendVerificationCode")
+    Call<UserDataDTO> verifyMobileNumber(@Query("userGuid") String userGuide, @Query("mobileNumber") String mobileNumber, @Query("verificationCode") String verificationCode);
+
     @GET("/api/Profile/GetBasicInfo")
     Call<Profile> userProfile(@Query("userGuid") String userGuide);
 

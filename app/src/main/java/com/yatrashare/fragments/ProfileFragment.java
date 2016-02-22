@@ -42,6 +42,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -257,6 +258,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 e.printStackTrace();
             }
         }
+    }
+
+    @OnClick(R.id.mobileStatusText)
+    public void changeMobileNumber() {
+        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null);
     }
 
     public void loadProfile() {

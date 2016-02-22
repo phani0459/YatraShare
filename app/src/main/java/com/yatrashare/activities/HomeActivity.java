@@ -51,6 +51,7 @@ import com.yatrashare.fragments.ProfileFragment;
 import com.yatrashare.fragments.RatingsFragment;
 import com.yatrashare.fragments.SignupFragment;
 import com.yatrashare.fragments.TabsFragment;
+import com.yatrashare.fragments.UpdateMobileFragment;
 import com.yatrashare.fragments.WebViewFragment;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
@@ -84,6 +85,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static final int MORE_SCREEN = 10;
     public static final int WEB_SCREEN = 11;
     public static final int EDIT_PROFILE_SCREEN = 12;
+    public static final int UPDATE_MOBILE_SCREEN = 13;
     private int currentScreen;
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;
@@ -342,6 +344,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         getSupportFragmentManager().beginTransaction().add(R.id.content_layout, editProfileFragment).commit();
                     } else {
                         getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, editProfileFragment) .commit();
+                    }
+                    break;
+                case UPDATE_MOBILE_SCREEN:
+                    UpdateMobileFragment updateMobileFragment = new UpdateMobileFragment();
+                    if (init) {
+                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                                .add(R.id.content_layout, updateMobileFragment).commit();
+                    } else {
+                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
+                                replace(R.id.content_layout, updateMobileFragment) .commit();
                     }
                     break;
             }

@@ -8,4 +8,9 @@
     <color name="colorView">#E1E1E1</color>
     <color name="colorRideDetails">#1ABC9B</color>
     <color name="colorBGView">#f4f4f4</color>
+    <color name="colorMobileValidEdit">#18BD9D</color>
+    <color name="colorEditNumber">#D9534F</color>
+    <color name="colorResendCode">#00BDCC</color>
+    <color name="colorVerificationCode">#5BB75B</color>
+    <color name="colorFindMember">#F0AD4E</color>
 </resources>
