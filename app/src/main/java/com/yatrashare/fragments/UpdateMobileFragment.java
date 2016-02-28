@@ -55,6 +55,8 @@ public class UpdateMobileFragment extends Fragment {
     public EditText verificationCodeEdit;
     @Bind(R.id.editNumberBtns)
     public LinearLayout editNumberBtnsLayout;
+    @Bind(R.id.verifyBtnLayout)
+    public LinearLayout verifyBtnLayout;
     @Bind(R.id.phone_numberLayout)
     public TextInputLayout phoneNumberLayout;
     @Bind(R.id.confirmation_codeLayout)
@@ -121,6 +123,7 @@ public class UpdateMobileFragment extends Fragment {
         if (isPhoneValid(phoneEdit.getText().toString())) {
             isPhoneSaved = true;
             phoneEdit.setEnabled(false);
+            verifyBtnLayout.setVisibility(View.VISIBLE);
         } else {
             isPhoneSaved = false;
             phoneNumberLayout.setError("Enter valid phone number");
@@ -129,8 +132,9 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.cancel_bt)
     public void cancelMobileNumber() {
-        phoneEdit.setEnabled(true);
-        phoneEdit.setText("");
+        phoneEdit.setEnabled(false);
+        verifyBtnLayout.setVisibility(View.VISIBLE);
+        editNumberBtnsLayout.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.verify_code_bt)
@@ -228,6 +232,7 @@ public class UpdateMobileFragment extends Fragment {
         if(editNumberBtnsLayout.getVisibility() == View.GONE) {
             phoneEdit.setEnabled(true);
             editNumberBtnsLayout.setVisibility(View.VISIBLE);
+            verifyBtnLayout.setVisibility(View.GONE);
         } else {
             phoneEdit.setEnabled(false);
             editNumberBtnsLayout.setVisibility(View.GONE);

@@ -72,6 +72,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public ImageView mEmailStatus;
     @Bind(R.id.lastLoginTime)
     public TextView lastLoginTimeText;
+    @Bind(R.id.userName)
+    public TextView userTitle;
     @Bind(R.id.aboutMeText)
     public TextView aboutMeText;
     @Bind(R.id.profileProgressBGView)
@@ -125,7 +127,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         mPetsPreference.setOnClickListener(this);
         mFoodPreference.setOnClickListener(this);
 
-        ((HomeActivity)mContext).setTitle("Profile");
+        ((HomeActivity)mContext).setTitle("My Account");
 
         userProfileTask();
 
@@ -260,7 +262,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    @OnClick(R.id.mobileStatusText)
+    @OnClick(R.id.mobileStatusHeading)
     public void changeMobileNumber() {
         ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null);
     }
@@ -290,18 +292,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 String mobileSuggetionText = mobileStatus.equals("2") ? "Click here if you want to change your number" :
                         "Your number is not verified \n Click here to verify";
                 mobileStatusHeading.setText(Html.fromHtml("Mobile Number: " + mobileHeading));
+                mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_edit, 0);
                 mobileStatusText.setText(mobileSuggetionText);
                 String emailHeading = emailStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
                         "<font color=\"#D9534F\">Not Verified</font>";
                 String emailSuggetionText = emailStatus.equals("2") ? "Click here if you want to change your email" :
                         "Your Email is not verified \n Click here to verify";
                 emailStatusHeading.setText(Html.fromHtml("Email: " + emailHeading));
+                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_edit, 0);
                 emailStatusText.setText(emailSuggetionText);
                 String licenceHeading = licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Accepted</font>" :
                         "<font color=\"#D9534F\">Rejected</font>";
                 String licenceSuggetionText = licenceStatus.equals("2") ? "Your licence is approved" :
                         "Your Licence is rejected \n Click on Edit icon to provide Valid Licence";
                 licenceStatusHeading.setText(Html.fromHtml("Licence Status: " + licenceHeading));
+                licenceStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_edit, 0);
                 liceneceStatusText.setText(licenceSuggetionText);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -335,8 +340,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 userSinceText.setVisibility(View.GONE);
             }
 
+            userTitle.setText("My Account");
             if (userName != null && !userName.isEmpty()) {
-                ((HomeActivity)mContext).setTitle(userName + "'s Profile");
+                userTitle.setText(userName + "'s Profile");
             }
 
 

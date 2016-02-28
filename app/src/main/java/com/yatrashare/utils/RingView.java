@@ -14,6 +14,7 @@ import com.yatrashare.R;
  */
 public class RingView extends View {
     private Paint ringPaint;
+    private int ringPaintStyle;
     private int ringColor;
     /**
      * Simple constructor to use when creating a view from code.
@@ -43,10 +44,11 @@ public class RingView extends View {
      */
     public RingView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        ringPaint = new Paint();
+
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs, R.styleable.ringAttrs, 0, 0);
         try {
             ringColor = typedArray.getInteger(R.styleable.ringAttrs_ringColor, 0);
+            ringPaintStyle = typedArray.getInteger(R.styleable.ringAttrs_ringPaint, 1);
         } finally {
             typedArray.recycle();
         }
@@ -65,12 +67,26 @@ public class RingView extends View {
             radius = viewHeightHalf - 10;
         }
 
-        ringPaint.setStyle(Paint.Style.STROKE);
-        ringPaint.setStrokeWidth(4);
-        ringPaint.setAntiAlias(true);
-        ringPaint.setColor(ringColor);
+        canvas.drawCircle(viewWidthHalf, viewHeightHalf, radius, getRingPaint());
 
-        canvas.drawCircle(viewWidthHalf, viewHeightHalf, radius, ringPaint);
+    }
 
+    private Paint getRingPaint() {
+        ringPaint = new Paint();
+        switch (ringPaintStyle) {
+            case 1:
+                ringPaint.setStyle(Paint.Style.STROKE);
+                ringPaint.setStrokeWidth(4);
+                ringPaint.setAntiAlias(true);
+                ringPaint.setColor(ringColor);
+                break;
+            case 2:
+                ringPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+                ringPaint.setStrokeWidth(4);
+                ringPaint.setAntiAlias(true);
+                ringPaint.setColor(ringColor);
+                break;
+        }
+        return ringPaint;
     }
 }

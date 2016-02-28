@@ -19,10 +19,12 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
 
     private Context mContext;
     private ArrayList<SearchRides.SearchData> dataSearchArray;
+    private OnItemClickListener mListener;
 
-    public AvailableRidesAdapter(Context mContext, ArrayList<SearchRides.SearchData> arrayList){
+    public AvailableRidesAdapter(Context mContext, ArrayList<SearchRides.SearchData> arrayList, OnItemClickListener mListener){
         this.mContext = mContext;
         this.dataSearchArray = arrayList;
+        this.mListener = mListener;
     }
 
     @Override
@@ -38,6 +40,10 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);
+    }
+
+    public SearchRides.SearchData getItem(int position){
+        return dataSearchArray.get(position);
     }
 
     @Override
@@ -64,7 +70,7 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
             holder.userNameText.setText(dataSearchArray.get(position).UserName);
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView userNameText, rideFareText, availableSeatText, rideFromText, rideToText, rideDayText, rideTimeText, rideVehicleText;
 
         public MyViewHolder(View itemView) {
@@ -77,6 +83,21 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
             rideDayText  = (TextView) itemView.findViewById(R.id.ride_day_text);
             rideVehicleText = (TextView) itemView.findViewById(R.id.ride_car_text);
             availableSeatText = (TextView) itemView.findViewById(R.id.ride_available_text);
+            itemView.setOnClickListener(this);
         }
+
+        /**
+         * Called when a view has been clicked.
+         *
+         * @param v The view that was clicked.
+         */
+        @Override
+        public void onClick(View v) {
+            mListener.onItemClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(int position);
     }
 }

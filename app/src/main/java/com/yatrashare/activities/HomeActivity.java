@@ -40,7 +40,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
 import com.yatrashare.dtos.Profile;
+import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
+import com.yatrashare.fragments.BookaRideFragment;
 import com.yatrashare.fragments.EditProfileFragment;
 import com.yatrashare.fragments.FindRideFragment;
 import com.yatrashare.fragments.HomeFragment;
@@ -86,6 +88,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static final int WEB_SCREEN = 11;
     public static final int EDIT_PROFILE_SCREEN = 12;
     public static final int UPDATE_MOBILE_SCREEN = 13;
+    public static final int BOOK_a_RIDE_SCREEN = 14;
     private int currentScreen;
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;
@@ -269,10 +272,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     searchRideFragment.setArguments(bundle);
                     if (init) {
                         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
-                                .add(R.id.content_layout, searchRideFragment).commit();
+                                .add(R.id.content_layout, searchRideFragment).addToBackStack(null).commit();
                     } else {
                         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).
-                                replace(R.id.content_layout, searchRideFragment) .commit();
+                                replace(R.id.content_layout, searchRideFragment).addToBackStack(null).commit();
                     }
                     break;
                 case OFFER_RIDE_SCREEN:
@@ -356,6 +359,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 replace(R.id.content_layout, updateMobileFragment) .commit();
                     }
                     break;
+                case BOOK_a_RIDE_SCREEN:
+                    BookaRideFragment bookaRideFragment = new BookaRideFragment();
+                    bundle.putSerializable("RIDE", (SearchRides.SearchData) object);
+                    bookaRideFragment.setArguments(bundle);
+                    if (init) {
+                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, bookaRideFragment).addToBackStack(null).commit();
+                    } else {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, bookaRideFragment).addToBackStack(null).commit();
+                    }
+                    break;
             }
             onPrepareOptionsMenu(menu);
         } catch(Exception e) {
@@ -374,6 +387,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 loadHomePage(false);
             } else if (currentScreen == WEB_SCREEN) {
                 loadScreen(MORE_SCREEN, false, null);
+            } else if (currentScreen == BOOK_a_RIDE_SCREEN) {
+                getSupportFragmentManager().popBackStack();
             } else {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();

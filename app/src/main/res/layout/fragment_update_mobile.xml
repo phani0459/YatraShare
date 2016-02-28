@@ -113,7 +113,7 @@
                     android:layout_margin="8dip"
                     android:orientation="horizontal"
                     android:weightSum="3"
-                    >
+                    android:id="@+id/verifyBtnLayout">
 
                     <Button
                         android:id="@+id/edit_number_bt"

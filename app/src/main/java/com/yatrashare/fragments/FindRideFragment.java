@@ -56,7 +56,7 @@ import retrofit.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FindRideFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener{
+public class FindRideFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, AvailableRidesAdapter.OnItemClickListener{
 
 
     private static final String TAG = FindRideFragment.class.getSimpleName();
@@ -72,7 +72,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     @Bind(R.id.rideProgress)
     public ProgressBar mProgressView;
     private int hour, minute, year, month, day;
-    private PlaceAutocompleteAdapter mAdapter;
+    private PlaceAutocompleteAdapter mPlacesAdapter;
     protected GoogleApiClient mGoogleApiClient;
     private DatePickerDialog mDatePickerDialog;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -88,6 +88,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     public Button mRideTypeButton;
     @Bind(R.id.findRideProgressBGView)
     public View mProgressBGView;
+    private AvailableRidesAdapter mAdapter;
 
     public FindRideFragment() {
         // Required empty public constructor
@@ -140,9 +141,9 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
             e.printStackTrace();
         }
 
-        mAdapter = new PlaceAutocompleteAdapter(mContext, mGoogleApiClient, BOUNDS_HYDERABAD, null);
-        mWhereFromView.setAdapter(mAdapter);
-        mWhereToView.setAdapter(mAdapter);
+        mPlacesAdapter = new PlaceAutocompleteAdapter(mContext, mGoogleApiClient, BOUNDS_HYDERABAD, null);
+        mWhereFromView.setAdapter(mPlacesAdapter);
+        mWhereToView.setAdapter(mPlacesAdapter);
 
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,7 +230,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         String date = mDateButton.getText().toString();
 
         if (rideTypeString.equalsIgnoreCase(getString(R.string.ride_type))){
-            rideTypeString = "1";
+            rideTypeString = "2";
         } else if (rideTypeString.equalsIgnoreCase("Long Ride")){
             rideTypeString = "1";
         } else if (rideTypeString.equalsIgnoreCase("Daily Rides")){
@@ -257,7 +258,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
             // prepare call in Retrofit 2.0
             YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
             FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, "ALLTYPES", "1", "1", "24", "All", rideTypeString, "1");
+                    date, "ALLTYPES", "1", "1", "24", "All", rideTypeString, "2", "10");
 
             Call<SearchRides> call = yatraShareAPI.FindRides(findRide);
             //asynchronous call
@@ -278,8 +279,8 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
                         if (searchRides != null) {
                             if (searchRides.Data != null && searchRides.Data.size() > 0) {
                                 emptyRidesLayout.setVisibility(View.GONE);
-                                AvailableRidesAdapter adapter = new AvailableRidesAdapter(mContext, searchRides.Data);
-                                mRecyclerView.setAdapter(adapter);
+                                mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
+                                mRecyclerView.setAdapter(mAdapter);
                             } else {
                                 emptyRidesLayout.setVisibility(View.VISIBLE);
                                 mRecyclerView.setAdapter(null);
@@ -345,7 +346,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
              The adapter stores each Place suggestion in a AutocompletePrediction from which we
              read the place ID and title.
               */
-            final AutocompletePrediction item = mAdapter.getItem(position);
+            final AutocompletePrediction item = mPlacesAdapter.getItem(position);
             final String placeId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
 
@@ -396,5 +397,11 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        SearchRides.SearchData searchData = (SearchRides.SearchData)mAdapter.getItem(position);
+        ((HomeActivity) mContext).loadScreen(HomeActivity.BOOK_a_RIDE_SCREEN, false, searchData);
     }
 }

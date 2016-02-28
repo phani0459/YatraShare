@@ -50,7 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:text="01/13/2016 Wednesday"
                 android:textColor="@color/colorRideTextDayTime"
                 android:textSize="18sp"/>
 
@@ -59,7 +58,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ride_day_text"
-                android:text="1.30 am"
                 android:textColor="@color/colorRideTextDayTime"
                 android:textSize="16sp"
                 android:visibility="gone"/>

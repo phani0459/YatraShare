@@ -3,5 +3,7 @@
     <declare-styleable name="ringAttrs">
         <attr name="ringColor"
               format="color"></attr>
+        <attr name="ringPaint"
+              format="integer"></attr>
     </declare-styleable>
 </resources>

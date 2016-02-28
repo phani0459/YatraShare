@@ -93,7 +93,7 @@ public class BookaRideFragment extends Fragment {
         if (rideData != null) {
             try {
                 rideDate.setText(rideData.RideDate);
-                rideTime.setText(rideData.RideDate);
+//                rideTime.setText(rideData.RideDate);
                 rideFrom.setText(rideData.DepartureCity);
                 rideTo.setText(rideData.ArrivalCity);
                 seatsAvailable.setText(rideData.RemainingSeats);
@@ -117,6 +117,7 @@ public class BookaRideFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
                 bookRide(userGuid, rideData.PossibleRideGuid, "1");
             }
         });
