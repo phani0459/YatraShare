@@ -4,6 +4,7 @@ package com.yatrashare.fragments;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -195,6 +196,25 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         return inflatedLayout;
     }
 
+    public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
+
+        private final int mVerticalSpaceHeight;
+
+        public VerticalSpaceItemDecoration(int mVerticalSpaceHeight) {
+            this.mVerticalSpaceHeight = mVerticalSpaceHeight;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+            outRect.bottom = mVerticalSpaceHeight;
+            outRect.top = mVerticalSpaceHeight;
+            outRect.left = mVerticalSpaceHeight;
+            outRect.right = mVerticalSpaceHeight;
+
+        }
+    }
+
     private void showRideType(final Button rideTypeBtn) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(mContext);
         builderSingle.setTitle("Select Ride Type");
@@ -246,6 +266,9 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
             cancel = true;
             mWhereFromLayout.setError("Enter Departure");
             mWhereToLayout.setError("Enter Arrival");
+        } else {
+            mWhereFromLayout.setErrorEnabled(false);
+            mWhereToLayout.setErrorEnabled(false);
         }
 
         if (!cancel) {
@@ -278,7 +301,9 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
                         SearchRides searchRides = response.body();
                         if (searchRides != null) {
                             if (searchRides.Data != null && searchRides.Data.size() > 0) {
+                                android.util.Log.e("searchRides.Data.size()", searchRides.Data.size() + "");
                                 emptyRidesLayout.setVisibility(View.GONE);
+                                mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
                                 mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
                                 mRecyclerView.setAdapter(mAdapter);
                             } else {

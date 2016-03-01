@@ -1,6 +1,7 @@
 package com.yatrashare.fragments;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -8,10 +9,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +24,7 @@ import android.widget.TextView;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.SearchRides;
+import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.UserLogin;
 import com.yatrashare.utils.Constants;
@@ -118,11 +124,35 @@ public class BookaRideFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Utils.showProgress(true, mProgressView, mProgressBGView);
-                bookRide(userGuid, rideData.PossibleRideGuid, "1");
+                showSeatsDialog(userGuid, rideData.PossibleRideGuid, "1");
             }
         });
 
         return inflatedLayout;
+    }
+
+    public void showSeatsDialog(final String userGuid, final String possibleRideGuid, String remainingSeats) {
+        final Dialog dialog = new Dialog(mContext, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
+        dialog.setContentView(R.layout.no_of_seats_item);
+        Button resetPwdButton = (Button) dialog.findViewById(R.id.btnReset);
+        Button cancelButton = (Button) dialog.findViewById(R.id.btnCancel);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        resetPwdButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                bookRide(userGuid, possibleRideGuid, "1");
+            }
+        });
+
+        dialog.show();
     }
 
     private void bookRide(String userGuid, String possibleRideGuid, String passengers) {
@@ -130,13 +160,13 @@ public class BookaRideFragment extends Fragment {
                 .baseUrl(YatraShareAPI.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
+        android.util.Log.e("SUCC BODY" + userGuid + "ooooooooo", possibleRideGuid + "$$$$$$$$$" + passengers);
         // prepare call in Retrofit 2.0
         YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
 
-        Call<String> call = yatraShareAPI.bookRide(userGuid, possibleRideGuid, passengers);
+        Call<UserDataDTO> call = yatraShareAPI.bookRide(userGuid, possibleRideGuid, passengers);
         //asynchronous call
-        call.enqueue(new Callback<String>() {
+        call.enqueue(new Callback<UserDataDTO>() {
             /**
              * Successful HTTP response.
              *
@@ -144,14 +174,16 @@ public class BookaRideFragment extends Fragment {
              * @param retrofit
              */
             @Override
-            public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
+            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                 if (response != null && response.body() != null && response.isSuccess()) {
-                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
+                    if (response.body().Data.equalsIgnoreCase("1")) {
+                        ((HomeActivity) mContext).showSnackBar("Successfully booked your seat");
+                    }
                 } else {
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
                 }
+                Utils.showProgress(false, mProgressView, mProgressBGView);
             }
 
             /**
@@ -163,7 +195,7 @@ public class BookaRideFragment extends Fragment {
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
             }
         });
     }

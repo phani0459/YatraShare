@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.utils.Utils;
 
 
 public class HomeFragment extends Fragment {
@@ -24,14 +25,21 @@ public class HomeFragment extends Fragment {
         mOfferRideBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity)getActivity()).loadScreen(HomeActivity.OFFER_RIDE_SCREEN, false, null);
+                if (!Utils.isLoggedIn(getActivity())) {
+                    Utils.showLoginDialog(getActivity());
+                } else {
+                    ((HomeActivity)getActivity()).loadScreen(HomeActivity.OFFER_RIDE_SCREEN, false, null);
+                }
             }
         });
 
         mSearchRideBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, null);
+                if (!Utils.isLoggedIn(getActivity())) {
+                    Utils.showLoginDialog(getActivity());
+                } else
+                    ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, null);
             }
         });
 

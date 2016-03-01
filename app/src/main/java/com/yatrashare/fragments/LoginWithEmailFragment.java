@@ -342,6 +342,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             mEmailLayout.setError(getString(R.string.error_invalid_user));
             cancel = true;
         } else if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
+            mEmailLayout.setErrorEnabled(false);
             mPasswordLayout.setError(getString(R.string.error_invalid_password));
             cancel = true;
         }
@@ -349,6 +350,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         if (!cancel) {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            mEmailLayout.setErrorEnabled(false);
+            mPasswordLayout.setErrorEnabled(false);
             Utils.showProgress(true, mProgressView, mProgressBGView);
             userLoginTask(userId, password);
         }

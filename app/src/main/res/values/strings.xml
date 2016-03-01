@@ -69,6 +69,10 @@
     <!-- String for update mobile fragment -->
     <string name="mobileUpdated">Mobile number successfully updated.</string>
 
+    <!-- String for No Of Seats Dialog -->
+    <string name="seatsDialogHeading">How many Seats?</string>
+    <string name="seatsDialogsubTitle">No. Of Seats</string>
+
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_user">UserId is invalid</string>
     <string name="error_invalid_username">Invalid User Name</string>

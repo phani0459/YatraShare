@@ -153,13 +153,14 @@ public class EditProfileFragment extends Fragment {
                     mUpdateUserNameLayout.setError(getString(R.string.error_invalid_username));
                     cancel = true;
                 } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
+                    mUpdateUserNameLayout.setErrorEnabled(false);
                     mUpdatePhoneLayout.setError(getString(R.string.error_invalid_phone));
                     cancel = true;
                 }
 
                 if (!cancel) {
-                    // Show a progress spinner, and kick off a background task to
-                    // perform the user login attempt.
+                    mUpdatePhoneLayout.setErrorEnabled(false);
+                    mUpdateUserNameLayout.setErrorEnabled(false);
                     Utils.showProgress(true, mProgressView, mProgressBGView);
                     updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
                 }

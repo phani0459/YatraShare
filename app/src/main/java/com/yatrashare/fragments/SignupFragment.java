@@ -187,15 +187,18 @@ public class SignupFragment extends Fragment {
             mSignUpUserNameLayout.setError(getString(R.string.error_invalid_username));
             cancel = true;
         } else if (TextUtils.isEmpty(email)) {
+            mSignUpUserNameLayout.setErrorEnabled(false);
             mSignUpEmailLayout.setError(getString(R.string.error_field_required));
             cancel = true;
         } else if (!isEmailValid(email)) {
             mSignUpEmailLayout.setError(getString(R.string.error_invalid_email));
             cancel = true;
         } else if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
+            mSignUpEmailLayout.setErrorEnabled(false);
             mSignUpPasswordLayout.setError(getString(R.string.error_invalid_password));
             cancel = true;
         } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
+            mSignUpPasswordLayout.setErrorEnabled(false);
             mSignupPhoneLayout.setError(getString(R.string.error_invalid_phone));
             cancel = true;
         }
@@ -207,6 +210,10 @@ public class SignupFragment extends Fragment {
         if (!cancel) {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            mSignUpUserNameLayout.setErrorEnabled(false);
+            mSignUpEmailLayout.setErrorEnabled(false);
+            mSignUpPasswordLayout.setErrorEnabled(false);
+            mSignupPhoneLayout.setErrorEnabled(false);
             Utils.showProgress(true, mProgressView, mProgressBGView);
             userSignupTask(email, password, phoneNumber, userFirstName);
         }
@@ -224,7 +231,14 @@ public class SignupFragment extends Fragment {
     }
 
     private boolean isPhoneValid(String phoneNumber) {
-        return Patterns.PHONE.matcher(phoneNumber).matches();
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            if (phoneNumber.length() == 10)
+                return true;
+            else
+                return false;
+        } else {
+            return false;
+        }
     }
 
     /**

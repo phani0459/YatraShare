@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#0FAAF0</color>
+    <color name="colorLayoutBG">#efefef</color>
     <color name="colorRideTextDayTime">#00BFFF</color>
     <color name="colorRideAvailable">#FF6600</color>
     <color name="colorView">#E1E1E1</color>
@@ -13,4 +14,5 @@
     <color name="colorResendCode">#00BDCC</color>
     <color name="colorVerificationCode">#5BB75B</color>
     <color name="colorFindMember">#F0AD4E</color>
+    <color name="colorBlack">#000000</color>
 </resources>

@@ -30,7 +30,7 @@ public interface YatraShareAPI {
     Call<String> userLogin(@Body UserLogin userLogin);
 
     @POST("/api/Rides/BookYourSeat")
-    Call<String> bookRide(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid, @Query("passengers") String passengers);
+    Call<UserDataDTO> bookRide(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid, @Query("passengers") String passengers);
 
     @POST("/api/Rides/SearchRides")
     Call<SearchRides> FindRides(@Body FindRide findRide);

@@ -4,13 +4,20 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.yatrashare.R;
+import com.yatrashare.activities.HomeActivity;
 
 /**
  * Created by KANDAGATLAS on 03-01-2016.
@@ -58,5 +65,35 @@ public class Utils {
             mProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressBGView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    public static boolean isLoggedIn(Context mContext) {
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void showLoginDialog(final Context mContext) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.appCompatDialog);
+        builder.setTitle("Not Logged in!");
+        builder.setMessage("Login/Register to know more");
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_SCREEN, false, null);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 }

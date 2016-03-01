@@ -49,7 +49,7 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View convertView = inflater.inflate(R.layout.available_ride_item,null);
+        View convertView = inflater.inflate(R.layout.search_ride_item,null);
         MyViewHolder holder = new MyViewHolder(convertView);
         return holder;
     }
@@ -80,7 +80,7 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
             rideFareText = (TextView) itemView.findViewById(R.id.ride_fare_text);
             rideFromText = (TextView) itemView.findViewById(R.id.ride_from_text);
             rideToText = (TextView) itemView.findViewById(R.id.ride_to_text);
-            rideDayText  = (TextView) itemView.findViewById(R.id.ride_day_text);
+            rideDayText  = (TextView) itemView.findViewById(R.id.ride_time_text);
             rideVehicleText = (TextView) itemView.findViewById(R.id.ride_car_text);
             availableSeatText = (TextView) itemView.findViewById(R.id.ride_available_text);
             itemView.setOnClickListener(this);

@@ -124,6 +124,7 @@ public class UpdateMobileFragment extends Fragment {
             isPhoneSaved = true;
             phoneEdit.setEnabled(false);
             verifyBtnLayout.setVisibility(View.VISIBLE);
+            editNumberBtnsLayout.setVisibility(View.GONE);
         } else {
             isPhoneSaved = false;
             phoneNumberLayout.setError("Enter valid phone number");

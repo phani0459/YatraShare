@@ -4,7 +4,7 @@
                 xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorBGView">
+                android:background="@color/colorLayoutBG">
 
     <ScrollView
         android:id="@+id/profileScroll"
@@ -302,13 +302,13 @@
                 style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp"
                 android:singleLine="true"
                 android:text="@string/mobileNumber"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"/>
+                android:textColor="#000000"/>
 
             <TextView
                 android:id="@+id/mobileStatusText"
@@ -331,13 +331,13 @@
                 style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp"
                 android:singleLine="true"
                 android:text="@string/email"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"/>
+                android:textColor="#000000"/>
 
             <TextView
                 android:id="@+id/emailStatusText"
@@ -360,13 +360,13 @@
                 style="?android:textAppearanceMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp"
                 android:singleLine="true"
                 android:text="@string/licenceStatus"
-                android:textColor="#000000"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"/>
+                android:textColor="#000000"/>
 
             <TextView
                 android:id="@+id/liceneceStatusText"
