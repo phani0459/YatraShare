@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.Profile;
@@ -240,7 +241,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response != null && response.body() != null && response.body().Data != null) {
+                if (response.body() != null && response.body().Data != null) {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         dialog.dismiss();
                         ((HomeActivity)mContext).showSnackBar(getString(R.string.resetpwd_ratioanle));
@@ -269,10 +270,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
 
     private boolean isPhoneValid(String phoneNumber) {
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            if (phoneNumber.length() == 10)
-                return true;
-            else
-                return false;
+            return phoneNumber.length() == 10;
         } else {
             return false;
         }
@@ -423,6 +421,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     public void userLoginTask(final String mEmail, final String mPassword) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YatraShareAPI.BASE_URL)
+                .client(new OkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -442,11 +441,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             @Override
             public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                if (response != null && response.body() != null && response.isSuccess()) {
+                if (response.body() != null && response.isSuccess()) {
                     android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
-                    mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().toString());
+                    mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body());
                     mSharedPrefEditor.commit();
-                    getBasicProfileInfo(response.body().toString());
+                    getBasicProfileInfo(response.body());
                 } else {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
@@ -476,7 +475,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.w("myapp","success status code..." + statusCode);
+                    UtilsLog.w("myapp","success status code..." + statusCode);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -485,9 +484,9 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, Throwable throwable, JSONArray errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.w("myapp", "failure status code..." + statusCode);
+                UtilsLog.w("myapp", "failure status code..." + statusCode);
                 try {
-                    Log.w("myapp", "error ..." + errorResponse.toString());
+                    UtilsLog.w("myapp", "error ..." + errorResponse.toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -518,16 +517,20 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             @Override
             public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response != null && response.body() != null && response.body().Data != null) {
+                if (response.body() != null && response.body().Data != null) {
                     mSharedPrefEditor.putString(Constants.PREF_USER_NAME, response.body().Data.FirstName);
                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, response.body().Data.Email);
                     mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, response.body().Data.PhoneNo);
                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, response.body().Data.Gender);
                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data.ProfilePhoto);
+
+                    String mobileStatus = response.body().Data.VerificationStatus.MobileNumberStatus != null ? response.body().Data.VerificationStatus.MobileNumberStatus : "0";
+
+                    mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2") ? true : false);
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity) mContext).loadHomePage(false);
+                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }

@@ -39,22 +39,28 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:padding="8dp"
-                    android:text="05:15"
                     android:textColor="@android:color/white"/>
 
                 <TextView
                     android:id="@+id/rideDate"
                     style="@android:style/TextAppearance.DeviceDefault.Medium"
                     android:layout_width="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:padding="8dp"
-                    android:text="05/05/0210"
                     android:textColor="@android:color/white"/>
             </RelativeLayout>
 
@@ -70,25 +76,68 @@
                 <TextView
                     android:id="@+id/rideFrom"
                     style="@android:style/TextAppearance.DeviceDefault.Large"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:drawableLeft="@drawable/ic_ride_from"
                     android:drawablePadding="8dp"
-                    android:padding="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="4dp"
+                    android:text="05:15"
+                    android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/rideDeparturePoint"
+                    style="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:paddingLeft="28dp"
+                    android:paddingRight="4dp"
+                    android:paddingBottom="4dp"
                     android:text="05:15"
                     android:textColor="@android:color/black"/>
 
                 <TextView
                     android:id="@+id/rideTo"
                     style="@android:style/TextAppearance.DeviceDefault.Large"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_to"
                     android:drawablePadding="8dp"
-                    android:padding="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="4dp"
                     android:text="05/05/0210"
                     android:textColor="@android:color/black"/>
+
+                <TextView
+                    android:id="@+id/rideArrivalPoint"
+                    style="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="28dp"
+                    android:paddingRight="4dp"
+                    android:paddingBottom="4dp"
+                    android:text="05:15"
+                    android:textColor="@android:color/black"/>
+
             </LinearLayout>
 
             <RelativeLayout
@@ -127,10 +176,14 @@
             <TextView
                 android:id="@+id/usersPreferences"
                 style="@android:style/TextAppearance.DeviceDefault.Large"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
                 android:padding="8dp"
                 android:textColor="@android:color/black"/>
 
@@ -138,7 +191,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="5">

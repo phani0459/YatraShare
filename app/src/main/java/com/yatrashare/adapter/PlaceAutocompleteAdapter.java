@@ -37,7 +37,7 @@ import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.AutocompletePredictionBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.yatrashare.utils.Log;
+import com.yatrashare.utils.UtilsLog;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -191,7 +191,7 @@ public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePredictio
      */
     private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
         if (mGoogleApiClient != null) {
-            Log.i(TAG, "Starting autocomplete query for: " + constraint);
+            UtilsLog.i(TAG, "Starting autocomplete query for: " + constraint);
 
             // Submit the query to the autocomplete API and retrieve a PendingResult that will
             // contain the results when the query completes.
@@ -210,18 +210,18 @@ public class PlaceAutocompleteAdapter extends ArrayAdapter<AutocompletePredictio
             if (!status.isSuccess()) {
                 Toast.makeText(getContext(), "Error contacting API: " + status.toString(),
                         Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
+                UtilsLog.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
                 autocompletePredictions.release();
                 return null;
             }
 
-            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
+            UtilsLog.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
                     + " predictions.");
 
             // Freeze the results immutable representation that can be stored safely.
             return DataBufferUtils.freezeAndClose(autocompletePredictions);
         }
-        Log.e(TAG, "Google API client is not connected for autocomplete query.");
+        UtilsLog.e(TAG, "Google API client is not connected for autocomplete query.");
         return null;
     }
 }

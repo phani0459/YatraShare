@@ -1,12 +1,16 @@
 package com.yatrashare.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.SearchRides;
 
@@ -58,29 +62,65 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         String string = dataSearchArray.get(position).RideDate;
-//        String string1 = string.substring(string.lastIndexOf(",",0));
-//        String string2 = string.substring(string.lastIndexOf("-"));
 
-            holder.rideDayText.setText(dataSearchArray.get(position).RideDate);
-            holder.rideFareText.setText("" + mContext.getResources().getString(R.string.Rs) + " " + dataSearchArray.get(position).RoutePrice);
-            holder.rideFromText.setText(dataSearchArray.get(position).DepartureCity);
-            holder.rideToText.setText(dataSearchArray.get(position).ArrivalCity);
-            holder.rideVehicleText.setText(dataSearchArray.get(position).VehicleModel);
-            holder.availableSeatText.setText(dataSearchArray.get(position).RemainingSeats);
-            holder.userNameText.setText(dataSearchArray.get(position).UserName);
+        holder.rideDayText.setText(dataSearchArray.get(position).RideDate);
+        holder.rideFareText.setText("" + mContext.getResources().getString(R.string.Rs) + " " + dataSearchArray.get(position).RoutePrice + " /Seat");
+        holder.rideFromText.setText(dataSearchArray.get(position).DepartureCity);
+        holder.rideToText.setText(dataSearchArray.get(position).ArrivalCity);
+        holder.rideVehicleText.setText(dataSearchArray.get(position).VehicleModel);
+        holder.availableSeatText.setText(dataSearchArray.get(position).RemainingSeats + " Seat(s)");
+        holder.userNameText.setText(dataSearchArray.get(position).UserName);
+
+        String comfortRating = dataSearchArray.get(position).ComfortRating;
+        String profilePic = dataSearchArray.get(position).ProfilePicture;
+
+        float comfortRatingFloat = 0.0f;
+        if (comfortRating != null && !comfortRating.isEmpty()) {
+            try {
+                comfortRatingFloat = Float.parseFloat(comfortRating);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+
+        holder.ratingBar.setRating(comfortRatingFloat);
+
+        if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
+            holder.simpleDraweeView.setVisibility(View.VISIBLE);
+            holder.userImageView.setVisibility(View.GONE);
+            Uri uri = Uri.parse(profilePic);
+            holder.simpleDraweeView.setImageURI(uri);
+        } else {
+            holder.simpleDraweeView.setVisibility(View.GONE);
+            holder.userImageView.setVisibility(View.VISIBLE);
+        }
+
+
+        holder.rideDayText.setSelected(true);
+        holder.rideFromText.setSelected(true);
+        holder.rideToText.setSelected(true);
+        holder.rideVehicleText.setSelected(true);
+        holder.userNameText.setSelected(true);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView userNameText, rideFareText, availableSeatText, rideFromText, rideToText, rideDayText, rideTimeText, rideVehicleText;
+        private RatingBar ratingBar;
+        SimpleDraweeView simpleDraweeView;
+        ImageView userImageView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             userNameText = (TextView) itemView.findViewById(R.id.user_name_text);
+            simpleDraweeView  = (SimpleDraweeView) itemView.findViewById(R.id.userImage_drawee);
+            userImageView  = (ImageView) itemView.findViewById(R.id.userImage);
+            userNameText = (TextView) itemView.findViewById(R.id.user_name_text);
             rideFareText = (TextView) itemView.findViewById(R.id.ride_fare_text);
             rideFromText = (TextView) itemView.findViewById(R.id.ride_from_text);
             rideToText = (TextView) itemView.findViewById(R.id.ride_to_text);
             rideDayText  = (TextView) itemView.findViewById(R.id.ride_time_text);
+            ratingBar  = (RatingBar) itemView.findViewById(R.id.ratingBar);
             rideVehicleText = (TextView) itemView.findViewById(R.id.ride_car_text);
             availableSeatText = (TextView) itemView.findViewById(R.id.ride_available_text);
             itemView.setOnClickListener(this);

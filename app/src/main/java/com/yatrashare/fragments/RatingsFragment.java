@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.yatrashare.R;
@@ -47,7 +48,7 @@ public class RatingsFragment extends Fragment {
     @Bind(R.id.ratingsList)
     public RecyclerView recyclerView;
     @Bind(R.id.emptyRidesLayout)
-    public LinearLayout emptyRidesLayout;
+    public ScrollView emptyRidesLayout;
 
     public RatingsFragment() {
         // Required empty public constructor

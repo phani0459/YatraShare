@@ -23,8 +23,8 @@ public interface YatraShareAPI {
 
     public static final String BASE_URL = "http://www.yatrashare.com";
 
-    @GET("/api/Rides/GetUserConnectedRides?typeOfRide=2")
-    Call<BookedRides> bookedRides(@Query("userGuid") String userGuide);
+    @GET("/api/Rides/GetUserConnectedRides")
+    Call<BookedRides> bookedRides(@Query("userGuid") String userGuide, @Query("typeOfRide") String typeOfRide);
 
     @POST("/api/User/Login")
     Call<String> userLogin(@Body UserLogin userLogin);
@@ -62,7 +62,7 @@ public interface YatraShareAPI {
     @POST("/api/Profile/ResendVerificationCode")
     Call<UserDataDTO> sendVerificationCode(@Query("userGuid") String userGuide);
 
-    @POST("/api/Profile/ResendVerificationCode")
+    @POST("/api/Profile/VerifyMobile")
     Call<UserDataDTO> verifyMobileNumber(@Query("userGuid") String userGuide, @Query("mobileNumber") String mobileNumber, @Query("verificationCode") String verificationCode);
 
     @GET("/api/Profile/GetBasicInfo")

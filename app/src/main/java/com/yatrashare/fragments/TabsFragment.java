@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ import retrofit.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabsFragment extends Fragment  implements Callback<BookedRides> {
+public class TabsFragment extends Fragment  {
     private static final String TAG = TabsFragment.class.getSimpleName();
 
     @Bind(R.id.viewpager)
@@ -50,12 +51,7 @@ public class TabsFragment extends Fragment  implements Callback<BookedRides> {
     public static final int UPCOMING_OFFERED_RIDES = 2;
     public static final int PAST_OFFERED_RIDES = 3;
     private Context mContext;
-    @Bind(R.id.getRidesProgress)
-    public ProgressBar mProgressView;
-    @Bind(R.id.retryButton)
-    public Button retryButton;
-    @Bind(R.id.bookedRidesProgressBGView)
-    public View mProgressBGView;
+
 
     public TabsFragment() {
         // Required empty public constructor
@@ -72,61 +68,41 @@ public class TabsFragment extends Fragment  implements Callback<BookedRides> {
 
         if (mTitle == HomeActivity.BOOKED_RIDES_SCREEN) {
             ((HomeActivity)mContext).setTitle("Rides I've booked");
-            getBookedRides();
         } else if (mTitle == HomeActivity.OFFERED_RIDES_SCREEN) {
             ((HomeActivity)mContext).setTitle("Rides I've offered");
         }
 
-        retryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getBookedRides();
-            }
-        });
-
         return view;
     }
 
-    public void getBookedRides() {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-
-        android.util.Log.e("getBookedRides", userGuide);
-        if (!TextUtils.isEmpty(userGuide)) {
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(YatraShareAPI.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            // prepare call in Retrofit 2.0
-            YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
-
-            Call<BookedRides> call = yatraShareAPI.bookedRides(userGuide);
-            //asynchronous call
-            call.enqueue(this);
-        } else {
-            ((HomeActivity)mContext).showSnackBar(getString(R.string.userguide_ratioanle));
-        }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
     }
-    public Fragment getFragment(int arg, Object object) {
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    public Fragment getFragment(int arg) {
         Bundle bundle = new Bundle();
         BookedRidesFragment bookedRidesFragment = new BookedRidesFragment();
         bundle.putInt("TITLE", arg);
-        bundle.putSerializable("BookedRides", (BookedRides) object);
         bookedRidesFragment.setArguments(bundle);
         return bookedRidesFragment;
     }
 
-    private void setupViewPager(ViewPager viewPager, Object object) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         if (mTitle == HomeActivity.BOOKED_RIDES_SCREEN) {
-            adapter.addFragment(getFragment(UPCOMING_BOOKED_RIDES, object), "Upcoming");
-            adapter.addFragment(getFragment(PAST_BOOKED_RIDES, null), "Past");
+            adapter.addFragment(getFragment(UPCOMING_BOOKED_RIDES), "Upcoming");
+            adapter.addFragment(getFragment(PAST_BOOKED_RIDES), "Past");
         } else if (mTitle == HomeActivity.OFFERED_RIDES_SCREEN) {
-            adapter.addFragment(getFragment(UPCOMING_OFFERED_RIDES, null), "Upcoming");
-            adapter.addFragment(getFragment(PAST_OFFERED_RIDES, null), "Past Journeys");
+            adapter.addFragment(getFragment(UPCOMING_OFFERED_RIDES), "Upcoming");
+            adapter.addFragment(getFragment(PAST_OFFERED_RIDES), "Past Journeys");
         }
         viewPager.setAdapter(adapter);
     }
@@ -160,45 +136,4 @@ public class TabsFragment extends Fragment  implements Callback<BookedRides> {
         }
     }
 
-    /*
-     * Successful HTTP response.
-     *
-     * @param response
-     * @param retrofit
-     */
-    @Override
-    public void onResponse(retrofit.Response<BookedRides> response, Retrofit retrofit) {
-        android.util.Log.e("RESPONSE", response + "");
-        android.util.Log.e("RESPONSE raw", response.raw() + "");
-        if (response != null && response.body() != null) {
-            try {
-                BookedRides bookedRides = response.body();
-                if (bookedRides != null && bookedRides.Data != null && bookedRides.Data.size() > 0) {
-                    retryButton.setVisibility(View.GONE);
-                    setupViewPager(viewPager, bookedRides);
-                    tabLayout.setupWithViewPager(viewPager);
-                } else {
-                    retryButton.setVisibility(View.VISIBLE);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                retryButton.setVisibility(View.VISIBLE);
-            }
-        }
-        Utils.showProgress(false, mProgressView, mProgressBGView);
-    }
-
-    /*
-     * Invoked when a network or unexpected exception occurred during the HTTP request.
-     *
-     * @param t
-     * */
-    @Override
-    public void onFailure(Throwable t) {
-        android.util.Log.e(TAG, t.getLocalizedMessage() +"");
-        retryButton.setVisibility(View.VISIBLE);
-        setupViewPager(viewPager, null);
-        tabLayout.setupWithViewPager(viewPager);
-        Utils.showProgress(false, mProgressView, mProgressBGView);
-    }
 }

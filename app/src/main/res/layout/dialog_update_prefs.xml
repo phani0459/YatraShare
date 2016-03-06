@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:custom="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="4dp"
-                android:background="@color/colorLayoutBG"
-                android:gravity="center_horizontal">
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    android:background="@color/colorLayoutBG"
+    android:gravity="center_horizontal">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -42,15 +42,16 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/chat_allow"/>
+                        android:src="@drawable/chat_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/chatAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
+                        android:visibility="invisible"
                         custom:ringColor="@color/colorPrimary"
-                        custom:ringPaint="1"/>
+                        custom:ringPaint="1" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -64,14 +65,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/chat"/>
+                        android:src="@drawable/chat" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/chatRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -85,14 +86,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/chat_not_allow"/>
+                        android:src="@drawable/chat_not_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/chatNotAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -101,12 +103,12 @@
                 style="@android:style/TextAppearance.DeviceDefault.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -128,14 +130,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/music_allow"/>
+                        android:src="@drawable/music_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/musicAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -149,14 +152,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/music_not_much"/>
+                        android:src="@drawable/music_not_much" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/musicRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -170,14 +173,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/music_not_allow"/>
+                        android:src="@drawable/music_not_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/musicNotAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -186,12 +190,12 @@
                 style="@android:style/TextAppearance.DeviceDefault.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -214,14 +218,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/pets_allow"/>
+                        android:src="@drawable/pets_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/petsAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -235,14 +239,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/pets_not_much"/>
+                        android:src="@drawable/pets_not_much" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/petsRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -256,14 +260,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/pets_not_allow"/>
+                        android:src="@drawable/pets_not_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/petsNotAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -274,13 +278,13 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/chatAllowRingView"
                 android:layout_margin="2dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#E1E1E1"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -302,14 +306,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/food_allow"/>
+                        android:src="@drawable/food_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/foodAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -323,14 +328,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/food_not_much"/>
+                        android:src="@drawable/food_not_much" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/foodRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -344,14 +349,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/food_not_allow"/>
+                        android:src="@drawable/food_not_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/foodNotAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -360,12 +366,12 @@
                 style="@android:style/TextAppearance.DeviceDefault.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -387,14 +393,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/smoke_allow"/>
+                        android:src="@drawable/smoke_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/smokeAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -408,14 +415,14 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/smoke_not_much"/>
+                        android:src="@drawable/smoke_not_much" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/smokeRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -429,14 +436,15 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/app_name"
-                        android:src="@drawable/smoke_not_allow"/>
+                        android:src="@drawable/smoke_not_allow" />
 
                     <com.yatrashare.utils.RingView
                         android:id="@+id/smokeNotAllowRingView"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_centerInParent="true"
-                        custom:ringColor="@color/colorPrimary"/>
+                        android:visibility="invisible"
+                        custom:ringColor="@color/colorPrimary" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -445,7 +453,7 @@
                 style="@android:style/TextAppearance.DeviceDefault.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"/>
+                android:layout_margin="2dp" />
 
         </LinearLayout>
     </ScrollView>
@@ -467,7 +475,7 @@
             android:gravity="center"
             android:padding="24dp"
             android:text="@android:string/cancel"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/btnSubmit"
@@ -478,7 +486,7 @@
             android:gravity="center"
             android:padding="24dp"
             android:text="@string/ride_submit"
-            android:textColor="@color/colorPrimary"/>
+            android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
 
@@ -488,7 +496,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/updatePref_progress"
@@ -497,5 +505,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

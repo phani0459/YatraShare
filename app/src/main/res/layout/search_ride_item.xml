@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    android:id="@+id/card_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="196dp"
+    android:layout_height="wrap_content"
     android:layout_margin="8dp"
     card_view:cardCornerRadius="4dp"
     card_view:contentPadding="4dp">
@@ -33,7 +32,7 @@
                     android:layout_height="72dp"
                     android:foregroundGravity="center"
                     android:scaleType="centerCrop"
-                    fresco:roundAsCircle="true"/>
+                    fresco:roundAsCircle="true" />
 
                 <ImageView
                     android:id="@+id/userImage"
@@ -41,7 +40,7 @@
                     android:layout_height="72dp"
                     android:foregroundGravity="center"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/add_user"/>
+                    android:src="@drawable/add_user" />
             </RelativeLayout>
 
             <LinearLayout
@@ -52,100 +51,120 @@
 
                 <TextView
                     android:id="@+id/user_name_text"
-                    style="@android:style/TextAppearance.DeviceDefault.Large"
+                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="User"/>
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="User" />
 
                 <RatingBar
                     android:id="@+id/ratingBar"
                     style="@android:style/Widget.Holo.RatingBar.Indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:numStars="5"/>
+                    android:numStars="5"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/ride_car_text"
-                    style="@android:style/TextAppearance.DeviceDefault.Small"
+                    android:id="@+id/ride_time_text"
+                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="Audi Benz"
-                    android:textColor="@color/colorRideTextDayTime"/>
+                    android:textColor="@color/colorPrimary" />
             </LinearLayout>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E1E1E1"/>
+            android:background="#E1E1E1" />
 
         <TextView
             android:id="@+id/ride_from_text"
+            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
             android:drawableLeft="@drawable/ic_ride_from"
             android:drawablePadding="8dip"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:paddingLeft="8dp"
+            android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="Hitech City"
-            android:textSize="16sp"/>
+            android:text="Hitech City" />
 
         <TextView
             android:id="@+id/ride_to_text"
+            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:layout_marginTop="8dip"
             android:drawableLeft="@drawable/ic_ride_to"
             android:drawablePadding="8dip"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:paddingLeft="8dp"
+            android:scrollHorizontally="true"
             android:singleLine="true"
-            android:text="JNTU"
-            android:textSize="16sp"/>
+            android:text="JNTU" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#E1E1E1"/>
+            android:background="#E1E1E1" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:padding="8dp"
             android:orientation="horizontal"
             android:weightSum="3">
 
             <TextView
-                android:id="@+id/ride_time_text"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:id="@+id/ride_car_text"
+                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:ems="0"
                 android:gravity="center"
-                android:text="2522"
-                android:textColor="@color/colorBlack"/>
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:text="252sdsfsafv safSAsd2"
+                android:textColor="@color/colorBlack" />
 
             <TextView
                 android:id="@+id/ride_available_text"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="2522"
-                android:textColor="@color/colorRideDetails"/>
+                android:textColor="@color/colorRideDetails" />
 
             <TextView
                 android:id="@+id/ride_fare_text"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="2522"
-                android:textColor="@color/colorRideDetails"/>
+                android:textColor="@color/colorRideDetails" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

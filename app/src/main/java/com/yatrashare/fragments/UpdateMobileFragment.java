@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +72,7 @@ public class UpdateMobileFragment extends Fragment {
     private String userGuid;
     private YatraShareAPI yatraShareAPI;
     private boolean isValidPhoneNUmber;
+    private SharedPreferences.Editor mEditor;
 
 
     public UpdateMobileFragment() {
@@ -85,13 +87,14 @@ public class UpdateMobileFragment extends Fragment {
         mContext = getActivity();
 
         editNoBt.getBackground().setLevel(3);
-        verifyBt.getBackground().setLevel(1);
+        /*verifyBt.getBackground().setLevel(1);*/
         saveBt.getBackground().setLevel(1);
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
         verifyBt.setEnabled(false);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mEditor = mSharedPreferences.edit();
         String mobile = mSharedPreferences.getString(Constants.PREF_USER_PHONE, "");
         phoneEdit.setText(mobile);
         phoneEdit.setEnabled(false);
@@ -125,6 +128,8 @@ public class UpdateMobileFragment extends Fragment {
             phoneEdit.setEnabled(false);
             verifyBtnLayout.setVisibility(View.VISIBLE);
             editNumberBtnsLayout.setVisibility(View.GONE);
+            phoneNumberLayout.setError(null);
+            phoneNumberLayout.setErrorEnabled(false);
         } else {
             isPhoneSaved = false;
             phoneNumberLayout.setError("Enter valid phone number");
@@ -141,6 +146,8 @@ public class UpdateMobileFragment extends Fragment {
     @OnClick(R.id.verify_code_bt)
     public void verifyCode() {
         if (!verificationCodeEdit.getText().toString().isEmpty()) {
+            verifyCodeLayout.setError(null);
+            verifyCodeLayout.setErrorEnabled(false);
             Call<UserDataDTO> call = yatraShareAPI.verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
             //asynchronous call
             call.enqueue(new Callback<UserDataDTO>() {
@@ -155,9 +162,12 @@ public class UpdateMobileFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                     if (response != null && response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
-                            showToast("Verification code sent");
+                            mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, true);
+                            mEditor.commit();
                             ((HomeActivity) mContext).showSnackBar(getString(R.string.mobileUpdated));
-                            ((HomeActivity) mContext).loadHomePage(false);
+                            ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                        } else {
+                            ((HomeActivity) mContext).showSnackBar(response.body().Data);
                         }
                     }
                     Utils.showProgress(false, mProgressView, mProgressBGView);
@@ -186,45 +196,45 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.resend_code_bt)
     public void sendVerifyCode() {
-        if (isPhoneSaved) {
-            if (isPhoneValid(phoneEdit.getText().toString())) {
-                resendCodeBt.setText("Resend Code");
-                Utils.showProgress(true, mProgressView, mProgressBGView);
+        if (isPhoneValid(phoneEdit.getText().toString())) {
+            resendCodeBt.setText("Resend Code");
+            Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                Call<UserDataDTO> call = yatraShareAPI.sendVerificationCode(userGuid);
-                //asynchronous call
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response
-                     * @param retrofit
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response != null && response.body() != null && response.body().Data != null) {
-                            if (response.body().Data.equalsIgnoreCase("Success")) {
-                                showToast("Verification code sent");
-                                verifyBt.setEnabled(true);
-                            }
+            Call<UserDataDTO> call = yatraShareAPI.sendVerificationCode(userGuid);
+            //asynchronous call
+            call.enqueue(new Callback<UserDataDTO>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response
+                 * @param retrofit
+                 */
+                @Override
+                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response != null && response.body() != null && response.body().Data != null) {
+                        if (response.body().Data.equalsIgnoreCase("Success")) {
+                            showToast("Verification code sent");
+                            verifyBt.setBackground(getResources().getDrawable(R.drawable.mobile_validation_stroke));
+                            verifyBt.getBackground().setLevel(1);
+                            verifyBt.setEnabled(true);
                         }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
                     }
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                }
 
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                    }
-                });
-            }
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
+            });
         }
     }
 

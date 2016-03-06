@@ -314,58 +314,6 @@ public class SignupFragment extends Fragment {
      * the user.
      */
     public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserName) {
-        /*StringRequest strReq = new StringRequest(Request.Method.POST, Constants.REGISTER_URL, new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                String status = "";
-                Log.e("RESPONSE", response);
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    status = jsonObject.optString("Data");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (status.equalsIgnoreCase("Success")) {
-                    mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, mEmail);
-                    mSharedPrefEditor.putString(Constants.PREF_USER_NAME, mUserName);
-                    mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
-                    mSharedPrefEditor.commit();
-                    ((HomeActivity)mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity)mContext).loadHomePage(false);
-                } else {
-                    ((HomeActivity)mContext).showSnackBar(status);
-                }
-                showProgress(false, mProgressView, mProgressBGView);
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.e(TAG, "Error: " + error.getMessage());
-                Log.e(TAG, error.fillInStackTrace().toString());
-                showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity)mContext).showSnackBar(getString(R.string.tryagain));
-            }
-        }){
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("FirstName", mUserName);
-                params.put("Email", mEmail);
-                params.put("Password", mPassword);
-                params.put("PhoneNumber", mPhone);
-                return params;
-            }
-
-        };
-        strReq.setRetryPolicy(new DefaultRetryPolicy(25000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        YatraApplication.getInstance().addToRequestQueue(strReq, TAG);*/
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(YatraShareAPI.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -397,7 +345,7 @@ public class SignupFragment extends Fragment {
                         mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                         mSharedPrefEditor.commit();
                         ((HomeActivity)mContext).showSnackBar(getString(R.string.success_login));
-                        ((HomeActivity)mContext).loadHomePage(false);
+                        ((HomeActivity)mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
                     } else {
                         ((HomeActivity)mContext).showSnackBar(response.body().Data);
                     }

@@ -15,14 +15,14 @@ public class BookedRides implements Serializable{
     public String RecursionLimit;
 
     public class BookedData implements Serializable{
-        public long RideBookingId;
+        public int RideBookingId;
         public String OwnerName;
         public String OwnerGuid;
         public String PossibleRideGuid;
         public String OwnerPicture;
         public String Ride;
         public String RideTime;
-        public long BookedSeats;
+        public int BookedSeats;
         public String BookingStatus;
         public String RideStatus;
     }

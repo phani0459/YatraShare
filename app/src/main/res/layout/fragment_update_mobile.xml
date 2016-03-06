@@ -145,7 +145,6 @@
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="@drawable/mobile_validation_stroke"
                         android:inputType="textCapSentences"
                         android:padding="4dip"
                         android:text="@string/verifyCode"

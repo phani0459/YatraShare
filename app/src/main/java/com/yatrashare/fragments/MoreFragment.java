@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.utils.Constants;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -80,6 +81,6 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
                 url = "http://www.yatrashare.com/public/TermsConditions";
                 break;
         }
-        ((HomeActivity)mContext).loadScreen(HomeActivity.WEB_SCREEN, false, url);
+        ((HomeActivity)mContext).loadScreen(HomeActivity.WEB_SCREEN, false, url, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
     }
 }

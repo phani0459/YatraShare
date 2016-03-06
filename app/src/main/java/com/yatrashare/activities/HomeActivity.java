@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -141,9 +142,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 if (!mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
-                    loadScreen(LOGIN_SCREEN, false, null);
+                    loadScreen(LOGIN_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
-                    loadScreen(PROFILE_SCREEN, false, null);
+                    loadScreen(PROFILE_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 }
                 drawer.closeDrawer(GravityCompat.START);
             }
@@ -153,7 +154,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userDraweeImageView = (SimpleDraweeView) view.findViewById(R.id.userDraweeView);
         userImageView = (ImageView) view.findViewById(R.id.userImageView);
 
-        loadHomePage(true);
+        loadHomePage(true, null);
 
     }
 
@@ -165,8 +166,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mToolbar.setTitle(title);
     }
 
-    public void loadHomePage(boolean init) {
-        currentScreen = HOME_SCREEN;
+    public void loadHomePage(boolean init, String fragmentName) {
         String userProfilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
         String userName = mSharedPreferences.getString(Constants.PREF_USER_NAME, "");
         String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
@@ -188,7 +188,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             userNameTextView.setText(userName);
         }
 
-        if (userFBId.isEmpty() && userProfilePic.isEmpty()) {
+        if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
             userImageView.setVisibility(View.VISIBLE);
             userDraweeImageView.setVisibility(View.GONE);
         } else if (!userFBId.isEmpty()){
@@ -203,16 +203,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             userDraweeImageView.setImageURI(uri);
         }
 
-        try{
-            Fragment fragment = new HomeFragment();
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            if (init) {
-                fragmentManager.beginTransaction().add(R.id.content_layout, fragment).commit();
-            } else {
-                fragmentManager.beginTransaction().replace(R.id.content_layout, fragment).commit();
+        if (!init) {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) popBackFragment(fragmentName);
+        } else {
+            setCurrentScreen(HOME_SCREEN);
+            try{
+                Fragment fragment = new HomeFragment();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                if (init) {
+                    fragmentManager.beginTransaction().add(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
+                } else {
+                    fragmentManager.beginTransaction().replace(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
             }
-        } catch(Exception e) {
-            e.printStackTrace();
         }
 
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -223,156 +228,187 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void loadScreen(int SCREEN_NAME, boolean init, Object object) {
+    public void loadScreen(int SCREEN_NAME, boolean init, Object object, String originScreen) {
         try{
             Bundle bundle = new Bundle();
-            currentScreen = SCREEN_NAME;
-            switch (SCREEN_NAME){
-                case LOGIN_SCREEN:
-                    LoginFragment loginFragment = new LoginFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
-                                .add(R.id.content_layout, loginFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
-                                .replace(R.id.content_layout, loginFragment).commit();
-                    }
-                    break;
-                case LOGIN_WITH_EMAIL_SCREEN:
-                    LoginWithEmailFragment loginWithEmailFragment = new LoginWithEmailFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
-                                .add(R.id.content_layout, loginWithEmailFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
-                                replace(R.id.content_layout, loginWithEmailFragment) .commit();
-                    }
-                    break;
-                case SIGNUP_SCREEN:
-                    SignupFragment signupFragment = new SignupFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
-                                .add(R.id.content_layout, signupFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).
-                                replace(R.id.content_layout, signupFragment) .commit();
-                    }
-                    break;
-                case PROFILE_SCREEN:
-                    profileFragment = new ProfileFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, profileFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, profileFragment) .commit();
-                    }
-                    break;
-                case SEARCH_RIDE_SCREEN:
-                    FindRideFragment searchRideFragment = new FindRideFragment();
-                    bundle.putString("TITLE", "Find a ride");
-                    searchRideFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
-                                .add(R.id.content_layout, searchRideFragment).addToBackStack(null).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).
-                                replace(R.id.content_layout, searchRideFragment).addToBackStack(null).commit();
-                    }
-                    break;
-                case OFFER_RIDE_SCREEN:
-                    FindRideFragment offerRideFragment = new FindRideFragment();
-                    bundle = new Bundle();
-                    bundle.putString("TITLE", "Offer ride");
-                    offerRideFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
-                                .add(R.id.content_layout, offerRideFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
-                                replace(R.id.content_layout, offerRideFragment) .commit();
-                    }
-                    break;
-                case BOOKED_RIDES_SCREEN:
-                    TabsFragment bookedTabsFragment = new TabsFragment();
-                    bundle = new Bundle();
-                    bundle.putInt("TITLE", BOOKED_RIDES_SCREEN);
-                    bookedTabsFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, bookedTabsFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, bookedTabsFragment) .commit();
-                    }
-                    break;
-                case OFFERED_RIDES_SCREEN:
-                    TabsFragment offeredTabsFragment = new TabsFragment();
-                    bundle = new Bundle();
-                    bundle.putInt("TITLE", OFFERED_RIDES_SCREEN);
-                    offeredTabsFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, offeredTabsFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, offeredTabsFragment) .commit();
-                    }
-                    break;
-                case RATINGS_SCREEN:
-                    RatingsFragment ratingsFragment = new RatingsFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, ratingsFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, ratingsFragment) .commit();
-                    }
-                    break;
-                case MORE_SCREEN:
-                    MoreFragment moreFragment = new MoreFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, moreFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, moreFragment) .commit();
-                    }
-                    break;
-                case WEB_SCREEN:
-                    WebViewFragment webViewFragment = new WebViewFragment();
-                    bundle.putString("URL", (String)object);
-                    webViewFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, webViewFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, webViewFragment) .commit();
-                    }
-                    break;
-                case EDIT_PROFILE_SCREEN:
-                    EditProfileFragment editProfileFragment = new EditProfileFragment();
-                    bundle.putSerializable("PROFILE", (Profile) object);
-                    editProfileFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, editProfileFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, editProfileFragment) .commit();
-                    }
-                    break;
-                case UPDATE_MOBILE_SCREEN:
-                    UpdateMobileFragment updateMobileFragment = new UpdateMobileFragment();
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
-                                .add(R.id.content_layout, updateMobileFragment).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
-                                replace(R.id.content_layout, updateMobileFragment) .commit();
-                    }
-                    break;
-                case BOOK_a_RIDE_SCREEN:
-                    BookaRideFragment bookaRideFragment = new BookaRideFragment();
-                    bundle.putSerializable("RIDE", (SearchRides.SearchData) object);
-                    bookaRideFragment.setArguments(bundle);
-                    if (init) {
-                        getSupportFragmentManager().beginTransaction().add(R.id.content_layout, bookaRideFragment).addToBackStack(null).commit();
-                    } else {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, bookaRideFragment).addToBackStack(null).commit();
-                    }
-                    break;
+            if (getCurrentScreen() != SCREEN_NAME) {
+                setCurrentScreen(SCREEN_NAME);
+                switch (SCREEN_NAME){
+                    case LOGIN_SCREEN:
+                        LoginFragment loginFragment = new LoginFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        loginFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                                    .add(R.id.content_layout, loginFragment).addToBackStack(Constants.LOGIN_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                                    .replace(R.id.content_layout, loginFragment).addToBackStack(Constants.LOGIN_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case LOGIN_WITH_EMAIL_SCREEN:
+                        LoginWithEmailFragment loginWithEmailFragment = new LoginWithEmailFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        loginWithEmailFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                                    .add(R.id.content_layout, loginWithEmailFragment).addToBackStack(Constants.LOGIN_WITH_EMAIL_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
+                                    replace(R.id.content_layout, loginWithEmailFragment).addToBackStack(Constants.LOGIN_WITH_EMAIL_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case SIGNUP_SCREEN:
+                        SignupFragment signupFragment = new SignupFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        signupFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
+                                    .add(R.id.content_layout, signupFragment).addToBackStack(Constants.SIGNUP_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).
+                                    replace(R.id.content_layout, signupFragment).addToBackStack(Constants.SIGNUP_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case PROFILE_SCREEN:
+                        profileFragment = new ProfileFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        profileFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, profileFragment).addToBackStack(Constants.PROFILE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, profileFragment).addToBackStack(Constants.PROFILE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case SEARCH_RIDE_SCREEN:
+                        FindRideFragment searchRideFragment = new FindRideFragment();
+                        bundle.putString("TITLE", "Find a ride");
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        searchRideFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)
+                                    .add(R.id.content_layout, searchRideFragment).addToBackStack(Constants.SEARCH_RIDE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right).
+                                    replace(R.id.content_layout, searchRideFragment).addToBackStack(Constants.SEARCH_RIDE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case OFFER_RIDE_SCREEN:
+                        FindRideFragment offerRideFragment = new FindRideFragment();
+                        bundle = new Bundle();
+                        bundle.putString("TITLE", "Offer ride");
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        offerRideFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                                    .add(R.id.content_layout, offerRideFragment).addToBackStack(Constants.OFFER_RIDE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
+                                    replace(R.id.content_layout, offerRideFragment).addToBackStack(Constants.OFFER_RIDE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case BOOKED_RIDES_SCREEN:
+                        TabsFragment bookedTabsFragment = new TabsFragment();
+                        bundle = new Bundle();
+                        bundle.putInt("TITLE", BOOKED_RIDES_SCREEN);
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        bookedTabsFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, bookedTabsFragment).addToBackStack(Constants.BOOKED_RIDES_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, bookedTabsFragment).addToBackStack(Constants.BOOKED_RIDES_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case OFFERED_RIDES_SCREEN:
+                        TabsFragment offeredTabsFragment = new TabsFragment();
+                        bundle = new Bundle();
+                        bundle.putInt("TITLE", OFFERED_RIDES_SCREEN);
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        offeredTabsFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, offeredTabsFragment).addToBackStack(Constants.OFFERED_RIDES_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, offeredTabsFragment).addToBackStack(Constants.OFFERED_RIDES_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case RATINGS_SCREEN:
+                        RatingsFragment ratingsFragment = new RatingsFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        ratingsFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, ratingsFragment).addToBackStack(Constants.RATINGS_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, ratingsFragment).addToBackStack(Constants.RATINGS_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case MORE_SCREEN:
+                        MoreFragment moreFragment = new MoreFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        moreFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, moreFragment).addToBackStack(Constants.MORE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, moreFragment).addToBackStack(Constants.MORE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case WEB_SCREEN:
+                        WebViewFragment webViewFragment = new WebViewFragment();
+                        bundle.putString("URL", (String)object);
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        webViewFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, webViewFragment).addToBackStack(Constants.WEB_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, webViewFragment).addToBackStack(Constants.WEB_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case EDIT_PROFILE_SCREEN:
+                        EditProfileFragment editProfileFragment = new EditProfileFragment();
+                        bundle.putSerializable("PROFILE", (Profile) object);
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        editProfileFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, editProfileFragment).addToBackStack(Constants.EDIT_PROFILE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, editProfileFragment).addToBackStack(Constants.EDIT_PROFILE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case UPDATE_MOBILE_SCREEN:
+                        UpdateMobileFragment updateMobileFragment = new UpdateMobileFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        updateMobileFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
+                                    .add(R.id.content_layout, updateMobileFragment).addToBackStack(Constants.UPDATE_MOBILE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left).
+                                    replace(R.id.content_layout, updateMobileFragment).addToBackStack(Constants.UPDATE_MOBILE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case BOOK_a_RIDE_SCREEN:
+                        BookaRideFragment bookaRideFragment = new BookaRideFragment();
+                        bundle.putSerializable("RIDE", (SearchRides.SearchData) object);
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        bookaRideFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, bookaRideFragment).addToBackStack(Constants.BOOK_a_RIDE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, bookaRideFragment).addToBackStack(Constants.BOOK_a_RIDE_SCREEN_NAME).commit();
+                        }
+                        break;
+                }
             }
             onPrepareOptionsMenu(menu);
         } catch(Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void popBackFragment(String fragmentName) {
+        if (fragmentName != null) {
+            getSupportFragmentManager().popBackStackImmediate(fragmentName, 0);
+        } else {
+            getSupportFragmentManager().popBackStackImmediate();
         }
     }
 
@@ -383,15 +419,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if (currentScreen != HOME_SCREEN && currentScreen != WEB_SCREEN) {
-                loadHomePage(false);
-            } else if (currentScreen == WEB_SCREEN) {
-                loadScreen(MORE_SCREEN, false, null);
-            } else if (currentScreen == BOOK_a_RIDE_SCREEN) {
-                getSupportFragmentManager().popBackStack();
+            if (getCurrentScreen() == WEB_SCREEN) {
+                loadScreen(MORE_SCREEN, false, null, Constants.WEB_SCREEN_NAME);
+            } if (getCurrentScreen() != HOME_SCREEN) {
+                popBackFragment(null);
             } else {
                 if (doubleBackToExitPressedOnce) {
                     super.onBackPressed();
+                    finish();
                     return;
                 }
 
@@ -407,6 +442,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }, 3000);
             }
         }
+        prepareMenu();
     }
 
     @Override
@@ -417,14 +453,28 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    public int getCurrentScreen() {
+        return currentScreen;
+    }
+
+    public void setCurrentScreen(int currentScreen) {
+        this.currentScreen = currentScreen;
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (currentScreen == PROFILE_SCREEN) {
+        if (getCurrentScreen() == PROFILE_SCREEN) {
             menu.getItem(1).setVisible(true);
         } else {
             menu.getItem(1).setVisible(false);
         }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void prepareMenu() {
+        if (menu != null) {
+            onPrepareOptionsMenu(menu);
+        }
     }
 
     @Override
@@ -455,27 +505,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_home:
-                loadHomePage(false);
+                loadHomePage(false, null);
                 break;
             case R.id.nav_messages:
                 break;
             case R.id.nav_offeredrides:
                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
-                    loadScreen(OFFERED_RIDES_SCREEN, false, null);
+                    loadScreen(OFFERED_RIDES_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
                     showSnackBar(getString(R.string.login_prompt));
                 }
                 break;
             case R.id.nav_bukedrides:
                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
-                    loadScreen(BOOKED_RIDES_SCREEN, false, null);
+                    loadScreen(BOOKED_RIDES_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
                     showSnackBar(getString(R.string.login_prompt));
                 }
                 break;
             case R.id.nav_reviews:
                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
-                    loadScreen(RATINGS_SCREEN, false, null);
+                    loadScreen(RATINGS_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
                     showSnackBar(getString(R.string.login_prompt));
                 }
@@ -485,7 +535,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_callus:
                 break;
             case R.id.nav_more:
-                loadScreen(MORE_SCREEN, false, null);
+                loadScreen(MORE_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 break;
             case R.id.nav_pwd:
                 loadChangePwdDialog();
@@ -502,15 +552,16 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_GUID, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, "");
+                                    mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
                                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, false);
                                     mSharedPrefEditor.commit();
                                     LoginManager.getInstance().logOut();
                                     showSnackBar("Logout Successfully");
                                 }
-                                loadHomePage(false);
+                                loadHomePage(false, Constants.HOME_SCREEN_NAME);
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
-                                loadHomePage(false);
+                                loadHomePage(false, Constants.HOME_SCREEN_NAME);
                                 break;
                         }
                     }
@@ -633,7 +684,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response != null && response.body() != null && response.body().Data != null) {
+                if (response.body() != null && response.body().Data != null) {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         dialog.dismiss();
                         showSnackBar(getString(R.string.changedPwd));

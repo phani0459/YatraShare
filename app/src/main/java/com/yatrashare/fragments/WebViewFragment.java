@@ -16,7 +16,7 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.yatrashare.R;
-import com.yatrashare.utils.Log;
+import com.yatrashare.utils.UtilsLog;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -49,20 +49,20 @@ public class WebViewFragment extends Fragment {
 
         webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.i(TAG, "Processing webview url click...");
+                UtilsLog.i(TAG, "Processing webview url click...");
                 view.loadUrl(url);
                 return true;
             }
 
             public void onPageFinished(WebView view, String url) {
-                Log.i(TAG, "Finished loading URL: " + url);
+                UtilsLog.i(TAG, "Finished loading URL: " + url);
                 if (progressBar.isShowing()) {
                     progressBar.dismiss();
                 }
             }
 
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Log.e(TAG, "Error: " + description);
+                UtilsLog.e(TAG, "Error: " + description);
                 Toast.makeText(mContext, "Oh no! " + description, Toast.LENGTH_SHORT).show();
                 alertDialog.setTitle("Error");
                 alertDialog.setMessage(description);

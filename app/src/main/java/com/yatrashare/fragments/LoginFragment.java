@@ -99,14 +99,14 @@ public class LoginFragment extends Fragment {
         mLoginWithEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN, false, null);
+                ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
             }
         });
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.SIGNUP_SCREEN, false, null);
+                ((HomeActivity) mContext).loadScreen(HomeActivity.SIGNUP_SCREEN, false, null,getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
             }
         });
 
@@ -126,11 +126,11 @@ public class LoginFragment extends Fragment {
                             public void onCompleted(GraphResponse response) {
                                 try {
                                     JSONObject object = response.getJSONObject();
-                                    /*Log.e("" + object.get("name"), "FB NAME");
-                                    Log.e("" + object.get("gender"), "GENDER");
-                                    Log.e("" + object.get("email"), "EMAIL");
-                                    Log.e("" + object.get("birthday"), "BDAY");
-                                    Log.e("" + object.get("id"), "ID");*/
+                                    /*UtilsLog.e("" + object.get("name"), "FB NAME");
+                                    UtilsLog.e("" + object.get("gender"), "GENDER");
+                                    UtilsLog.e("" + object.get("email"), "EMAIL");
+                                    UtilsLog.e("" + object.get("birthday"), "BDAY");
+                                    UtilsLog.e("" + object.get("id"), "ID");*/
                                     registerUserinServer(object.optString("id"), object.optString("name"), object.optString("email"),
                                             "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large");
                                 } catch (Exception e) {
@@ -149,7 +149,7 @@ public class LoginFragment extends Fragment {
                         new GraphRequest.Callback() {
                             public void onCompleted(GraphResponse response) {
                                 try {
-                                    Log.e("" + response.toString(), "PCITURE");
+                                    UtilsLog.e("" + response.toString(), "PCITURE");
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -205,7 +205,7 @@ public class LoginFragment extends Fragment {
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity)mContext).loadHomePage(false);
+                    ((HomeActivity)mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                 }
             }
 

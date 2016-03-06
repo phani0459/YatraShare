@@ -64,6 +64,22 @@ public class Constants {
 
      */
 
+    public static final String HOME_SCREEN_NAME = "HOME";
+    public static final String LOGIN_SCREEN_NAME = "LOGIN";
+    public static final String LOGIN_WITH_EMAIL_SCREEN_NAME = "LOGIN EMAIL";
+    public static final String SIGNUP_SCREEN_NAME = "SIGN UP";
+    public static final String PROFILE_SCREEN_NAME = "PROFILE";
+    public static final String SEARCH_RIDE_SCREEN_NAME = "SEARCH RIDE";
+    public static final String OFFER_RIDE_SCREEN_NAME = "OFFER RIDE";
+    public static final String BOOKED_RIDES_SCREEN_NAME = "BOOKED RIDES";
+    public static final String OFFERED_RIDES_SCREEN_NAME = "OFFERED RIDES";
+    public static final String RATINGS_SCREEN_NAME = "Ratings";
+    public static final String MORE_SCREEN_NAME = "MORE SCREEN";
+    public static final String WEB_SCREEN_NAME = "WEB SCREEB";
+    public static final String EDIT_PROFILE_SCREEN_NAME = "EDIT PROFILE";
+    public static final String UPDATE_MOBILE_SCREEN_NAME = "UPDATE MOBILE";
+    public static final String BOOK_a_RIDE_SCREEN_NAME = "BOOK A RIDE";
+
     public static final String PREF_USER_EMAIL = "Email";
     public static final String PREF_USER_PHONE = "PhoneNo";
     public static final String PREF_USER_GENDER = "gender";
@@ -71,5 +87,7 @@ public class Constants {
     public static final String PREF_USER_NAME = "Name";
     public static final String PREF_USER_FB_ID = "id";
     public static final String PREF_LOGGEDIN = "loggedIn";
+    public static final String PREF_MOBILE_VERIFIED = "mobileVerificationStatus";
     public static final String PREF_USER_PROFILE_PIC = "profilePic";
+    public static final String ORIGIN_SCREEN_KEY = "ORIGIN SCREEN";
 }

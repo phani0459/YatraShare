@@ -20,10 +20,10 @@ package com.yatrashare.utils;
  *
  * <p>When this is set as the head of the list,
  * an instance of it can function as a drop-in replacement for {@link android.util.Log}.
- * Most of the methods in this class server only to map a method call in Log to its equivalent
+ * Most of the methods in this class server only to map a method call in UtilsLog to its equivalent
  * in LogNode.</p>
  */
-public class Log {
+public class UtilsLog {
     // Grabbing the native values from Android's native logging facilities,
     // to make for easy migration and interop.
     public static final int NONE = -1;
@@ -55,7 +55,7 @@ public class Log {
      * Instructs the LogNode to print the log data provided. Other LogNodes can
      * be chained to the end of the LogNode as desired.
      *
-     * @param priority Log level of the data being logged. Verbose, Error, etc.
+     * @param priority UtilsLog level of the data being logged. Verbose, Error, etc.
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged.
      * @param tr If an exception was thrown, this can be sent along for the logging facilities
@@ -71,7 +71,7 @@ public class Log {
      * Instructs the LogNode to print the log data provided. Other LogNodes can
      * be chained to the end of the LogNode as desired.
      *
-     * @param priority Log level of the data being logged. Verbose, Error, etc.
+     * @param priority UtilsLog level of the data being logged. Verbose, Error, etc.
      * @param tag Tag for for the log data. Can be used to organize log statements.
      * @param msg The actual message to be logged. The actual message to be logged.
      */

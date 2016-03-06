@@ -84,7 +84,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:background="@drawable/search_button_bg"
-            android:text="@string/ride_submit"
+            android:text="@string/ride_find"
             android:textStyle="bold"/>
 
         <RelativeLayout

@@ -25,25 +25,23 @@ public class HomeFragment extends Fragment {
         mOfferRideBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Utils.isLoggedIn(getActivity())) {
-                    Utils.showLoginDialog(getActivity());
-                } else {
-                    ((HomeActivity)getActivity()).loadScreen(HomeActivity.OFFER_RIDE_SCREEN, false, null);
-                }
+                ((HomeActivity)getActivity()).loadScreen(HomeActivity.OFFER_RIDE_SCREEN, false, null, null);
             }
         });
 
         mSearchRideBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Utils.isLoggedIn(getActivity())) {
-                    Utils.showLoginDialog(getActivity());
-                } else
-                    ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, null);
+                ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, null, null);
             }
         });
 
         return inflatedLayout;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)getActivity()).setCurrentScreen(HomeActivity.HOME_SCREEN);
+    }
 }

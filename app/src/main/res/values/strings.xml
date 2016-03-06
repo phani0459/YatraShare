@@ -6,6 +6,7 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_edit_profile">Edit Profile</string>
+    <string name="rideHeading">Ride: </string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="going_smwr">Going Somewhere?</string>
@@ -54,6 +55,7 @@
     <string name="ride_where_from">Where from?</string>
     <string name="ride_where_to">Where to?</string>
     <string name="ride_submit">Submit</string>
+    <string name="ride_find">Find a Ride</string>
     <string name="ride_date">Date(optional)</string>
     <string name="Rs">\u20B9</string>
 

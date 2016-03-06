@@ -38,6 +38,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -70,6 +71,8 @@ public class EditProfileFragment extends Fragment {
     public TextInputLayout mUpdatePhoneLayout;
     @Bind(R.id.updateFirstNameLayout)
     public TextInputLayout mUpdateUserNameLayout;
+    private Profile profile;
+    private String userGuid;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -81,18 +84,35 @@ public class EditProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
-        mContext = getActivity();
-
-        Profile profile = (Profile) getArguments().getSerializable("PROFILE");
         ButterKnife.bind(this, view);
 
-        Button updateProfileButton = (Button)view.findViewById(R.id.updateProfileButton);
+        return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (profile != null && getArguments() != null) {
+            getArguments().putSerializable("PROFILE", profile);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mContext = getActivity();
+
+        if (getArguments() != null) {
+            profile = (Profile) getArguments().getSerializable("PROFILE");
+        }
+
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.EDIT_PROFILE_SCREEN);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        final String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+        userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
         String email = mSharedPreferences.getString(Constants.PREF_USER_EMAIL, null);
 
-        if (profile.Data != null) {
+        if (profile != null && profile.Data != null) {
             String aboutMe = profile.Data.AboutMe;
             String userName = profile.Data.UserName;
 
@@ -134,42 +154,38 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
-
-        updateProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.hideSoftKeyboard(emailEdit);
-                // Store values at the time of the login attempt.
-                String userFirstName = firstNameEdit.getText().toString();
-                String userLastName = lastNameEdit.getText().toString();
-                String email = emailEdit.getText().toString();
-                String dob = dobEdit.getText().toString();
-                String phoneNumber = phoneNoEdit.getText().toString();
-                String aboutMe = aboutMeEdit.getText().toString();
-
-                boolean cancel = false;
-
-                if (TextUtils.isEmpty(userFirstName) || !isUserNameValid(userFirstName)) {
-                    mUpdateUserNameLayout.setError(getString(R.string.error_invalid_username));
-                    cancel = true;
-                } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
-                    mUpdateUserNameLayout.setErrorEnabled(false);
-                    mUpdatePhoneLayout.setError(getString(R.string.error_invalid_phone));
-                    cancel = true;
-                }
-
-                if (!cancel) {
-                    mUpdatePhoneLayout.setErrorEnabled(false);
-                    mUpdateUserNameLayout.setErrorEnabled(false);
-                    Utils.showProgress(true, mProgressView, mProgressBGView);
-                    updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
-                }
-            }
-        });
-        return view;
     }
 
+    @OnClick(R.id.updateProfileButton)
+    public void updateProfile(){
+        Utils.hideSoftKeyboard(emailEdit);
+        // Store values at the time of the login attempt.
+        String userFirstName = firstNameEdit.getText().toString();
+        String userLastName = lastNameEdit.getText().toString();
+        String email = emailEdit.getText().toString();
+        String dob = dobEdit.getText().toString();
+        String phoneNumber = phoneNoEdit.getText().toString();
+        String aboutMe = aboutMeEdit.getText().toString();
 
+        boolean cancel = false;
+
+        if (TextUtils.isEmpty(userFirstName) || !isUserNameValid(userFirstName)) {
+            mUpdateUserNameLayout.setError(getString(R.string.error_invalid_username));
+            cancel = true;
+        } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
+            mUpdateUserNameLayout.setErrorEnabled(false);
+            mUpdatePhoneLayout.setError(getString(R.string.error_invalid_phone));
+            cancel = true;
+        }
+
+        if (!cancel) {
+            mUpdatePhoneLayout.setErrorEnabled(false);
+            mUpdateUserNameLayout.setErrorEnabled(false);
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
+        }
+
+    }
 
     private boolean isUserNameValid(String userName) {
         return userName.length() > 4;
@@ -213,7 +229,7 @@ public class EditProfileFragment extends Fragment {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         ((HomeActivity)mContext).showSnackBar(getString(R.string.profile_updated_rationale));
-                        ((HomeActivity)mContext).loadHomePage(false);
+                        ((HomeActivity)mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                     } else {
                         ((HomeActivity)mContext).showSnackBar(response.body().Data);
                     }

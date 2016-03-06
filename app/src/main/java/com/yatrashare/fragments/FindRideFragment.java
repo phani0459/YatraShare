@@ -39,16 +39,16 @@ import com.yatrashare.adapter.PlaceAutocompleteAdapter;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.FindRide;
-import com.yatrashare.utils.Log;
+import com.yatrashare.utils.Constants;
+import com.yatrashare.utils.UtilsLog;
 import com.yatrashare.utils.LogWrapper;
 import com.yatrashare.utils.Utils;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -72,7 +72,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     public TextInputLayout mWhereFromLayout;
     @Bind(R.id.rideProgress)
     public ProgressBar mProgressView;
-    private int hour, minute, year, month, day;
+    private int year, month, day;
     private PlaceAutocompleteAdapter mPlacesAdapter;
     protected GoogleApiClient mGoogleApiClient;
     private DatePickerDialog mDatePickerDialog;
@@ -90,6 +90,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     @Bind(R.id.findRideProgressBGView)
     public View mProgressBGView;
     private AvailableRidesAdapter mAdapter;
+    private SearchRides searchRides;
 
     public FindRideFragment() {
         // Required empty public constructor
@@ -109,7 +110,6 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
 
         ((HomeActivity)mContext).setTitle(mTitle);
 
-        Button mRideSubmitBt = (Button) inflatedLayout.findViewById(R.id.findaRideBtn);
         TextView emptyRidesHeading = (TextView) emptyRidesLayout.findViewById(R.id.emptyRidesHeading);
         TextView emptyRidesSubHeading = (TextView) emptyRidesLayout.findViewById(R.id.emptyRidesSubHeading);
 
@@ -117,14 +117,12 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         emptyRidesSubHeading.setText("Wait for some time and Try again!");
 
         Calendar calendar = Calendar.getInstance();
-        hour = calendar.get(Calendar.HOUR_OF_DAY);
-        minute = calendar.get(Calendar.MINUTE);
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
         LogWrapper logWrapper = new LogWrapper();
-        Log.setLogNode(logWrapper);
+        UtilsLog.setLogNode(logWrapper);
 
         mWhereFromView.setOnItemClickListener(mAutocompleteClickListener);
         mWhereToView.setOnItemClickListener(mAutocompleteClickListener);
@@ -177,22 +175,6 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
             }
         };
 
-        mRideSubmitBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.hideSoftKeyboard(mWhereToView);
-                getRideDetails();
-            }
-        });
-
-        mRideTypeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.hideSoftKeyboard(mWhereToView);
-                showRideType((Button)v);
-            }
-        });
-
         return inflatedLayout;
     }
 
@@ -215,7 +197,9 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         }
     }
 
-    private void showRideType(final Button rideTypeBtn) {
+    @OnClick(R.id.rideTypeButton)
+    public void showRideType(final Button rideTypeBtn) {
+        Utils.hideSoftKeyboard(mWhereToView);
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(mContext);
         builderSingle.setTitle("Select Ride Type");
 
@@ -243,7 +227,9 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         builderSingle.show();
     }
 
-    private void getRideDetails() {
+    @OnClick(R.id.findaRideBtn)
+    public void getRideDetails() {
+        Utils.hideSoftKeyboard(mWhereToView);
         String whereFrom = mWhereFromView.getText().toString();
         String whereTo = mWhereToView.getText().toString();
         String rideTypeString = mRideTypeButton.getText().toString();
@@ -296,12 +282,11 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
                 public void onResponse(retrofit.Response<SearchRides> response, Retrofit retrofit) {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                    if (response != null && response.body() != null) {
+                    if (response.body() != null) {
                         android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
-                        SearchRides searchRides = response.body();
+                        FindRideFragment.this.searchRides = response.body();
                         if (searchRides != null) {
                             if (searchRides.Data != null && searchRides.Data.size() > 0) {
-                                android.util.Log.e("searchRides.Data.size()", searchRides.Data.size() + "");
                                 emptyRidesLayout.setVisibility(View.GONE);
                                 mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
                                 mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
@@ -375,7 +360,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
             final String placeId = item.getPlaceId();
             final CharSequence primaryText = item.getPrimaryText(null);
 
-            Log.i(TAG, "Autocomplete item selected: " + primaryText);
+            UtilsLog.i(TAG, "Autocomplete item selected: " + primaryText);
 
             /*
              Issue a request to the Places Geo Data API to retrieve a Place object with additional
@@ -384,16 +369,44 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
             PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
             placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
 
-            Log.i("Places : ", "Called getPlaceById to get Place details for " + placeId);
+            UtilsLog.i("Places : ", "Called getPlaceById to get Place details for " + placeId);
         }
     };
+
+    @Override
+    public void onPause() {
+        if (searchRides != null) {
+            getArguments().putSerializable("Searched Rides", searchRides);
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            this.searchRides = (SearchRides) bundle.getSerializable("Searched Rides");
+            if (searchRides != null) {
+                if (searchRides.Data != null && searchRides.Data.size() > 0) {
+                    emptyRidesLayout.setVisibility(View.GONE);
+                    mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
+                    mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
+                    mRecyclerView.setAdapter(mAdapter);
+                } else {
+                    emptyRidesLayout.setVisibility(View.VISIBLE);
+                    mRecyclerView.setAdapter(null);
+                }
+            }
+        }
+    }
 
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback  = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
             if (!places.getStatus().isSuccess()) {
                 // Request did not complete successfully
-                Log.e("Places : ", "Place query did not complete. Error: " + places.getStatus().toString());
+                UtilsLog.e("Places : ", "Place query did not complete. Error: " + places.getStatus().toString());
                 places.release();
                 return;
             }
@@ -413,7 +426,7 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
 //                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
             }
 
-            Log.i("Places", "Place details received: " + place.getName());
+            UtilsLog.i("Places", "Place details received: " + place.getName());
 
             places.release();
         }
@@ -421,12 +434,12 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+        UtilsLog.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
 
     @Override
     public void onItemClick(int position) {
-        SearchRides.SearchData searchData = (SearchRides.SearchData)mAdapter.getItem(position);
-        ((HomeActivity) mContext).loadScreen(HomeActivity.BOOK_a_RIDE_SCREEN, false, searchData);
+        SearchRides.SearchData searchData = mAdapter.getItem(position);
+        ((HomeActivity) mContext).loadScreen(HomeActivity.BOOK_a_RIDE_SCREEN, false, searchData, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
     }
 }

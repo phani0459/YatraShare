@@ -9,27 +9,29 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.interfaces.YatraShareAPI;
-import com.yatrashare.pojos.UserLogin;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.TextDrawable;
 import com.yatrashare.utils.Utils;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -65,6 +67,10 @@ public class BookaRideFragment extends Fragment {
     public TextView pricePerSeat;
     @Bind(R.id.usersPreferences)
     public TextView usersPreferences;
+    @Bind(R.id.rideDeparturePoint)
+    public TextView rideDeparturePoint;
+    @Bind(R.id.rideArrivalPoint)
+    public TextView rideArrivalPoint;
     @Bind(R.id.chatPrefernece)
     public ImageView mChatPreference;
     @Bind(R.id.musicPreference)
@@ -92,18 +98,27 @@ public class BookaRideFragment extends Fragment {
         FloatingActionButton mFab = (FloatingActionButton) inflatedLayout.findViewById(R.id.fab);
 
         mFab.setImageDrawable(new TextDrawable(mContext, "Book", ColorStateList.valueOf(Color.WHITE), 18.f, TextDrawable.VerticalAlignment.BASELINE));
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         final String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         rideData = (SearchRides.SearchData)getArguments().getSerializable("RIDE");
         if (rideData != null) {
             try {
-                rideDate.setText(rideData.RideDate);
-//                rideTime.setText(rideData.RideDate);
+
+                rideTime.setSelected(true);
+                rideFrom.setSelected(true);
+                rideTo.setSelected(true);
+                rideArrivalPoint.setSelected(true);
+                rideDeparturePoint.setSelected(true);
+                usersPreferences.setSelected(true);
+//                rideDate.setText(rideData.RideDate);
+                rideTime.setText(rideData.RideDate);
                 rideFrom.setText(rideData.DepartureCity);
                 rideTo.setText(rideData.ArrivalCity);
-                seatsAvailable.setText(rideData.RemainingSeats);
-                pricePerSeat.setText(rideData.RoutePrice);
+                rideDeparturePoint.setText(rideData.DeparturePoint != null ? rideData.DeparturePoint : "");
+                rideArrivalPoint.setText(rideData.ArrivalPoint != null ? rideData.ArrivalPoint : "");
+                seatsAvailable.setText(rideData.RemainingSeats + " Seat(s)");
+                pricePerSeat.setText("" + mContext.getResources().getString(R.string.Rs) + " " + rideData.RoutePrice + " /Seat");
                 usersPreferences.setText(rideData.UserName + "'s Preferences");
 
                 int chatPref = rideData.Chat;
@@ -120,11 +135,20 @@ public class BookaRideFragment extends Fragment {
             }
         }
 
+        ((HomeActivity) mContext).setTitle("Book Ride");
+
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.showProgress(true, mProgressView, mProgressBGView);
-                showSeatsDialog(userGuid, rideData.PossibleRideGuid, "1");
+                if (!Utils.isLoggedIn(getActivity())) {
+                    Utils.showLoginDialog(getActivity(), Constants.BOOK_a_RIDE_SCREEN_NAME);
+                } else {
+                    if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
+                        showSeatsDialog(userGuid, rideData.PossibleRideGuid, "1");
+                    } else {
+                        Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
+                    }
+                }
             }
         });
 
@@ -133,9 +157,31 @@ public class BookaRideFragment extends Fragment {
 
     public void showSeatsDialog(final String userGuid, final String possibleRideGuid, String remainingSeats) {
         final Dialog dialog = new Dialog(mContext, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.no_of_seats_item);
         Button resetPwdButton = (Button) dialog.findViewById(R.id.btnReset);
         Button cancelButton = (Button) dialog.findViewById(R.id.btnCancel);
+        final Spinner noOfSeatsSpinner = (Spinner) dialog.findViewById(R.id.noOfSeatsSpinner);
+
+        int remainingSeatsInt = 0;
+        ArrayList<String> strings = new ArrayList<>();
+
+        if (remainingSeats != null && !remainingSeats.isEmpty()) {
+            try {
+                remainingSeatsInt = Integer.parseInt(remainingSeats);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (remainingSeatsInt > 0) {
+            for (int i = 0; i < remainingSeatsInt; i++) {
+                strings.add("" + (i + 1));
+            }
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, strings);
+        noOfSeatsSpinner.setAdapter(adapter);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,11 +194,18 @@ public class BookaRideFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                bookRide(userGuid, possibleRideGuid, "1");
+                dialog.dismiss();
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                bookRide(userGuid, possibleRideGuid, noOfSeatsSpinner.getSelectedItem().toString());
             }
         });
 
-        dialog.show();
+        if (remainingSeatsInt > 0) {
+            dialog.show();
+        } else {
+            Toast.makeText(getActivity(), "There are no seats available", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     private void bookRide(String userGuid, String possibleRideGuid, String passengers) {
@@ -167,12 +220,12 @@ public class BookaRideFragment extends Fragment {
         Call<UserDataDTO> call = yatraShareAPI.bookRide(userGuid, possibleRideGuid, passengers);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
-            /**
+            /*
              * Successful HTTP response.
              *
              * @param response
              * @param retrofit
-             */
+            */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
@@ -186,7 +239,7 @@ public class BookaRideFragment extends Fragment {
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }
 
-            /**
+            /*
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
              * @param t

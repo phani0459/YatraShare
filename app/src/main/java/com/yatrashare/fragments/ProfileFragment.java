@@ -56,6 +56,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
 
     private SharedPreferences mSharedPreferences;
+    private SharedPreferences.Editor mPrefEditor;
     private Context mContext;
     private final String TAG = ProfileFragment.class.getSimpleName();
     @Bind(R.id.profileProgress)
@@ -119,6 +120,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         ButterKnife.bind(this, inflatedLayout);
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mPrefEditor = mSharedPreferences.edit();
         RelativeLayout mProfileImageLayout = (RelativeLayout) inflatedLayout.findViewById(R.id.profileImageLayout);
 
         mChatPreference.setOnClickListener(this);
@@ -129,7 +131,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
         ((HomeActivity)mContext).setTitle("My Account");
 
-        userProfileTask();
+        if (profile == null) {
+            userProfileTask();
+        }
 
         mProfileImageLayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -240,7 +244,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
      public void editProfile() {
          if (profile != null) {
-             ((HomeActivity) mContext).loadScreen(HomeActivity.EDIT_PROFILE_SCREEN, false, profile);
+             ((HomeActivity) mContext).loadScreen(HomeActivity.EDIT_PROFILE_SCREEN, false, profile, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
          }
      }
 
@@ -264,7 +268,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
     @OnClick(R.id.mobileStatusHeading)
     public void changeMobileNumber() {
-        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null);
+        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (profile != null) {
+            if (getArguments() != null) {
+                getArguments().putSerializable("Profile", profile);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.PROFILE_SCREEN);
+        ((HomeActivity)mContext).prepareMenu();
+        if (getArguments() != null) {
+            profile = (Profile) getArguments().getSerializable("Profile");
+            loadProfile();
+        }
+
     }
 
     public void loadProfile() {
@@ -286,6 +312,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 String emailStatus = profile.Data.EmailStatus != null ? profile.Data.EmailStatus : "0";
                 String licenceStatus = profile.Data.LicenceStatus != null ? profile.Data.LicenceStatus : "0";
                 mMobileStatus.setImageResource(mobileStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
+
+                mPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
+                mPrefEditor.commit();
+
                 mEmailStatus.setImageResource(emailStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
                 String mobileHeading = mobileStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
                                                                     "<font color=\"#D9534F\">Not Verified</font>";

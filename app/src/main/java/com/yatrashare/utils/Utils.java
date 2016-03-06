@@ -75,14 +75,14 @@ public class Utils {
         return false;
     }
 
-    public static void showLoginDialog(final Context mContext) {
+    public static void showLoginDialog(final Context mContext, final String originScreen) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.appCompatDialog);
         builder.setTitle("Not Logged in!");
         builder.setMessage("Login/Register to know more");
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_SCREEN, false, null);
+                ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_SCREEN, false, null, originScreen);
             }
         });
 
@@ -90,6 +90,29 @@ public class Utils {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public static void showMobileVerifyDialog(final Context mContext, final String msg, final String originScree) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.appCompatDialog);
+        builder.setTitle("Mobile Number not verified!");
+        builder.setMessage("Verify Mobile to book a seat.");
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, originScree);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
             }
         });
 
