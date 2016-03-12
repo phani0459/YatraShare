@@ -1,8 +1,12 @@
 package com.yatrashare.interfaces;
 
 import com.yatrashare.dtos.BookedRides;
+import com.yatrashare.dtos.MessageDetails;
+import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.Rating;
+import com.yatrashare.dtos.RatingReceiverInfo;
+import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.FindRide;
@@ -11,6 +15,7 @@ import com.yatrashare.pojos.UserFgtPassword;
 import com.yatrashare.pojos.UserLogin;
 import com.yatrashare.pojos.UserPreferences;
 import com.yatrashare.pojos.UserProfile;
+import com.yatrashare.pojos.UserRating;
 import com.yatrashare.pojos.UserSignUp;
 
 import retrofit.Call;
@@ -69,6 +74,39 @@ public interface YatraShareAPI {
     Call<Profile> userProfile(@Query("userGuid") String userGuide);
 
     @GET("/api/Profile/GetReceivedRatings")
-    Call<Rating> userRatings(@Query("userGuid") String userGuide);
+    Call<Rating> userReceivedRatings(@Query("userGuid") String userGuide);
+
+    @GET("/api/Profile/GetGivenRatings")
+    Call<Rating> userGivenRatings(@Query("userGuid") String userGuide);
+
+    @GET("/api/Profile/GetRatingReceiverUserinfo")
+    Call<RatingReceiverInfo> getRatingReceiverUserinfoId(@Query("userGuid") String userGuide, @Query("mobileNo") String mobileNumber);
+
+    @GET("/api/Profile/GetRatingReceiverUserinfo")
+    Call<UserDataDTO> getRatingReceiverUserinfoMobile(@Query("mobileNumber") String mobileNumber);
+
+    @GET("/api/Messages/GetUserMessagesConversation")
+    Call<MessageDetails> userMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);
+
+    @GET("/api/Messages/GetInboxMessages")
+    Call<MessagesList> userInboxMessages(@Query("userGuid") String userGuide, @Query("currentpage") String currentpage, @Query("pagesize") String pagesize);
+
+    @GET("/api/Messages/DeleteMessage")
+    Call<MessagesList> deleteMessage(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);
+
+    @POST("/api/Profile/GiveRatingtoUser")
+    Call<UserDataDTO> giveRatingtoUser(@Query("userGuid") String userGuide, @Body UserRating userRating);
+
+    @POST("/api/Messages/SendMessage")
+    Call<UserDataDTO> sendMessage(@Query("userGuid") String userGuide, @Query("receiverGuid") String receiverGuid, @Query("possibleRideGuid") String possibleRideGuid, @Query("message") String message);
+
+    @POST("/api/Messages/SendReplyMessage")
+    Call<UserDataDTO> SendReplyMessage(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid, @Query("message") String message);
+
+    @GET("/api/Rides/GetRideDetails")
+    Call<RideDetails> getRideDetails(@Query("possibleRideGuid") String possibleRideGuid);
+
+    @POST("/api/Messages/GetUserMessagesConversation")
+    Call<MessageDetails> getMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);
 
 }

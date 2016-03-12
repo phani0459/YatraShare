@@ -79,6 +79,9 @@ public class Constants {
     public static final String EDIT_PROFILE_SCREEN_NAME = "EDIT PROFILE";
     public static final String UPDATE_MOBILE_SCREEN_NAME = "UPDATE MOBILE";
     public static final String BOOK_a_RIDE_SCREEN_NAME = "BOOK A RIDE";
+    public static final String MESSAGE_SCREEN_NAME = "MESSAGES SCREEN";
+    public static final String MESSAGE_DETAILS_SCREEN_NAME = "MESSAGE Details SCREEN";
+    public static final String PROVIDE_RATING_SCREEN_NAME = "Provide rating SCREEN";
 
     public static final String PREF_USER_EMAIL = "Email";
     public static final String PREF_USER_PHONE = "PhoneNo";

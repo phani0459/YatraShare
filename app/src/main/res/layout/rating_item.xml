@@ -1,69 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="4dp"
+    card_view:contentPadding="4dp">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/feedBack"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/ratingValue"
-            android:padding="4dp"
-            android:singleLine="true"
-            android:text="ssss"
-            android:textColor="#000000"/>
+            android:orientation="horizontal"
+            android:weightSum="10">
 
-        <TextView
-            android:id="@+id/ratingValue"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="96dp"
+                android:layout_weight="8"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/feedBack"
+                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="2"
+                    android:padding="4dp"
+                    android:text="@string/app_name"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/ratingBy"
+                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:layout_width="match_parent"
+                    android:textStyle="italic"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:singleLine="true"
+                    android:text="@string/app_name"
+                    android:textColor="#66000000" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_ownerImage"
+                android:layout_width="0dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center"
+                android:layout_weight="2">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/im_drawee_rating_provider"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:foregroundGravity="center"
+                    android:scaleType="centerCrop"
+                    fresco:roundAsCircle="true" />
+
+                <ImageView
+                    android:id="@+id/im_rating_provider"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:foregroundGravity="center"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/add_user" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E1E1E1" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="4dp"
-            android:singleLine="true"
-            android:text="ssss"
-            android:textColor="#000000"/>
+            android:layout_marginTop="4dp">
 
-    </RelativeLayout>
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@android:style/Widget.Holo.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:numStars="5" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/ratingUserName"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/ratingTime"
-            android:padding="4dp"
-            android:singleLine="true"
-            android:text="ssss"
-            android:textColor="#A1A1A1"/>
-
-        <TextView
-            android:id="@+id/ratingTime"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="4dp"
-            android:singleLine="true"
-            android:text="ssss"
-            android:textColor="#A1A1A1"/>
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E1E1E1"/>
-</LinearLayout>
+            <TextView
+                android:id="@+id/ratingTime"
+                style="@android:style/TextAppearance.DeviceDefault.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/ratingBar"
+                android:gravity="right"
+                android:padding="4dp"
+                android:singleLine="true"
+                android:text="ssss"
+                android:textColor="#A1A1A1" />
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

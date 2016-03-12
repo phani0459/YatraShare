@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
-import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
@@ -31,7 +26,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -70,7 +64,6 @@ public class UpdateMobileFragment extends Fragment {
     private boolean isPhoneSaved;
     private Context mContext;
     private String userGuid;
-    private YatraShareAPI yatraShareAPI;
     private boolean isValidPhoneNUmber;
     private SharedPreferences.Editor mEditor;
 
@@ -99,13 +92,6 @@ public class UpdateMobileFragment extends Fragment {
         phoneEdit.setText(mobile);
         phoneEdit.setEnabled(false);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        // prepare call in Retrofit 2.0
-        yatraShareAPI = retrofit.create(YatraShareAPI.class);
 
         return view;
     }
@@ -148,7 +134,7 @@ public class UpdateMobileFragment extends Fragment {
         if (!verificationCodeEdit.getText().toString().isEmpty()) {
             verifyCodeLayout.setError(null);
             verifyCodeLayout.setErrorEnabled(false);
-            Call<UserDataDTO> call = yatraShareAPI.verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
+            Call<UserDataDTO> call = Utils.getYatraShareAPI().verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
             //asynchronous call
             call.enqueue(new Callback<UserDataDTO>() {
                 /**
@@ -190,8 +176,11 @@ public class UpdateMobileFragment extends Fragment {
         }
     }
 
-    public void showToast(String msg) {
-        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.UPDATE_MOBILE_SCREEN);
+        ((HomeActivity)mContext).setTitle("Verify Mobile Number");
     }
 
     @OnClick(R.id.resend_code_bt)
@@ -200,7 +189,7 @@ public class UpdateMobileFragment extends Fragment {
             resendCodeBt.setText("Resend Code");
             Utils.showProgress(true, mProgressView, mProgressBGView);
 
-            Call<UserDataDTO> call = yatraShareAPI.sendVerificationCode(userGuid);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationCode(userGuid);
             //asynchronous call
             call.enqueue(new Callback<UserDataDTO>() {
                 /**
@@ -214,7 +203,7 @@ public class UpdateMobileFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                     if (response != null && response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
-                            showToast("Verification code sent");
+                            Utils.showToast(mContext, "Verification code sent");
                             verifyBt.setBackground(getResources().getDrawable(R.drawable.mobile_validation_stroke));
                             verifyBt.getBackground().setLevel(1);
                             verifyBt.setEnabled(true);

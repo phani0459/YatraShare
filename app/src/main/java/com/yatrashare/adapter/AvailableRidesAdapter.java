@@ -71,6 +71,9 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
         holder.availableSeatText.setText(dataSearchArray.get(position).RemainingSeats + " Seat(s)");
         holder.userNameText.setText(dataSearchArray.get(position).UserName);
 
+        holder.rideFromPointText.setText(dataSearchArray.get(position).DeparturePoint);
+        holder.rideToPointText.setText(dataSearchArray.get(position).ArrivalPoint);
+
         String comfortRating = dataSearchArray.get(position).ComfortRating;
         String profilePic = dataSearchArray.get(position).ProfilePicture;
 
@@ -104,6 +107,8 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final TextView rideFromPointText;
+        private final TextView rideToPointText;
         private TextView userNameText, rideFareText, availableSeatText, rideFromText, rideToText, rideDayText, rideTimeText, rideVehicleText;
         private RatingBar ratingBar;
         SimpleDraweeView simpleDraweeView;
@@ -123,6 +128,8 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
             ratingBar  = (RatingBar) itemView.findViewById(R.id.ratingBar);
             rideVehicleText = (TextView) itemView.findViewById(R.id.ride_car_text);
             availableSeatText = (TextView) itemView.findViewById(R.id.ride_available_text);
+            rideFromPointText = (TextView) itemView.findViewById(R.id.rideDeparturePoint);
+            rideToPointText = (TextView) itemView.findViewById(R.id.rideArrivalPoint);
             itemView.setOnClickListener(this);
         }
 

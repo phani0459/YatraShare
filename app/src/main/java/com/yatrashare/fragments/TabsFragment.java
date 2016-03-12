@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -45,11 +46,15 @@ public class TabsFragment extends Fragment  {
     public ViewPager viewPager;
     @Bind(R.id.tabs)
     public TabLayout tabLayout;
+    @Bind(R.id.fabChat)
+    public FloatingActionButton floatingActionButton;
     private int mTitle;
     public static final int UPCOMING_BOOKED_RIDES = 0;
     public static final int PAST_BOOKED_RIDES = 1;
     public static final int UPCOMING_OFFERED_RIDES = 2;
     public static final int PAST_OFFERED_RIDES = 3;
+    public static final int RECEIVED_RATINGS = 4;
+    public static final int GIVEN_RATINGS = 5;
     private Context mContext;
 
 
@@ -68,9 +73,22 @@ public class TabsFragment extends Fragment  {
 
         if (mTitle == HomeActivity.BOOKED_RIDES_SCREEN) {
             ((HomeActivity)mContext).setTitle("Rides I've booked");
+            floatingActionButton.setVisibility(View.GONE);
         } else if (mTitle == HomeActivity.OFFERED_RIDES_SCREEN) {
             ((HomeActivity)mContext).setTitle("Rides I've offered");
+            floatingActionButton.setVisibility(View.GONE);
+        } else if (mTitle == HomeActivity.RATINGS_SCREEN) {
+            ((HomeActivity)mContext).setTitle("Ratings");
+            floatingActionButton.setVisibility(View.VISIBLE);
         }
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((HomeActivity) mContext).loadScreen(HomeActivity.PROVIDE_RATING_SCREEN, false, null, Constants.RATINGS_SCREEN_NAME);
+            }
+        });
+
 
         return view;
     }
@@ -103,8 +121,19 @@ public class TabsFragment extends Fragment  {
         } else if (mTitle == HomeActivity.OFFERED_RIDES_SCREEN) {
             adapter.addFragment(getFragment(UPCOMING_OFFERED_RIDES), "Upcoming");
             adapter.addFragment(getFragment(PAST_OFFERED_RIDES), "Past Journeys");
+        } else if (mTitle == HomeActivity.RATINGS_SCREEN) {
+            adapter.addFragment(getRatingsFragment(RECEIVED_RATINGS), "Received Ratings");
+            adapter.addFragment(getRatingsFragment(GIVEN_RATINGS), "Given Ratings");
         }
         viewPager.setAdapter(adapter);
+    }
+
+    private Fragment getRatingsFragment(int arg) {
+        Bundle bundle = new Bundle();
+        RatingsFragment ratingsFragment = new RatingsFragment();
+        bundle.putInt("TITLE", arg);
+        ratingsFragment.setArguments(bundle);
+        return ratingsFragment;
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

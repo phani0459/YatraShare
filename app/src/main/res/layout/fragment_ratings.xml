@@ -30,7 +30,7 @@
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.yatrashare.fragments.RatingsFragment"
-        tools:listitem="@layout/bookedride_item"/>
+        tools:listitem="@layout/rating_item"/>
 
     <include
         android:id="@+id/emptyRidesLayout"

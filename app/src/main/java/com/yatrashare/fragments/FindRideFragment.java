@@ -1,9 +1,11 @@
 package com.yatrashare.fragments;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -11,38 +13,35 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.AvailableRidesAdapter;
-import com.yatrashare.adapter.PlaceAutocompleteAdapter;
 import com.yatrashare.dtos.SearchRides;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.FindRide;
 import com.yatrashare.utils.Constants;
-import com.yatrashare.utils.UtilsLog;
 import com.yatrashare.utils.LogWrapper;
 import com.yatrashare.utils.Utils;
+import com.yatrashare.utils.UtilsLog;
 
 import java.util.Calendar;
 
@@ -51,13 +50,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FindRideFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener, AvailableRidesAdapter.OnItemClickListener{
+public class FindRideFragment extends Fragment implements AvailableRidesAdapter.OnItemClickListener{
 
 
     private static final String TAG = FindRideFragment.class.getSimpleName();
@@ -73,22 +71,26 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     @Bind(R.id.rideProgress)
     public ProgressBar mProgressView;
     private int year, month, day;
-    private PlaceAutocompleteAdapter mPlacesAdapter;
-    protected GoogleApiClient mGoogleApiClient;
     private DatePickerDialog mDatePickerDialog;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-    private static final LatLngBounds BOUNDS_HYDERABAD = new LatLngBounds(
-            new LatLng(17.3700, 78.4800), new LatLng(17.3700, 78.4800));
     @Bind(R.id.rideDateButton)
     public Button mDateButton;
     @Bind(R.id.availableRidesList)
     public RecyclerView mRecyclerView;
     @Bind(R.id.emptyRidesLayout)
-    public View emptyRidesLayout;
+    public ScrollView emptyRidesLayout;
     @Bind(R.id.rideTypeButton)
     public Button mRideTypeButton;
     @Bind(R.id.findRideProgressBGView)
     public View mProgressBGView;
+    @Bind(R.id.emptyRidesHeading)
+    public TextView emptyRidesHeading;
+    @Bind(R.id.emptyRidesSubHeading)
+    public TextView emptyRidesSubHeading;
+
+    public boolean whereFromhasFocus;
+
+
     private AvailableRidesAdapter mAdapter;
     private SearchRides searchRides;
 
@@ -110,11 +112,9 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
 
         ((HomeActivity)mContext).setTitle(mTitle);
 
-        TextView emptyRidesHeading = (TextView) emptyRidesLayout.findViewById(R.id.emptyRidesHeading);
-        TextView emptyRidesSubHeading = (TextView) emptyRidesLayout.findViewById(R.id.emptyRidesSubHeading);
-
         emptyRidesHeading.setText("There are no rides at present.");
         emptyRidesSubHeading.setText("Wait for some time and Try again!");
+        mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(4));
 
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -124,25 +124,24 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         LogWrapper logWrapper = new LogWrapper();
         UtilsLog.setLogNode(logWrapper);
 
-        mWhereFromView.setOnItemClickListener(mAutocompleteClickListener);
-        mWhereToView.setOnItemClickListener(mAutocompleteClickListener);
-
-        try {
-            if (mGoogleApiClient == null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(mContext)
-                        .enableAutoManage(this.getActivity(), 0, this)
-                        .addApi(Places.GEO_DATA_API)
-                        .addOnConnectionFailedListener(this)
-                        .build();
-                mGoogleApiClient.connect();
+        mWhereFromView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    whereFromhasFocus = true;
+                    openAutocompleteActivity();
+                }
+                return false;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        mPlacesAdapter = new PlaceAutocompleteAdapter(mContext, mGoogleApiClient, BOUNDS_HYDERABAD, null);
-        mWhereFromView.setAdapter(mPlacesAdapter);
-        mWhereToView.setAdapter(mPlacesAdapter);
+        });
+        mWhereToView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                whereFromhasFocus = false;
+                openAutocompleteActivity();
+                return false;
+            }
+        });
 
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,17 +258,10 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
 
         if (!cancel) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(YatraShareAPI.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            // prepare call in Retrofit 2.0
-            YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
             FindRide findRide = new FindRide(whereFrom, whereTo,
                     date, "ALLTYPES", "1", "1", "24", "All", rideTypeString, "2", "10");
 
-            Call<SearchRides> call = yatraShareAPI.FindRides(findRide);
+            Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
             //asynchronous call
             call.enqueue(new Callback<SearchRides>() {
                 /**
@@ -316,62 +308,55 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            if (mGoogleApiClient == null) {
-                mGoogleApiClient = new GoogleApiClient.Builder(context)
-                        .enableAutoManage(this.getActivity(), 0, this)
-                        .addApi(Places.GEO_DATA_API)
-                        .addOnConnectionFailedListener(this)
-                        .build();
-                mGoogleApiClient.connect();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == Activity.RESULT_OK) {
+                // Get the user's selected place from the Intent.
+                Place place = PlaceAutocomplete.getPlace(mContext, data);
+                Log.i(TAG, "Place Selected: " + place.getName());
+
+                // Format the place's details and display them in the TextView.
+                if (whereFromhasFocus) mWhereFromView.setText(place.getName());
+                else mWhereToView.setText(place.getName());
+
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(mContext, data);
+                Log.e(TAG, "Error: Status = " + status.toString());
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                // Indicates that the activity closed before a selection was made. For example if
+                // the user pressed the back button.
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.stopAutoManage(this.getActivity());
-            mGoogleApiClient.disconnect();
+    private void openAutocompleteActivity() {
+        try {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    .build(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Indicates that Google Play Services is either not installed or not up to date. Prompt
+            // the user to correct the issue.
+            GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(),
+                    0 /* requestCode */).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // Indicates that Google Play Services is not available and the problem is not easily
+            // resolvable.
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+
+            Log.e(TAG, message);
+            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
         }
-        mGoogleApiClient = null;
     }
-
-    private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            /*
-             Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each Place suggestion in a AutocompletePrediction from which we
-             read the place ID and title.
-              */
-            final AutocompletePrediction item = mPlacesAdapter.getItem(position);
-            final String placeId = item.getPlaceId();
-            final CharSequence primaryText = item.getPrimaryText(null);
-
-            UtilsLog.i(TAG, "Autocomplete item selected: " + primaryText);
-
-            /*
-             Issue a request to the Places Geo Data API to retrieve a Place object with additional
-             details about the place.
-              */
-            PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId);
-            placeResult.setResultCallback(mUpdatePlaceDetailsCallback);
-
-            UtilsLog.i("Places : ", "Called getPlaceById to get Place details for " + placeId);
-        }
-    };
 
     @Override
     public void onPause() {
@@ -384,13 +369,14 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
     @Override
     public void onResume() {
         super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.SEARCH_RIDE_SCREEN);
+        ((HomeActivity)mContext).prepareMenu();
         Bundle bundle = getArguments();
         if (bundle != null) {
             this.searchRides = (SearchRides) bundle.getSerializable("Searched Rides");
             if (searchRides != null) {
                 if (searchRides.Data != null && searchRides.Data.size() > 0) {
                     emptyRidesLayout.setVisibility(View.GONE);
-                    mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
                     mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
@@ -399,42 +385,6 @@ public class FindRideFragment extends Fragment implements GoogleApiClient.OnConn
                 }
             }
         }
-    }
-
-    private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback  = new ResultCallback<PlaceBuffer>() {
-        @Override
-        public void onResult(PlaceBuffer places) {
-            if (!places.getStatus().isSuccess()) {
-                // Request did not complete successfully
-                UtilsLog.e("Places : ", "Place query did not complete. Error: " + places.getStatus().toString());
-                places.release();
-                return;
-            }
-            // Get the Place object from the buffer.
-            final Place place = places.get(0);
-
-            // Format details of the place for display and show it in a TextView.
-//            mPlaceDetailsText.setText(formatPlaceDetails(getResources(), place.getName(),
-//                    place.getId(), place.getAddress(), place.getPhoneNumber(),
-//                    place.getWebsiteUri()));
-            // Display the third party attributions if set.
-            final CharSequence thirdPartyAttribution = places.getAttributions();
-            if (thirdPartyAttribution == null) {
-//               / mPlaceDetailsAttribution.setVisibility(View.GONE);
-            } else {
-//                mPlaceDetailsAttribution.setVisibility(View.VISIBLE);
-//                mPlaceDetailsAttribution.setText(Html.fromHtml(thirdPartyAttribution.toString()));
-            }
-
-            UtilsLog.i("Places", "Place details received: " + place.getName());
-
-            places.release();
-        }
-    };
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        UtilsLog.e(TAG, "onConnectionFailed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
     }
 
     @Override

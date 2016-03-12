@@ -16,8 +16,15 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.interfaces.YatraShareAPI;
+
+import java.util.concurrent.TimeUnit;
+
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
 /**
  * Created by KANDAGATLAS on 03-01-2016.
@@ -33,6 +40,35 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Retrofit retrofit;
+    public static YatraShareAPI yatraShareAPI;
+
+    public static YatraShareAPI getYatraShareAPI() {
+        if (yatraShareAPI == null) {
+            yatraShareAPI = getRetrofit().create(YatraShareAPI.class);
+        }
+        return yatraShareAPI;
+    }
+
+    public static Retrofit getRetrofit() {
+        if (retrofit == null) {
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(YatraShareAPI.BASE_URL)
+                    .client(Utils.getOkHttpClient())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(getOkHttpClient())
+                    .build();
+        }
+        return retrofit;
+    }
+
+    public static OkHttpClient getOkHttpClient() {
+        final OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
+        okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
+        return okHttpClient;
     }
 
     public static void showToast(Context mContext, String msg) {

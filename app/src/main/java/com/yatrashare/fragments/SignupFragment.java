@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,7 +34,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.UserSignUp;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -48,7 +46,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -314,16 +311,9 @@ public class SignupFragment extends Fragment {
      * the user.
      */
     public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserName) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
         UserSignUp userSignUp = new UserSignUp(mEmail, mUserName, mPassword, mPhone);
 
-        Call<UserDataDTO> call = yatraShareAPI.userRegistration(userSignUp);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().userRegistration(userSignUp);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

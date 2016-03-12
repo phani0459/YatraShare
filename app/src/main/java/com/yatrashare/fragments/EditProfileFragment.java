@@ -203,16 +203,9 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void updateProfile(String userGuid, String userFirstName, String userLastName, String email, String dob, String phoneNumber, String aboutMe) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
         UserProfile userProfile = new UserProfile(email, userFirstName, userLastName, phoneNumber, dob, "", aboutMe);
 
-        Call<UserDataDTO> call = yatraShareAPI.updateProfile(userGuid, userProfile);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().updateProfile(userGuid, userProfile);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

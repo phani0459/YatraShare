@@ -4,11 +4,8 @@ package com.yatrashare.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,18 +14,19 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
-import com.yatrashare.utils.TextDrawable;
 import com.yatrashare.utils.Utils;
 
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -49,6 +46,8 @@ public class BookaRideFragment extends Fragment {
     private static final String TAG = BookaRideFragment.class.getSimpleName();
     private Context mContext;
     private SearchRides.SearchData rideData;
+    @Bind(R.id.bookARideLinear)
+    public LinearLayout bookARideLinearLayout;
     @Bind(R.id.bookRideProgress)
     public ProgressBar mProgressView;
     @Bind(R.id.bookRideProgressBGView)
@@ -79,6 +78,8 @@ public class BookaRideFragment extends Fragment {
     public ImageView mSmokePreference;
     @Bind(R.id.foodPreference)
     public ImageView mFoodPreference;
+    private boolean canMessage;
+    private RideDetails rideDetails;
 
 
     public BookaRideFragment() {
@@ -95,9 +96,9 @@ public class BookaRideFragment extends Fragment {
         ButterKnife.bind(this, inflatedLayout);
         mContext = getActivity();
 
-        FloatingActionButton mFab = (FloatingActionButton) inflatedLayout.findViewById(R.id.fab);
+        FloatingActionButton mBookFab = (FloatingActionButton) inflatedLayout.findViewById(R.id.bookRideFab);
+        FloatingActionButton mMessageFab = (FloatingActionButton) inflatedLayout.findViewById(R.id.messageRiderFab);
 
-        mFab.setImageDrawable(new TextDrawable(mContext, "Book", ColorStateList.valueOf(Color.WHITE), 18.f, TextDrawable.VerticalAlignment.BASELINE));
         final SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         final String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
@@ -137,7 +138,7 @@ public class BookaRideFragment extends Fragment {
 
         ((HomeActivity) mContext).setTitle("Book Ride");
 
-        mFab.setOnClickListener(new View.OnClickListener() {
+        mBookFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!Utils.isLoggedIn(getActivity())) {
@@ -152,7 +153,68 @@ public class BookaRideFragment extends Fragment {
             }
         });
 
+        mMessageFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!Utils.isLoggedIn(getActivity())) {
+                    Utils.showLoginDialog(getActivity(), Constants.BOOK_a_RIDE_SCREEN_NAME);
+                } else {
+                    openMessage();
+                }
+            }
+        });
+
+        getRideDetails();
+
         return inflatedLayout;
+    }
+
+    public void openMessage() {
+        if (canMessage && rideDetails != null) {
+            ((HomeActivity)mContext).loadScreen(HomeActivity.MESSAGE_DETAILS_SCREEN, false, rideDetails.Data, Constants.BOOK_a_RIDE_SCREEN_NAME);
+        }
+    }
+
+    public void getRideDetails() {
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+        Call<RideDetails> call = Utils.getYatraShareAPI().getRideDetails(rideData.PossibleRideGuid);
+        //asynchronous call
+        call.enqueue(new Callback<RideDetails>() {
+            /*
+             * Successful HTTP response.
+             *
+             * @param response
+             * @param retrofit
+            */
+            @Override
+            public void onResponse(retrofit.Response<RideDetails> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                if (response.body() != null && response.isSuccess()) {
+                    if (response.body().Data != null) {
+                        rideDetails = response.body();
+                        canMessage = true;
+                        loadRideDetails(rideDetails);
+                    }
+                }
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+            }
+
+            /*
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+            }
+        });
+    }
+
+    private void loadRideDetails(RideDetails rideDetails) {
+
     }
 
     public void showSeatsDialog(final String userGuid, final String possibleRideGuid, String remainingSeats) {
@@ -208,20 +270,19 @@ public class BookaRideFragment extends Fragment {
 
     }
 
-    private void bookRide(String userGuid, String possibleRideGuid, String passengers) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        android.util.Log.e("SUCC BODY" + userGuid + "ooooooooo", possibleRideGuid + "$$$$$$$$$" + passengers);
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.BOOK_a_RIDE_SCREEN);
+        ((HomeActivity)mContext).prepareMenu();
+    }
 
-        Call<UserDataDTO> call = yatraShareAPI.bookRide(userGuid, possibleRideGuid, passengers);
+    private void bookRide(String userGuid, String possibleRideGuid, String passengers) {
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().bookRide(userGuid, possibleRideGuid, passengers);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
-            /*
-             * Successful HTTP response.
+
+            /* Successful HTTP response.
              *
              * @param response
              * @param retrofit
@@ -232,6 +293,7 @@ public class BookaRideFragment extends Fragment {
                 if (response != null && response.body() != null && response.isSuccess()) {
                     if (response.body().Data.equalsIgnoreCase("1")) {
                         ((HomeActivity) mContext).showSnackBar("Successfully booked your seat");
+                        ((HomeActivity) mContext).loadScreen(HomeActivity.PROVIDE_RATING_SCREEN, false, rideDetails.Data.OwnerGuid, Constants.HOME_SCREEN_NAME);
                     }
                 } else {
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
@@ -239,11 +301,11 @@ public class BookaRideFragment extends Fragment {
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }
 
-            /*
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
+
+             /* Invoked when a network or unexpected exception occurred during the HTTP request.
              *
              * @param t
-             */
+              */
             @Override
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");

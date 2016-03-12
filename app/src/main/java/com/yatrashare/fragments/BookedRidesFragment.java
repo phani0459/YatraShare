@@ -20,6 +20,7 @@ import com.yatrashare.adapter.BookedRidesRecyclerViewAdapter;
 import com.yatrashare.dtos.BookedRides;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
+import com.yatrashare.utils.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -99,15 +100,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         android.util.Log.e("getBookedRides", userGuide);
         if (!TextUtils.isEmpty(userGuide)) {
             toggleProgress(true);
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(YatraShareAPI.BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            // prepare call in Retrofit 2.0
-            YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
-
-            Call<BookedRides> call = yatraShareAPI.bookedRides(userGuide, "" + (mTitle + 1));
+            Call<BookedRides> call = Utils.getYatraShareAPI().bookedRides(userGuide, "" + (mTitle + 1));
             //asynchronous call
             call.enqueue(this);
         } else {
@@ -162,6 +155,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
     @Override
     public void onResume() {
         super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.BOOKED_RIDES_SCREEN);
         if (getArguments() != null) {
             bookedRides = (BookedRides) getArguments().getSerializable("RIDES");
             loadBookedRides();

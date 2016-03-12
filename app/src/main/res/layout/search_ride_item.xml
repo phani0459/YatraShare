@@ -17,7 +17,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -75,9 +74,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
+                    android:gravity="center"
+                    android:lines="2"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
-                    android:singleLine="true"
                     android:text="Audi Benz"
                     android:textColor="@color/colorPrimary" />
             </LinearLayout>
@@ -104,12 +104,27 @@
             android:text="Hitech City" />
 
         <TextView
+            android:id="@+id/rideDeparturePoint"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingBottom="4dp"
+            android:paddingLeft="28dp"
+            android:paddingRight="4dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="05:15"
+            android:textColor="@android:color/black" />
+
+        <TextView
             android:id="@+id/ride_to_text"
             style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:layout_marginTop="8dip"
+            android:layout_marginTop="4dip"
             android:drawableLeft="@drawable/ic_ride_to"
             android:drawablePadding="8dip"
             android:ellipsize="marquee"
@@ -119,6 +134,21 @@
             android:singleLine="true"
             android:text="JNTU" />
 
+        <TextView
+            android:id="@+id/rideArrivalPoint"
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingBottom="4dp"
+            android:paddingLeft="28dp"
+            android:paddingRight="4dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="05:15"
+            android:textColor="@android:color/black" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -127,22 +157,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:orientation="horizontal"
-            android:weightSum="3">
+            android:padding="8dp"
+            android:weightSum="4">
 
             <TextView
                 android:id="@+id/ride_car_text"
                 style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:ellipsize="marquee"
                 android:ems="0"
                 android:gravity="center"
+                android:lines="2"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
-                android:singleLine="true"
                 android:text="252sdsfsafv safSAsd2"
                 android:textColor="@color/colorBlack" />
 
@@ -151,6 +181,7 @@
                 style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="2522"
@@ -161,6 +192,7 @@
                 style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="2522"

@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -20,9 +19,6 @@ import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.RatingsRecyclerViewAdapter;
 import com.yatrashare.dtos.Rating;
-import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
-import com.yatrashare.pojos.UserFgtPassword;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
@@ -30,7 +26,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -49,6 +44,7 @@ public class RatingsFragment extends Fragment {
     public RecyclerView recyclerView;
     @Bind(R.id.emptyRidesLayout)
     public ScrollView emptyRidesLayout;
+    private int mTitle;
 
     public RatingsFragment() {
         // Required empty public constructor
@@ -60,12 +56,11 @@ public class RatingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_ratings, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, view);
+        mTitle = getArguments().getInt("TITLE");
 
         TextView emptyRidesHeading = (TextView) view.findViewById(R.id.emptyRidesHeading);
         TextView emptyRidesSubHeading = (TextView) view.findViewById(R.id.emptyRidesSubHeading);
         ImageView emptyRidesImage = (ImageView) view.findViewById(R.id.emptyRideImage);
-
-        ((HomeActivity)mContext).setTitle("Reviews");
 
         emptyRidesHeading.setText("No ratings yet.");
         emptyRidesSubHeading.setText("Once you do, you'll find them here.");
@@ -74,56 +69,65 @@ public class RatingsFragment extends Fragment {
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        Utils.showProgress(true, mProgressView, mProgressBGView);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
-
-        Call<Rating> call = yatraShareAPI.userRatings(userGuide);
-        //asynchronous call
-        call.enqueue(new Callback<Rating>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response
-             * @param retrofit
-             */
-            @Override
-            public void onResponse(retrofit.Response<Rating> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response != null && response.body() != null && response.body().Data != null) {
-                    if (response.body().Data.size() > 0) {
-                        emptyRidesLayout.setVisibility(View.GONE);
-                        RatingsRecyclerViewAdapter adapter = new RatingsRecyclerViewAdapter(response.body().Data);
-                        recyclerView.setAdapter(adapter);
-                    } else {
-                        emptyRidesLayout.setVisibility(View.VISIBLE);
-                    }
-                } else {
-                    emptyRidesLayout.setVisibility(View.VISIBLE);
-                }
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-            }
-
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                emptyRidesLayout.setVisibility(View.VISIBLE);
-            }
-        });
+        getRatings(userGuide, mTitle);
 
         return view;
     }
 
+    public void getRatings(String userGuide, final int title) {
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+
+        Call<Rating> call = null;
+        if (title == TabsFragment.RECEIVED_RATINGS) {
+            call = Utils.getYatraShareAPI().userReceivedRatings(userGuide);
+        } else {
+            call = Utils.getYatraShareAPI().userGivenRatings(userGuide);
+        }
+
+        //asynchronous call
+        if (call != null) {
+            call.enqueue(new Callback<Rating>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response
+                 * @param retrofit
+                 */
+                @Override
+                public void onResponse(retrofit.Response<Rating> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response != null && response.body() != null && response.body().Data != null) {
+                        if (response.body().Data.size() > 0) {
+                            emptyRidesLayout.setVisibility(View.GONE);
+                            RatingsRecyclerViewAdapter adapter = new RatingsRecyclerViewAdapter(response.body().Data, title);
+                            recyclerView.setAdapter(adapter);
+                        } else {
+                            emptyRidesLayout.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        emptyRidesLayout.setVisibility(View.VISIBLE);
+                    }
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                }
+
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    emptyRidesLayout.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.RATINGS_SCREEN);
+    }
 }

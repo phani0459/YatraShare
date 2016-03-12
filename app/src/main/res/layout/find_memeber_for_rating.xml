@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/sp_travellerType"
+        style="@style/Base.Widget.AppCompat.DropDownItem.Spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_bg"
+        android:clickable="false"
+        android:padding="16dp" />
+
+    <TextView
+        style="@style/Base.TextAppearance.AppCompat.Large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="@string/or" />
+
+    <EditText
+        android:id="@+id/et_mobile_find_mem"
+        style="@style/Base.TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/edittext_bg"
+        android:hint="@string/mobileNumber"
+        android:inputType="number"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btnfindMember"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="@string/find_member"
+        android:textColor="@color/colorPrimary" />
+
+</LinearLayout>

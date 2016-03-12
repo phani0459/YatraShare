@@ -21,7 +21,7 @@
         <item
             android:id="@+id/nav_reviews"
             android:icon="@drawable/reviews"
-            android:title="Reviews"/>
+            android:title="Ratings"/>
 
     </group>
 

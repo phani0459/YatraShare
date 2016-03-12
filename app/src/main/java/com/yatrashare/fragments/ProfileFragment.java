@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,7 +32,6 @@ import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.UserPreferences;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -45,7 +45,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -92,7 +91,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     private Profile profile;
     private static int RESULT_LOAD_IMAGE = 1;
     private String userGuide;
-    private YatraShareAPI yatraShareAPI;
     @Bind(R.id.userSince)
     public TextView userSinceText;
     @Bind(R.id.noOfRidesText)
@@ -109,6 +107,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public TextView licenceStatusHeading;
     @Bind(R.id.liceneceStatusText)
     public TextView liceneceStatusText;
+    @Bind(R.id.ratingBar)
+    public RatingBar ratingBar;
 
     public ProfileFragment() {
     }
@@ -304,6 +304,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             String userSince = profile.Data.MemberSince;
 
             try {
+                ratingBar.setRating(Float.parseFloat(profile.Data.UserAvgRating));
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+            try {
                 /**
                  * 2 - verified
                  * else - not verified
@@ -344,7 +352,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
             updateUserPreferences();
 
-            if (profilePic != null && !profilePic.isEmpty()) {
+            if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
                 Uri uri = Uri.parse(profilePic);
                 mProfileImage.setVisibility(View.GONE);
                 mProfileImageDrawee.setImageURI(uri);
@@ -385,15 +393,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         if (!userGuide.isEmpty()) {
             userGuide = userGuide.replace("\"", "");
         }
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        // prepare call in Retrofit 2.0
-        yatraShareAPI = retrofit.create(YatraShareAPI.class);
-
-        Call<Profile> call = yatraShareAPI.userPublicProfile(userGuide);
+        Call<Profile> call = Utils.getYatraShareAPI().userPublicProfile(userGuide);
         //asynchronous call
         call.enqueue(new Callback<Profile>() {
             /**
@@ -611,7 +612,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
                 Utils.showProgress(true, progressBar, progressView);
                 dialog.setCancelable(false);
 
-                Call<UserDataDTO> call = yatraShareAPI.updateUserPreferences(userGuide, userPreferences);
+                Call<UserDataDTO> call = Utils.getYatraShareAPI().updateUserPreferences(userGuide, userPreferences);
                 //asynchronous call
                 call.enqueue(new Callback<UserDataDTO>() {
                     /**

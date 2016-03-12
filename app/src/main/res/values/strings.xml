@@ -8,6 +8,18 @@
     <string name="action_edit_profile">Edit Profile</string>
     <string name="rideHeading">Ride: </string>
 
+    <string name="feedbackHeading">Share your experience with yatrashare</string>
+    <string name="feedbackEditHint">How was your journey?</string>
+
+    <!-- Messages Screen Strings -->
+    <string name="title">Yatra Share</string>
+    <string name="author_name">By K PHANI KUMAR</string>
+    <string name="author_url">www.yatrashare.com</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="btn_join">JOIN</string>
+    <string name="btn_send">Send</string>
+    <string name="or">OR</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="going_smwr">Going Somewhere?</string>
     <string name="share_ride_save_money">Share your ride, save money</string>
@@ -30,7 +42,7 @@
     <string name="dob">Date of birth</string>
     <string name="profile_updated_rationale">Profile updated successfully</string>
 
-    <string name="mobileNumber">Mobile Number:</string>
+    <string name="mobileNumber">Mobile Number </string>
     <string name="email">Email:</string>
     <string name="licenceStatus">Licence Status:</string>
 
@@ -51,6 +63,8 @@
     <string name="forgotPwd">Forgot your password?</string>
     <string name="resetPwd">Reset</string>
     <string name="signup_tag">If you aren\’t a member yet and you log in with Facebook, we’ll register you as a new userLogin . You\’ll also be agreeing to our Terms &amp; conditions</string>
+
+    <string name="findmember">Find Member</string>
 
     <string name="ride_where_from">Where from?</string>
     <string name="ride_where_to">Where to?</string>
@@ -99,7 +113,10 @@
     <string name="add_user_rationale">Add a nice picture to your profile. Users with pictures get more rides!</string>
     <string name="facebook_app_id">1505625496433838</string>
 
-    <string name="login_prompt">Please Login to see rides you\'ve booked</string>
+    <string name="ofrd_rides_login_prompt">Please Login to see rides you\'ve offered</string>
+    <string name="bukd_rides_login_prompt">Please Login to see rides you\'ve booked</string>
+    <string name="messages_login_prompt">Please Login to see Messages</string>
+    <string name="ratings_login_prompt">Please Login to see ratings</string>
     <string name="how_it_works">How It Works</string>
     <string name="faq">FAQ\'s</string>
     <string name="feedback">Feedback</string>
@@ -128,12 +145,10 @@
     <string name="find_member">Find member</string>
     <string name="phone_number">Phone number</string>
 
-    <string-array name="spinner_array">
-        <item>Connected ride 1</item>
-        <item>Connected ride 2</item>
-        <item>Connected ride 3</item>
-        <item>Connected ride 4</item>
-        <item>Connected ride 5</item>
+    <string-array name="travellerType_array">
+        <item>CoTraveller</item>
+        <item>VehicleOwner</item>
+        <item>DidNotTravel</item>
     </string-array>
 
 </resources>

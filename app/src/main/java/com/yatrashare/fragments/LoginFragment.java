@@ -175,16 +175,9 @@ public class LoginFragment extends Fragment {
 
     private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
         UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id);
 
-        Call<String> call = yatraShareAPI.userFBLogin(userFBLogin);
+        Call<String> call = Utils.getYatraShareAPI().userFBLogin(userFBLogin);
         //asynchronous call
         call.enqueue(new Callback<String>() {
             /**

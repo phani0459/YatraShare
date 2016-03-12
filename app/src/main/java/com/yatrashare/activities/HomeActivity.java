@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -24,7 +23,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,7 +38,9 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
+import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.Profile;
+import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.fragments.BookaRideFragment;
@@ -49,14 +49,15 @@ import com.yatrashare.fragments.FindRideFragment;
 import com.yatrashare.fragments.HomeFragment;
 import com.yatrashare.fragments.LoginFragment;
 import com.yatrashare.fragments.LoginWithEmailFragment;
+import com.yatrashare.fragments.MessageDetailsFragment;
+import com.yatrashare.fragments.MessageListFragment;
 import com.yatrashare.fragments.MoreFragment;
 import com.yatrashare.fragments.ProfileFragment;
-import com.yatrashare.fragments.RatingsFragment;
+import com.yatrashare.fragments.ProvideRatingFragment;
 import com.yatrashare.fragments.SignupFragment;
 import com.yatrashare.fragments.TabsFragment;
 import com.yatrashare.fragments.UpdateMobileFragment;
 import com.yatrashare.fragments.WebViewFragment;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
@@ -64,7 +65,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -90,6 +90,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static final int EDIT_PROFILE_SCREEN = 12;
     public static final int UPDATE_MOBILE_SCREEN = 13;
     public static final int BOOK_a_RIDE_SCREEN = 14;
+    public static final int MESSAGES_SCREEN = 15;
+    public static final int MESSAGE_DETAILS_SCREEN = 16;
+    public static final int PROVIDE_RATING_SCREEN = 17;
     private int currentScreen;
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;
@@ -100,6 +103,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public NavigationView navigationView;
     private Menu menu;
     private ProfileFragment profileFragment;
+    private MessageListFragment messageListFragment;
+    private MessageDetailsFragment messageDetailFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,14 +119,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -154,7 +151,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userDraweeImageView = (SimpleDraweeView) view.findViewById(R.id.userDraweeView);
         userImageView = (ImageView) view.findViewById(R.id.userImageView);
 
-        loadHomePage(true, null);
+        loadHomePage(true, "");
 
     }
 
@@ -210,7 +207,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             try{
                 Fragment fragment = new HomeFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                if (init) {
+                if (init && fragmentName != null) {
                     fragmentManager.beginTransaction().add(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
                 } else {
                     fragmentManager.beginTransaction().replace(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
@@ -332,13 +329,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         }
                         break;
                     case RATINGS_SCREEN:
-                        RatingsFragment ratingsFragment = new RatingsFragment();
+                        TabsFragment ratingsTabsFragment = new TabsFragment();
+                        bundle = new Bundle();
+                        bundle.putInt("TITLE", RATINGS_SCREEN);
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
-                        ratingsFragment.setArguments(bundle);
+                        ratingsTabsFragment.setArguments(bundle);
                         if (init) {
-                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, ratingsFragment).addToBackStack(Constants.RATINGS_SCREEN_NAME).commit();
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, ratingsTabsFragment).addToBackStack(Constants.RATINGS_SCREEN_NAME).commit();
                         } else {
-                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, ratingsFragment).addToBackStack(Constants.RATINGS_SCREEN_NAME).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, ratingsTabsFragment).addToBackStack(Constants.RATINGS_SCREEN_NAME).commit();
                         }
                         break;
                     case MORE_SCREEN:
@@ -394,6 +393,46 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             getSupportFragmentManager().beginTransaction().add(R.id.content_layout, bookaRideFragment).addToBackStack(Constants.BOOK_a_RIDE_SCREEN_NAME).commit();
                         } else {
                             getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, bookaRideFragment).addToBackStack(Constants.BOOK_a_RIDE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case MESSAGES_SCREEN:
+                        messageListFragment = new MessageListFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        messageListFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, messageListFragment).addToBackStack(Constants.MESSAGE_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, messageListFragment).addToBackStack(Constants.MESSAGE_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case MESSAGE_DETAILS_SCREEN:
+                        messageDetailFragment = new MessageDetailsFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        if (originScreen.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME)) {
+                            bundle.putSerializable("Message", (RideDetails.RideDetailData)object);
+                        } else {
+                            bundle.putSerializable("Message", (MessagesList.MessagesListData)object);
+                        }
+                        messageDetailFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, messageDetailFragment).addToBackStack(Constants.MESSAGE_DETAILS_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, messageDetailFragment).addToBackStack(Constants.MESSAGE_DETAILS_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case PROVIDE_RATING_SCREEN:
+                        ProvideRatingFragment provideRatingFragment = new ProvideRatingFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        if (object != null) {
+                            bundle.putString("Receiver GUID", (String) object);
+                        } else {
+                            bundle.putString("Receiver GUID", null);
+                        }
+                        provideRatingFragment.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, provideRatingFragment).addToBackStack(Constants.PROVIDE_RATING_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, provideRatingFragment).addToBackStack(Constants.PROVIDE_RATING_SCREEN_NAME).commit();
                         }
                         break;
                 }
@@ -468,6 +507,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             menu.getItem(1).setVisible(false);
         }
+
+        if (getCurrentScreen() == SEARCH_RIDE_SCREEN) {
+            menu.getItem(2).setVisible(true);
+        } else {
+            menu.getItem(2).setVisible(false);
+        }
+
+        if (getCurrentScreen() == MESSAGES_SCREEN || getCurrentScreen() == MESSAGE_DETAILS_SCREEN) {
+            menu.getItem(3).setVisible(true);
+        } else {
+            menu.getItem(3).setVisible(false);
+        }
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -490,14 +542,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.action_edit) {
-            if (profileFragment != null)
-                profileFragment.editProfile();
+            if (profileFragment != null) profileFragment.editProfile();
+        }
+
+        if (id == R.id.action_refresh) {
+            if (currentScreen == MESSAGES_SCREEN) {
+                if (messageListFragment != null) messageListFragment.refreshMessagesList();
+            }
+            if (currentScreen == MESSAGE_DETAILS_SCREEN) {
+                if (messageDetailFragment != null) messageDetailFragment.refreshMessageDetails();
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -505,29 +564,34 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         switch (id) {
             case R.id.nav_home:
-                loadHomePage(false, null);
+                loadHomePage(true, null);
                 break;
             case R.id.nav_messages:
+                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
+                    loadScreen(MESSAGES_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
+                } else {
+                    showSnackBar(getString(R.string.messages_login_prompt));
+                }
                 break;
             case R.id.nav_offeredrides:
-                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
+                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
                     loadScreen(OFFERED_RIDES_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
-                    showSnackBar(getString(R.string.login_prompt));
+                    showSnackBar(getString(R.string.ofrd_rides_login_prompt));
                 }
                 break;
             case R.id.nav_bukedrides:
-                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
+                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
                     loadScreen(BOOKED_RIDES_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
-                    showSnackBar(getString(R.string.login_prompt));
+                    showSnackBar(getString(R.string.bukd_rides_login_prompt));
                 }
                 break;
             case R.id.nav_reviews:
-                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
+                if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
                     loadScreen(RATINGS_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
                 } else {
-                    showSnackBar(getString(R.string.login_prompt));
+                    showSnackBar(getString(R.string.ratings_login_prompt));
                 }
                 break;
             case R.id.nav_invitefriends:
@@ -664,15 +728,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private void changePwdTask(final String newPassword, final Dialog dialog) {
         final TextInputLayout changePwdLayout = (TextInputLayout) dialog.findViewById(R.id.newPasswordLayout);
         String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
-
-        Call<UserDataDTO> call = yatraShareAPI.changePassword(userGuid, newPassword);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().changePassword(userGuid, newPassword);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

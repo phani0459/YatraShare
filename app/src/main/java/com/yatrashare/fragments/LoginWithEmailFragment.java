@@ -220,16 +220,9 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
 
     private void userFgtPwdTask(final String mEmail, final String mPhoneNumber, final Dialog dialog) {
         final TextInputLayout fgtPhoneLayout = (TextInputLayout) dialog.findViewById(R.id.fgt_phoneLayout);
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
         UserFgtPassword userFgtPassword = new UserFgtPassword(mEmail, mPhoneNumber);
 
-        Call<UserDataDTO> call = yatraShareAPI.userFgtPwd(userFgtPassword);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().userFgtPwd(userFgtPassword);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**
@@ -419,17 +412,9 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
      * the user.
      */
     public void userLoginTask(final String mEmail, final String mPassword) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .client(new OkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
         UserLogin userLogin = new UserLogin(mEmail, mPassword);
 
-        Call<String> call = yatraShareAPI.userLogin(userLogin);
+        Call<String> call = Utils.getYatraShareAPI().userLogin(userLogin);
         //asynchronous call
         call.enqueue(new Callback<String>() {
             /**
@@ -497,15 +482,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     }
 
     private void getBasicProfileInfo(String userGuid) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(YatraShareAPI.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        // prepare call in Retrofit 2.0
-        YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
-
-        Call<Profile> call = yatraShareAPI.userBasicProfile(userGuid);
+        Call<Profile> call = Utils.getYatraShareAPI().userBasicProfile(userGuid);
         //asynchronous call
         call.enqueue(new Callback<Profile>() {
             /**

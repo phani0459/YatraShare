@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorLayoutBG"
-                android:orientation="vertical">
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"/>
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG"
+    android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/bookARideScroll"
@@ -39,29 +31,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:padding="8dp"
-                    android:textColor="@android:color/white"/>
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/rideDate"
                     style="@android:style/TextAppearance.DeviceDefault.Medium"
                     android:layout_width="wrap_content"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:padding="8dp"
-                    android:textColor="@android:color/white"/>
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white" />
             </RelativeLayout>
 
             <LinearLayout
@@ -77,66 +69,66 @@
                     android:id="@+id/rideFrom"
                     style="@android:style/TextAppearance.DeviceDefault.Large"
                     android:layout_width="match_parent"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_from"
                     android:drawablePadding="8dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:paddingTop="4dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="05:15"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/rideDeparturePoint"
                     style="@android:style/TextAppearance.DeviceDefault.Small"
                     android:layout_width="match_parent"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingBottom="4dp"
                     android:paddingLeft="28dp"
                     android:paddingRight="4dp"
-                    android:paddingBottom="4dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="05:15"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/rideTo"
                     style="@android:style/TextAppearance.DeviceDefault.Large"
                     android:layout_width="match_parent"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_to"
                     android:drawablePadding="8dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:paddingTop="4dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="05/05/0210"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/rideArrivalPoint"
                     style="@android:style/TextAppearance.DeviceDefault.Small"
                     android:layout_width="match_parent"
-                    android:singleLine="true"
+                    android:layout_height="wrap_content"
                     android:ellipsize="marquee"
                     android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:layout_height="wrap_content"
+                    android:paddingBottom="4dp"
                     android:paddingLeft="28dp"
                     android:paddingRight="4dp"
-                    android:paddingBottom="4dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
                     android:text="05:15"
-                    android:textColor="@android:color/black"/>
+                    android:textColor="@android:color/black" />
 
             </LinearLayout>
 
@@ -158,7 +150,7 @@
                     android:layout_marginTop="4dp"
                     android:padding="8dp"
                     android:text="05:15"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
 
                 <TextView
                     android:id="@+id/pricePerSeat"
@@ -170,7 +162,7 @@
                     android:layout_marginTop="4dp"
                     android:padding="8dp"
                     android:text="05/05/0210"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white" />
             </RelativeLayout>
 
             <TextView
@@ -180,12 +172,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp"
-                android:singleLine="true"
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
-                android:scrollHorizontally="true"
                 android:padding="8dp"
-                android:textColor="@android:color/black"/>
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+                android:textColor="@android:color/black" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -204,7 +196,7 @@
                     android:layout_weight="1"
                     android:foregroundGravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/chat"/>
+                    android:src="@drawable/chat" />
 
                 <ImageView
                     android:id="@+id/musicPreference"
@@ -215,7 +207,7 @@
                     android:layout_weight="1"
                     android:foregroundGravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/music_not_much"/>
+                    android:src="@drawable/music_not_much" />
 
                 <ImageView
                     android:id="@+id/petsPreference"
@@ -227,7 +219,7 @@
                     android:foregroundGravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/pets_not_much"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/foodPreference"
@@ -238,7 +230,7 @@
                     android:layout_weight="1"
                     android:foregroundGravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/food_not_much"/>
+                    android:src="@drawable/food_not_much" />
 
                 <ImageView
                     android:id="@+id/smokePreference"
@@ -249,16 +241,50 @@
                     android:layout_weight="1"
                     android:foregroundGravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/smoke_not_much"/>
+                    android:src="@drawable/smoke_not_much" />
 
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#cecece"/>
+                android:background="#cecece" />
         </LinearLayout>
     </ScrollView>
+
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="16dp"
+        fab:menu_animationDelayPerItem="0"
+        fab:menu_colorNormal="#43A047"
+        fab:menu_colorPressed="#2E7D32"
+        fab:menu_colorRipple="#1B5E20"
+        fab:menu_labels_ellipsize="end"
+        fab:menu_labels_hideAnimation="@anim/jump_to_down"
+        fab:menu_labels_showAnimation="@anim/jump_from_down"
+        fab:menu_labels_singleLine="true">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/bookRideFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_add"
+            fab:fab_label="Book Ride"
+            fab:fab_size="normal" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/messageRiderFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_dialog_email"
+            fab:fab_label="Message Rider"
+            fab:fab_size="normal" />
+
+    </com.github.clans.fab.FloatingActionMenu>
 
     <View
         android:id="@+id/bookRideProgressBGView"
@@ -266,7 +292,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/bookRideProgress"
@@ -275,5 +301,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

@@ -44,6 +44,8 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
         contactUs.setOnClickListener(this);
         termsNcondns.setOnClickListener(this);
 
+        ((HomeActivity)mContext).setTitle("More");
+
         return view;
     }
 
