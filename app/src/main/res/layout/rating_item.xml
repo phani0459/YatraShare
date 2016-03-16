@@ -39,38 +39,25 @@
                     android:id="@+id/ratingBy"
                     style="@android:style/TextAppearance.DeviceDefault.Medium"
                     android:layout_width="match_parent"
-                    android:textStyle="italic"
                     android:layout_height="wrap_content"
                     android:padding="4dp"
                     android:singleLine="true"
                     android:text="@string/app_name"
-                    android:textColor="#66000000" />
+                    android:textColor="#66000000"
+                    android:textStyle="italic" />
 
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/rl_ownerImage"
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/im_drawee_rating_provider"
                 android:layout_width="0dp"
                 android:layout_height="72dp"
                 android:layout_gravity="center"
-                android:layout_weight="2">
+                android:layout_weight="2"
+                android:foregroundGravity="center"
+                android:scaleType="centerCrop"
+                fresco:roundAsCircle="true" />
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/im_drawee_rating_provider"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:foregroundGravity="center"
-                    android:scaleType="centerCrop"
-                    fresco:roundAsCircle="true" />
-
-                <ImageView
-                    android:id="@+id/im_rating_provider"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:foregroundGravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/add_user" />
-            </RelativeLayout>
         </LinearLayout>
 
         <View

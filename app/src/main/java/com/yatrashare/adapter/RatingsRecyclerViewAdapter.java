@@ -13,6 +13,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.Rating;
 import com.yatrashare.fragments.TabsFragment;
+import com.yatrashare.utils.Constants;
 
 import java.util.List;
 
@@ -59,13 +60,10 @@ public class RatingsRecyclerViewAdapter extends RecyclerView.Adapter<RatingsRecy
         holder.mRatingDate.setText(ratingData.RatingGivenDate);
 
         if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
-            holder.simpleDraweeView.setVisibility(View.VISIBLE);
-            holder.userImageView.setVisibility(View.GONE);
             Uri uri = Uri.parse(profilePic);
             holder.simpleDraweeView.setImageURI(uri);
         } else {
-            holder.simpleDraweeView.setVisibility(View.GONE);
-            holder.userImageView.setVisibility(View.VISIBLE);
+            holder.simpleDraweeView.setImageURI(Constants.getDefaultPicURI());
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -87,7 +85,6 @@ public class RatingsRecyclerViewAdapter extends RecyclerView.Adapter<RatingsRecy
         public final TextView mRatingUserName;
         public final TextView mRatingDate;
         private final SimpleDraweeView simpleDraweeView;
-        private final ImageView userImageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -97,7 +94,6 @@ public class RatingsRecyclerViewAdapter extends RecyclerView.Adapter<RatingsRecy
             mRatingUserName = (TextView) view.findViewById(R.id.ratingBy);
             mRatingDate = (TextView) view.findViewById(R.id.ratingTime);
             simpleDraweeView  = (SimpleDraweeView) view.findViewById(R.id.im_drawee_rating_provider);
-            userImageView  = (ImageView) view.findViewById(R.id.im_rating_provider);
         }
     }
 }

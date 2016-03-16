@@ -1,38 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorLayoutBG"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="4dp"
+    card_view:contentPadding="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/userImageLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="4dp">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/im_drawee_receiver"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:foregroundGravity="center"
-                android:scaleType="centerCrop"
-                fresco:roundAsCircle="true" />
-
-            <ImageView
-                android:id="@+id/im_receiverImage"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:foregroundGravity="center"
-                android:scaleType="centerCrop"
-                android:src="@drawable/add_user" />
-        </RelativeLayout>
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/im_drawee_receiver"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:foregroundGravity="center"
+            android:padding="4dp"
+            android:scaleType="centerCrop"
+            fresco:roundAsCircle="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,12 +53,4 @@
                 android:textColor="@color/colorPrimary" />
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="4dp"
-        android:background="#FFFFFF" />
-</LinearLayout>
+</android.support.v7.widget.CardView>

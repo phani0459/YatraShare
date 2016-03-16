@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/navigation_header_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_header_container"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
@@ -17,28 +17,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <RelativeLayout
-            android:id="@+id/profileImageLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/userDraweeView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:foregroundGravity="center"
-                android:scaleType="centerCrop"
-                fresco:roundAsCircle="true"/>
-
-            <ImageView
-                android:id="@+id/userImageView"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:foregroundGravity="center"
-                android:scaleType="centerCrop"
-                android:src="@drawable/user_64"/>
-        </RelativeLayout>
-
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/userDraweeView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:foregroundGravity="center"
+            android:scaleType="centerCrop"
+            fresco:roundAsCircle="true" />
 
         <TextView
             android:id="@+id/userNameTextView"
@@ -46,7 +31,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/login_rationale"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </LinearLayout>
 </LinearLayout>

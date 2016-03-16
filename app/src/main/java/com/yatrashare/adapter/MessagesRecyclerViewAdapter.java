@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.MessagesList;
+import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
 import java.util.List;
@@ -46,13 +47,10 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRe
         String senderProfilePic = mMessages.get(position).SenderProfilePic;
 
         if (senderProfilePic != null && !senderProfilePic.isEmpty() && !senderProfilePic.startsWith("/")) {
-            holder.senderDrawee.setVisibility(View.VISIBLE);
-            holder.senderImage.setVisibility(View.GONE);
             Uri uri = Uri.parse(senderProfilePic);
             holder.senderDrawee.setImageURI(uri);
         } else {
-            holder.senderDrawee.setVisibility(View.GONE);
-            holder.senderImage.setVisibility(View.VISIBLE);
+            holder.senderDrawee.setImageURI(Constants.getDefaultPicURI());
         }
 
         holder.deleteImage.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +75,6 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public ImageView senderImage;
         public SimpleDraweeView senderDrawee;
         public TextView senderName;
         public TextView msgSentTime;
@@ -89,7 +86,6 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRe
             super(view);
             mView = view;
             senderDrawee = (SimpleDraweeView) view.findViewById(R.id.image_drawee_sender);
-            senderImage = (ImageView) view.findViewById(R.id.im_sender);
             msgSentTime = (TextView) view.findViewById(R.id.tv_msg_time);
             senderName = (TextView) view.findViewById(R.id.tv_senderName);
             msgDetails = (TextView) view.findViewById(R.id.tv_msgDetails);

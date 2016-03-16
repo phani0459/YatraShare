@@ -1,5 +1,7 @@
 package com.yatrashare.utils;
 
+import android.net.Uri;
+
 /**
  * Created by KANDAGATLAS on 29-12-2015.
  */
@@ -64,6 +66,13 @@ public class Constants {
 
      */
 
+    public static final String defaultPicURL = "http://www.yatrashare.com/Temp/ProfilePics/avatar.jpg";
+
+    public static Uri getDefaultPicURI() {
+        Uri uri = Uri.parse(defaultPicURL);
+        return uri;
+    }
+
     public static final String HOME_SCREEN_NAME = "HOME";
     public static final String LOGIN_SCREEN_NAME = "LOGIN";
     public static final String LOGIN_WITH_EMAIL_SCREEN_NAME = "LOGIN EMAIL";
@@ -82,6 +91,7 @@ public class Constants {
     public static final String MESSAGE_SCREEN_NAME = "MESSAGES SCREEN";
     public static final String MESSAGE_DETAILS_SCREEN_NAME = "MESSAGE Details SCREEN";
     public static final String PROVIDE_RATING_SCREEN_NAME = "Provide rating SCREEN";
+    public static final String RIDE_CONFIRM_SCREEN_NAME = "Ride Confirm SCREEN";
 
     public static final String PREF_USER_EMAIL = "Email";
     public static final String PREF_USER_PHONE = "PhoneNo";

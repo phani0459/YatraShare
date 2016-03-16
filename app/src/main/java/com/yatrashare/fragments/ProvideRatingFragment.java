@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,8 +76,6 @@ public class ProvideRatingFragment extends Fragment {
     public TextView ratingReceiverMobile;
     @Bind(R.id.im_drawee_receiver)
     public SimpleDraweeView ratingReciverDrawee;
-    @Bind(R.id.im_receiverImage)
-    public ImageView ratingReceiverImageView;
 
     private String receiverGuid;
     private String userGuid;
@@ -170,11 +169,9 @@ public class ProvideRatingFragment extends Fragment {
                             String profilePic = response.body().Data.ReceiverProfilePic;
                             if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
                                 Uri uri = Uri.parse(profilePic);
-                                ratingReceiverImageView .setVisibility(View.GONE);
                                 ratingReciverDrawee.setImageURI(uri);
                             } else {
-                                ratingReceiverImageView.setVisibility(View.VISIBLE);
-                                ratingReciverDrawee.setVisibility(View.GONE);
+                                ratingReciverDrawee.setImageURI(Constants.getDefaultPicURI());
                             }
 
                             receiverGuid = response.body().Data.ReceiverGuid;
@@ -218,6 +215,7 @@ public class ProvideRatingFragment extends Fragment {
         travellerType = travellerTypeSpinner.getSelectedItem().toString();
 
         UserRating userRating = new UserRating(receiverGuid, stars, feedBack, travellerType);
+
         Call<UserDataDTO> call = Utils.getYatraShareAPI().giveRatingtoUser(userGuid, userRating);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {

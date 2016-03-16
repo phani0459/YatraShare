@@ -60,8 +60,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     private final String TAG = ProfileFragment.class.getSimpleName();
     @Bind(R.id.profileProgress)
     public ProgressBar mProgressView;
-    @Bind(R.id.profileImage)
-    public ImageView mProfileImage;
     @Bind(R.id.profileImage_drawee)
     public SimpleDraweeView mProfileImageDrawee;
    /* @Bind(R.id.licenceStatus)
@@ -107,7 +105,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public TextView licenceStatusHeading;
     @Bind(R.id.liceneceStatusText)
     public TextView liceneceStatusText;
-    @Bind(R.id.ratingBar)
+    @Bind(R.id.profileRatingBar)
     public RatingBar ratingBar;
 
     public ProfileFragment() {
@@ -121,7 +119,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefEditor = mSharedPreferences.edit();
-        RelativeLayout mProfileImageLayout = (RelativeLayout) inflatedLayout.findViewById(R.id.profileImageLayout);
 
         mChatPreference.setOnClickListener(this);
         mMusicPreference.setOnClickListener(this);
@@ -135,7 +132,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             userProfileTask();
         }
 
-        mProfileImageLayout.setOnTouchListener(new View.OnTouchListener() {
+        mProfileImageDrawee.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -221,8 +218,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = getPickImageResultUri(data);
-            mProfileImage.setVisibility(View.INVISIBLE);
-            mProfileImageDrawee.setVisibility(View.VISIBLE);
             mProfileImageDrawee.setImageURI(imageUri);
         }
     }
@@ -354,8 +349,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
             if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
                 Uri uri = Uri.parse(profilePic);
-                mProfileImage.setVisibility(View.GONE);
                 mProfileImageDrawee.setImageURI(uri);
+            } else {
+                mProfileImageDrawee.setImageURI(Constants.getDefaultPicURI());
             }
 
             if (lastLoginTime != null && !lastLoginTime.isEmpty()) {

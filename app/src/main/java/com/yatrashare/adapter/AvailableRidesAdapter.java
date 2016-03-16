@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.SearchRides;
+import com.yatrashare.utils.Constants;
 
 import java.util.ArrayList;
 
@@ -65,14 +66,11 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
 
         holder.rideDayText.setText(dataSearchArray.get(position).RideDate);
         holder.rideFareText.setText("" + mContext.getResources().getString(R.string.Rs) + " " + dataSearchArray.get(position).RoutePrice + " /Seat");
-        holder.rideFromText.setText(dataSearchArray.get(position).DepartureCity);
-        holder.rideToText.setText(dataSearchArray.get(position).ArrivalCity);
+        holder.rideFromText.setText(dataSearchArray.get(position).DeparturePoint);
+        holder.rideToText.setText(dataSearchArray.get(position).ArrivalPoint);
         holder.rideVehicleText.setText(dataSearchArray.get(position).VehicleModel);
         holder.availableSeatText.setText(dataSearchArray.get(position).RemainingSeats + " Seat(s)");
         holder.userNameText.setText(dataSearchArray.get(position).UserName);
-
-        holder.rideFromPointText.setText(dataSearchArray.get(position).DeparturePoint);
-        holder.rideToPointText.setText(dataSearchArray.get(position).ArrivalPoint);
 
         String comfortRating = dataSearchArray.get(position).ComfortRating;
         String profilePic = dataSearchArray.get(position).ProfilePicture;
@@ -89,13 +87,10 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
         holder.ratingBar.setRating(comfortRatingFloat);
 
         if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
-            holder.simpleDraweeView.setVisibility(View.VISIBLE);
-            holder.userImageView.setVisibility(View.GONE);
             Uri uri = Uri.parse(profilePic);
             holder.simpleDraweeView.setImageURI(uri);
         } else {
-            holder.simpleDraweeView.setVisibility(View.GONE);
-            holder.userImageView.setVisibility(View.VISIBLE);
+            holder.simpleDraweeView.setImageURI(Constants.getDefaultPicURI());
         }
 
 
@@ -107,19 +102,15 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView rideFromPointText;
-        private final TextView rideToPointText;
         private TextView userNameText, rideFareText, availableSeatText, rideFromText, rideToText, rideDayText, rideTimeText, rideVehicleText;
         private RatingBar ratingBar;
         SimpleDraweeView simpleDraweeView;
-        ImageView userImageView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
             userNameText = (TextView) itemView.findViewById(R.id.user_name_text);
             simpleDraweeView  = (SimpleDraweeView) itemView.findViewById(R.id.userImage_drawee);
-            userImageView  = (ImageView) itemView.findViewById(R.id.userImage);
             userNameText = (TextView) itemView.findViewById(R.id.user_name_text);
             rideFareText = (TextView) itemView.findViewById(R.id.ride_fare_text);
             rideFromText = (TextView) itemView.findViewById(R.id.ride_from_text);
@@ -128,8 +119,6 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
             ratingBar  = (RatingBar) itemView.findViewById(R.id.ratingBar);
             rideVehicleText = (TextView) itemView.findViewById(R.id.ride_car_text);
             availableSeatText = (TextView) itemView.findViewById(R.id.ride_available_text);
-            rideFromPointText = (TextView) itemView.findViewById(R.id.rideDeparturePoint);
-            rideToPointText = (TextView) itemView.findViewById(R.id.rideArrivalPoint);
             itemView.setOnClickListener(this);
         }
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:custom="http://schemas.android.com/apk/res-auto"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorLayoutBG">
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG">
 
     <ScrollView
         android:id="@+id/profileScroll"
@@ -33,43 +33,29 @@
                     android:layout_margin="12dp"
                     android:singleLine="true"
                     android:text="@string/aboutMe"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <RelativeLayout
-                        android:id="@+id/profileImageLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/profileImage_drawee"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
                         android:layout_centerInParent="true"
                         android:layout_marginBottom="4dp"
                         android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp">
-
-                        <com.facebook.drawee.view.SimpleDraweeView
-                            android:id="@+id/profileImage_drawee"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
-                            android:foregroundGravity="center"
-                            android:scaleType="centerCrop"
-                            fresco:roundAsCircle="true"/>
-
-                        <ImageView
-                            android:id="@+id/profileImage"
-                            android:layout_width="96dp"
-                            android:layout_height="96dp"
-                            android:foregroundGravity="center"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/add_user"/>
-                    </RelativeLayout>
+                        android:layout_marginRight="8dp"
+                        android:foregroundGravity="center"
+                        android:scaleType="centerCrop"
+                        fresco:roundAsCircle="true" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/profileImageLayout"
+                        android:layout_toLeftOf="@+id/profileImage_drawee"
                         android:orientation="horizontal"
                         android:padding="8dp">
 
@@ -86,7 +72,7 @@
                                 android:layout_height="24dp"
                                 android:foregroundGravity="center"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/email_white"/>
+                                android:src="@drawable/email_white" />
 
                             <ImageView
                                 android:id="@+id/emailStatus"
@@ -95,7 +81,7 @@
                                 android:layout_marginTop="4dp"
                                 android:foregroundGravity="center"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/unverified"/>
+                                android:src="@drawable/unverified" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -112,7 +98,7 @@
                                 android:layout_gravity="center"
                                 android:foregroundGravity="center"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/mobile_white"/>
+                                android:src="@drawable/mobile_white" />
 
                             <ImageView
                                 android:id="@+id/mobileStatus"
@@ -122,24 +108,24 @@
                                 android:foregroundGravity="center"
                                 android:gravity="center"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/unverified"/>
+                                android:src="@drawable/unverified" />
                         </LinearLayout>
                     </LinearLayout>
 
                     <RatingBar
-                        android:id="@+id/ratingBar"
+                        android:id="@+id/profileRatingBar"
                         style="@android:style/Widget.Holo.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toRightOf="@+id/profileImageLayout"
-                        android:numStars="5"/>
+                        android:layout_toRightOf="@+id/profileImage_drawee"
+                        android:numStars="5" />
                 </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/profileImageLayout"
+                    android:layout_below="@+id/profileImage_drawee"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:gravity="center"
@@ -158,7 +144,7 @@
                             android:layout_height="52dp"
                             android:layout_centerInParent="true"
                             custom:ringColor="#FFFFFF"
-                            custom:ringPaint="2"/>
+                            custom:ringPaint="2" />
 
                         <ImageView
                             android:id="@+id/chatPrefernece"
@@ -167,7 +153,7 @@
                             android:layout_centerInParent="true"
                             android:contentDescription="@string/app_name"
                             android:scaleType="centerInside"
-                            android:src="@drawable/chat"/>
+                            android:src="@drawable/chat" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -182,7 +168,7 @@
                             android:layout_height="52dp"
                             android:layout_centerInParent="true"
                             custom:ringColor="#FFFFFF"
-                            custom:ringPaint="2"/>
+                            custom:ringPaint="2" />
 
                         <ImageView
                             android:id="@+id/musicPreference"
@@ -191,7 +177,7 @@
                             android:layout_centerInParent="true"
                             android:foregroundGravity="center"
                             android:scaleType="centerInside"
-                            android:src="@drawable/music_not_much"/>
+                            android:src="@drawable/music_not_much" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -207,7 +193,7 @@
                             android:layout_height="52dp"
                             android:layout_centerInParent="true"
                             custom:ringColor="#FFFFFF"
-                            custom:ringPaint="2"/>
+                            custom:ringPaint="2" />
 
                         <ImageView
                             android:id="@+id/petsPreference"
@@ -216,8 +202,7 @@
                             android:layout_centerInParent="true"
                             android:foregroundGravity="center"
                             android:scaleType="centerInside"
-                            android:src="@drawable/pets_not_much"
-                            />
+                            android:src="@drawable/pets_not_much" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -232,7 +217,7 @@
                             android:layout_height="52dp"
                             android:layout_centerInParent="true"
                             custom:ringColor="#FFFFFF"
-                            custom:ringPaint="2"/>
+                            custom:ringPaint="2" />
 
                         <ImageView
                             android:id="@+id/foodPreference"
@@ -241,7 +226,7 @@
                             android:layout_centerInParent="true"
                             android:foregroundGravity="center"
                             android:scaleType="centerInside"
-                            android:src="@drawable/food_not_much"/>
+                            android:src="@drawable/food_not_much" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -256,7 +241,7 @@
                             android:layout_height="52dp"
                             android:layout_centerInParent="true"
                             custom:ringColor="#FFFFFF"
-                            custom:ringPaint="2"/>
+                            custom:ringPaint="2" />
 
                         <ImageView
                             android:id="@+id/smokePreference"
@@ -265,7 +250,7 @@
                             android:layout_centerInParent="true"
                             android:foregroundGravity="center"
                             android:scaleType="centerInside"
-                            android:src="@drawable/smoke_not_much"/>
+                            android:src="@drawable/smoke_not_much" />
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -280,7 +265,7 @@
                 android:drawablePadding="8dp"
                 android:singleLine="true"
                 android:text="@string/aboutMe"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/aboutMeText"
@@ -290,12 +275,12 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <TextView
                 android:id="@+id/mobileStatusHeading"
@@ -308,7 +293,7 @@
                 android:layout_marginTop="4dp"
                 android:singleLine="true"
                 android:text="@string/mobileNumber"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/mobileStatusText"
@@ -319,12 +304,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:maxLines="2"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <TextView
                 android:id="@+id/emailStatusHeading"
@@ -337,7 +322,7 @@
                 android:layout_marginTop="4dp"
                 android:singleLine="true"
                 android:text="@string/email"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/emailStatusText"
@@ -348,12 +333,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:maxLines="2"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <TextView
                 android:id="@+id/licenceStatusHeading"
@@ -366,7 +351,7 @@
                 android:layout_marginTop="4dp"
                 android:singleLine="true"
                 android:text="@string/licenceStatus"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/liceneceStatusText"
@@ -377,12 +362,12 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:maxLines="2"
-                android:textColor="#000000"/>
+                android:textColor="#000000" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E1E1E1"/>
+                android:background="#E1E1E1" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -403,7 +388,7 @@
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/licenceStatus"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/noOfRidesText"
@@ -412,7 +397,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/lastLoginTime"
@@ -421,7 +406,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:textColor="#FFFFFF"/>
+                    android:textColor="#FFFFFF" />
             </LinearLayout>
 
         </LinearLayout>
@@ -433,7 +418,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/profileProgress"
@@ -442,5 +427,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

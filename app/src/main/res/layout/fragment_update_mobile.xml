@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:background="@color/colorLayoutBG"
-                android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                     android:layout_gravity="center"
                     android:layout_margin="8dip"
                     android:gravity="center"
-                    android:text="@string/validation_heading"/>
+                    android:text="@string/validation_heading" />
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/countryLayout"
@@ -50,7 +50,7 @@
                         android:padding="8dp"
                         android:singleLine="true"
                         android:text="+91  India"
-                        android:textColorHighlight="@color/colorMobileValidEdit"/>
+                        android:textColorHighlight="@color/colorMobileValidEdit" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -72,7 +72,7 @@
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true"
-                        android:textColorHighlight="@color/colorMobileValidEdit"/>
+                        android:textColorHighlight="@color/colorMobileValidEdit" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -94,7 +94,7 @@
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true"
-                        android:textColorHighlight="@color/colorMobileValidEdit"/>
+                        android:textColorHighlight="@color/colorMobileValidEdit" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -109,12 +109,12 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/verifyBtnLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dip"
                     android:orientation="horizontal"
-                    android:weightSum="3"
-                    android:id="@+id/verifyBtnLayout">
+                    android:weightSum="3">
 
                     <Button
                         android:id="@+id/edit_number_bt"
@@ -126,7 +126,7 @@
                         android:inputType="textCapSentences"
                         android:padding="4dip"
                         android:text="@string/editNumber"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/resend_code_bt"
@@ -138,17 +138,18 @@
                         android:inputType="textCapSentences"
                         android:padding="4dip"
                         android:text="@string/resendCode"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/verify_code_bt"
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="@drawable/mobile_validation_stroke"
                         android:inputType="textCapSentences"
                         android:padding="4dip"
                         android:text="@string/verifyCode"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
 
@@ -172,7 +173,7 @@
                         android:paddingLeft="4dip"
                         android:paddingRight="4dip"
                         android:text="@string/save"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white" />
 
                     <Button
                         android:id="@+id/cancel_bt"
@@ -183,7 +184,7 @@
                         android:inputType="textCapSentences"
                         android:paddingLeft="4dip"
                         android:paddingRight="4dip"
-                        android:text="@string/cancel"/>
+                        android:text="@string/cancel" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -196,7 +197,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/verifyProgress"
@@ -205,5 +206,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

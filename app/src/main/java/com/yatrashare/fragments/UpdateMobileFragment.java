@@ -80,7 +80,7 @@ public class UpdateMobileFragment extends Fragment {
         mContext = getActivity();
 
         editNoBt.getBackground().setLevel(3);
-        /*verifyBt.getBackground().setLevel(1);*/
+        verifyBt.getBackground().setLevel(1);
         saveBt.getBackground().setLevel(1);
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
@@ -92,6 +92,8 @@ public class UpdateMobileFragment extends Fragment {
         phoneEdit.setText(mobile);
         phoneEdit.setEnabled(false);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+
+        sendVerifyCode();
 
         return view;
     }
@@ -204,9 +206,6 @@ public class UpdateMobileFragment extends Fragment {
                     if (response != null && response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
                             Utils.showToast(mContext, "Verification code sent");
-                            verifyBt.setBackground(getResources().getDrawable(R.drawable.mobile_validation_stroke));
-                            verifyBt.getBackground().setLevel(1);
-                            verifyBt.setEnabled(true);
                         }
                     }
                     Utils.showProgress(false, mProgressView, mProgressBGView);

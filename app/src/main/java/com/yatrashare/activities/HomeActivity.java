@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -23,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +46,7 @@ import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.fragments.BookaRideFragment;
+import com.yatrashare.fragments.BookingConfirmationFragment;
 import com.yatrashare.fragments.EditProfileFragment;
 import com.yatrashare.fragments.FindRideFragment;
 import com.yatrashare.fragments.HomeFragment;
@@ -93,11 +96,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public static final int MESSAGES_SCREEN = 15;
     public static final int MESSAGE_DETAILS_SCREEN = 16;
     public static final int PROVIDE_RATING_SCREEN = 17;
+    public static final int RIDE_CONFIRM_SCREEN = 18;
     private int currentScreen;
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;
     private SimpleDraweeView userDraweeImageView;
-    private ImageView userImageView;
     private TextView userNameTextView;
     @Bind(R.id.nav_view)
     public NavigationView navigationView;
@@ -105,6 +108,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ProfileFragment profileFragment;
     private MessageListFragment messageListFragment;
     private MessageDetailsFragment messageDetailFragment;
+    private FindRideFragment searchRideFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +153,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
         userDraweeImageView = (SimpleDraweeView) view.findViewById(R.id.userDraweeView);
-        userImageView = (ImageView) view.findViewById(R.id.userImageView);
 
         loadHomePage(true, "");
 
@@ -186,16 +189,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
-            userImageView.setVisibility(View.VISIBLE);
-            userDraweeImageView.setVisibility(View.GONE);
+            userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
         } else if (!userFBId.isEmpty()){
-            userImageView.setVisibility(View.GONE);
-            userDraweeImageView.setVisibility(View.VISIBLE);
             Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
             userDraweeImageView.setImageURI(uri);
         } else if (!userProfilePic.isEmpty()) {
-            userImageView.setVisibility(View.GONE);
-            userDraweeImageView.setVisibility(View.VISIBLE);
             Uri uri = Uri.parse(userProfilePic);
             userDraweeImageView.setImageURI(uri);
         }
@@ -278,7 +276,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         }
                         break;
                     case SEARCH_RIDE_SCREEN:
-                        FindRideFragment searchRideFragment = new FindRideFragment();
+                        searchRideFragment = new FindRideFragment();
                         bundle.putString("TITLE", "Find a ride");
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
                         searchRideFragment.setArguments(bundle);
@@ -408,7 +406,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     case MESSAGE_DETAILS_SCREEN:
                         messageDetailFragment = new MessageDetailsFragment();
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
-                        if (originScreen.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME)) {
+                        if (originScreen.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME) || originScreen.equalsIgnoreCase(Constants.RIDE_CONFIRM_SCREEN_NAME)) {
                             bundle.putSerializable("Message", (RideDetails.RideDetailData)object);
                         } else {
                             bundle.putSerializable("Message", (MessagesList.MessagesListData)object);
@@ -433,6 +431,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             getSupportFragmentManager().beginTransaction().add(R.id.content_layout, provideRatingFragment).addToBackStack(Constants.PROVIDE_RATING_SCREEN_NAME).commit();
                         } else {
                             getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, provideRatingFragment).addToBackStack(Constants.PROVIDE_RATING_SCREEN_NAME).commit();
+                        }
+                        break;
+                    case RIDE_CONFIRM_SCREEN:
+                        BookingConfirmationFragment rideConfirmScreen = new BookingConfirmationFragment();
+                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        bundle.putSerializable("RIDE DATA", (RideDetails.RideDetailData) object);
+                        rideConfirmScreen.setArguments(bundle);
+                        if (init) {
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, rideConfirmScreen).addToBackStack(Constants.RIDE_CONFIRM_SCREEN_NAME).commit();
+                        } else {
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, rideConfirmScreen).addToBackStack(Constants.RIDE_CONFIRM_SCREEN_NAME).commit();
                         }
                         break;
                 }
@@ -530,6 +539,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (searchRideFragment != null) {
+            searchRideFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -543,6 +560,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.action_edit) {
             if (profileFragment != null) profileFragment.editProfile();
+        }
+
+        if (id == R.id.action_filter) {
+            if (searchRideFragment != null) {
+                Intent intent = new Intent(this, RideFilterActivity.class);
+                intent.putExtra("RIDE TYPE", searchRideFragment.rideType);
+                intent.putExtra("VEHICLE TYPE", searchRideFragment.vehicleType);
+                intent.putExtra("COMFORT TYPE", searchRideFragment.comfortLevel);
+                intent.putExtra("GENDER", searchRideFragment.gender);
+                startActivityForResult(intent, FindRideFragment.REQUEST_CODE_RIDE_FILTER);
+            }
         }
 
         if (id == R.id.action_refresh) {

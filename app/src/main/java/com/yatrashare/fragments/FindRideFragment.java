@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -93,6 +94,9 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
     private AvailableRidesAdapter mAdapter;
     private SearchRides searchRides;
+    private String date;
+    private String whereFrom;
+    private String whereTo;
 
     public FindRideFragment() {
         // Required empty public constructor
@@ -114,7 +118,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
         emptyRidesHeading.setText("There are no rides at present.");
         emptyRidesSubHeading.setText("Wait for some time and Try again!");
-        mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(4));
+        mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
 
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -137,11 +141,16 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         mWhereToView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                whereFromhasFocus = false;
-                openAutocompleteActivity();
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    whereFromhasFocus = false;
+                    openAutocompleteActivity();
+                }
                 return false;
             }
         });
+
+        mWhereFromView.setInputType(InputType.TYPE_NULL);
+        mWhereToView.setInputType(InputType.TYPE_NULL);
 
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,8 +195,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         }
 
         @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                                   RecyclerView.State state) {
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
             outRect.bottom = mVerticalSpaceHeight;
             outRect.top = mVerticalSpaceHeight;
             outRect.left = mVerticalSpaceHeight;
@@ -229,37 +237,43 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     @OnClick(R.id.findaRideBtn)
     public void getRideDetails() {
         Utils.hideSoftKeyboard(mWhereToView);
-        String whereFrom = mWhereFromView.getText().toString();
-        String whereTo = mWhereToView.getText().toString();
+        whereFrom = mWhereFromView.getText().toString();
+        whereTo = mWhereToView.getText().toString();
         String rideTypeString = mRideTypeButton.getText().toString();
-        String date = mDateButton.getText().toString();
+        date = mDateButton.getText().toString();
 
         if (rideTypeString.equalsIgnoreCase(getString(R.string.ride_type))){
-            rideTypeString = "2";
+            rideType = "2";
         } else if (rideTypeString.equalsIgnoreCase("Long Ride")){
-            rideTypeString = "1";
+            rideType = "1";
         } else if (rideTypeString.equalsIgnoreCase("Daily Rides")){
-            rideTypeString = "2";
+            rideType = "2";
         }
 
         if (date.equalsIgnoreCase(getString(R.string.ride_date))){
             date = "";
         }
 
-        boolean cancel = false;
         if (TextUtils.isEmpty(whereFrom) && TextUtils.isEmpty(whereTo)) {
             cancel = true;
             mWhereFromLayout.setError("Enter Departure");
             mWhereToLayout.setError("Enter Arrival");
         } else {
+            cancel = false;
             mWhereFromLayout.setErrorEnabled(false);
             mWhereToLayout.setErrorEnabled(false);
         }
 
+        searchRides();
+    }
+
+    boolean cancel = true;
+
+    public void searchRides() {
         if (!cancel) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
             FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, "ALLTYPES", "1", "1", "24", "All", rideTypeString, "2", "10");
+                    date, comfortLevel, "1", "1", "24", gender, rideType, vehicleType, "10");
 
             Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
             //asynchronous call
@@ -280,7 +294,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                         if (searchRides != null) {
                             if (searchRides.Data != null && searchRides.Data.size() > 0) {
                                 emptyRidesLayout.setVisibility(View.GONE);
-                                mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
                                 mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
                                 mRecyclerView.setAdapter(mAdapter);
                             } else {
@@ -308,7 +321,13 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         }
     }
 
-    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+    public String rideType = "2";
+    public String vehicleType = "2";
+    public String comfortLevel = "ALLTYPES";
+    public String gender = "All";
+
+    public static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+    public static final int REQUEST_CODE_RIDE_FILTER = 2;
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -319,11 +338,11 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             if (resultCode == Activity.RESULT_OK) {
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(mContext, data);
-                Log.i(TAG, "Place Selected: " + place.getName());
+                Log.e(TAG, "Place Selected: " + place.getAddress());
 
                 // Format the place's details and display them in the TextView.
-                if (whereFromhasFocus) mWhereFromView.setText(place.getName());
-                else mWhereToView.setText(place.getName());
+                if (whereFromhasFocus) mWhereFromView.setText(place.getAddress());
+                else mWhereToView.setText(place.getAddress());
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);
@@ -332,6 +351,13 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                 // Indicates that the activity closed before a selection was made. For example if
                 // the user pressed the back button.
             }
+        } else if (requestCode == REQUEST_CODE_RIDE_FILTER) {
+            rideType = data.getStringExtra("RIDE TYPE");
+            vehicleType = data.getStringExtra("VEHICLE TYPE");
+            comfortLevel = data.getStringExtra("COMFORT TYPE");
+            gender = data.getStringExtra("GENDER");
+            searchRides();
+
         }
     }
 

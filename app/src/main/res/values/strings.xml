@@ -4,6 +4,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="cancelSeat">Cancel Seat</string>
+    <string name="sendSMS">Get Owner Details</string>
+
     <string name="action_settings">Settings</string>
     <string name="action_edit_profile">Edit Profile</string>
     <string name="rideHeading">Ride: </string>
@@ -29,6 +32,16 @@
     <string name="aboutMe">About</string>
     <string name="retry">Retry</string>
     <string name="ride_type">Ride Type</string>
+
+    <!-- Strings related to Ride Filter-->
+    <string name="rideTypeHeading">Ride  Type</string>
+    <string name="longRide">Long Ride</string>
+    <string name="dailyRide">Daily Ride</string>
+    <string name="vehicleTypeHeading">Vehicle Type</string>
+    <string name="vehiclecomfortLevelHeading">Vehicle Comfort Level</string>
+    <string name="GenderHeading">Gender</string>
+    <string name="ladiesOnly">Ladies Only</string>
+    <string name="AllGenders">All</string>
 
     <!-- Strings related to Edit Profile-->
     <string name="updatePhoto">Update photo</string>
@@ -72,6 +85,8 @@
     <string name="ride_find">Find a Ride</string>
     <string name="ride_date">Date(optional)</string>
     <string name="Rs">\u20B9</string>
+
+    <string name="provide_rating">Publish</string>
 
     <!-- String for forgot password -->
     <string name="old_password">Old Password*</string>
@@ -133,7 +148,7 @@
     <string name="telephone">Telephone</string>
     <string name="confirmation_code">Confirmation Code</string>
     <string name="editNumber">Edit Number</string>
-    <string name="resendCode">Send Code</string>
+    <string name="resendCode">Resend Code</string>
     <string name="verifyCode">VerifyCode</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
@@ -145,10 +160,32 @@
     <string name="find_member">Find member</string>
     <string name="phone_number">Phone number</string>
 
+    <!-- Ride confirmation Screen-->
+    <string name="owner_approval">Your seat booking request has been submitted for owner\'s approval, we will send you an sms once owner approves.</string>
+    <string name="callOwner">You can directly call owner mobile number instead of waiting for their approval.</string>
+    <string name="money">Please be sure to have enough money on hand when you start the ride, and pay to vehicle owner directly in journey.</string>
+    <string name="contactyatrashare">If you have any problem, please contact us. contact@yatrashare.com</string>
+    <string name="nicejourney">Have a nice journey!</string>
+    <string name="viewmyrides">View my rides</string>
+    <string name="messageowner">Message to owner</string>
+
     <string-array name="travellerType_array">
         <item>CoTraveller</item>
-        <item>VehicleOwner</item>
-        <item>DidNotTravel</item>
+        <item>Vehicle Owner</item>
+        <item>Did Not Travel</item>
+    </string-array>
+
+    <string-array name="comfortType_array">
+        <item>All Types</item>
+        <item>Luxury</item>
+        <item>Comfortable</item>
+        <item>Normal</item>
+        <item>Basic</item>
+    </string-array>
+
+    <string-array name="vehicleType_array">
+        <item>Bike</item>
+        <item>Car</item>
     </string-array>
 
 </resources>

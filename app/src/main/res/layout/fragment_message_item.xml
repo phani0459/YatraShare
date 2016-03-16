@@ -20,31 +20,18 @@
             android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
-            <RelativeLayout
-                android:id="@+id/userImageLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/image_drawee_sender"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:foregroundGravity="center"
                 android:paddingBottom="4dp"
                 android:paddingLeft="4dp"
                 android:paddingRight="8dp"
-                android:paddingTop="4dp">
-
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/image_drawee_sender"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:foregroundGravity="center"
-                    android:scaleType="centerCrop"
-                    fresco:roundAsCircle="true" />
-
-                <ImageView
-                    android:id="@+id/im_sender"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:foregroundGravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/add_user" />
-            </RelativeLayout>
+                android:paddingTop="4dp"
+                android:scaleType="centerCrop"
+                fresco:roundAsCircle="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"

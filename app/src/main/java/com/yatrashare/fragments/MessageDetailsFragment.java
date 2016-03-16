@@ -25,6 +25,8 @@ import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -70,11 +72,14 @@ public class MessageDetailsFragment extends Fragment {
 
         screenName = getArguments().getString(Constants.ORIGIN_SCREEN_KEY, "");
 
-        if (screenName.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME)) {
+        if (screenName.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME) || screenName.equalsIgnoreCase(Constants.RIDE_CONFIRM_SCREEN_NAME)) {
             rideDetailData = (RideDetails.RideDetailData) getArguments().getSerializable("Message");
         } else {
             messagesListData = (MessagesList.MessagesListData) getArguments().getSerializable("Message");
         }
+
+        adapter = new ChatDetailsAdapter(mContext, new ArrayList<MessageDetails.MessageDetailData>());
+        messagesDetailsListView.setAdapter(adapter);
 
         getConversationList();
 
@@ -143,7 +148,10 @@ public class MessageDetailsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((HomeActivity)mContext).setTitle("Message Details");
-        if (messagesDetailsList != null) {
+        if (messagesListData != null) {
+            ((HomeActivity)mContext).setTitle(messagesListData.Route);
+        } else if (rideDetailData != null) {
+            ((HomeActivity)mContext).setTitle("" + rideDetailData.UserName);
         }
         ((HomeActivity)mContext).setCurrentScreen(HomeActivity.MESSAGE_DETAILS_SCREEN);
         ((HomeActivity)mContext).prepareMenu();

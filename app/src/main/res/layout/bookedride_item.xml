@@ -19,32 +19,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <RelativeLayout
-                android:id="@+id/rl_ownerImage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/im_drawee_owner"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:foregroundGravity="center"
-                    android:scaleType="centerCrop"
-                    fresco:roundAsCircle="true" />
-
-                <ImageView
-                    android:id="@+id/im_owner"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:foregroundGravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/add_user" />
-            </RelativeLayout>
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/im_drawee_owner"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:foregroundGravity="center"
+                android:scaleType="centerCrop"
+                fresco:roundAsCircle="true" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginLeft="4dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -149,5 +136,57 @@
             android:singleLine="true"
             android:text="JNTU" />
 
+        <View
+            android:id="@+id/btnsAboveView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#E1E1E1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <Button
+                android:id="@+id/btnCancelSeat"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/com_facebook_close"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp"
+                android:text="@string/cancelSeat"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnSendSMS"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/email"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="4dp"
+                android:text="@string/sendSMS"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12sp" />
+
+        </LinearLayout>
     </LinearLayout>
+
+
 </android.support.v7.widget.CardView>
