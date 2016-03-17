@@ -3,6 +3,7 @@ package com.yatrashare.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,8 +14,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -73,6 +77,7 @@ public class EditProfileFragment extends Fragment {
     public TextInputLayout mUpdateUserNameLayout;
     private Profile profile;
     private String userGuid;
+    private SimpleDateFormat dateFormatter;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -127,30 +132,41 @@ public class EditProfileFragment extends Fragment {
 
         dobEdit.setInputType(InputType.TYPE_NULL);
 
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+        dateFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 
         Calendar newCalendar = Calendar.getInstance();
+        Date maxDate = null;
+        try {
+            maxDate = dateFormatter.parse("12/31/2005");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        final DatePickerDialog dobDatePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog dobDatePickerDialog = new DatePickerDialog(mContext,new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
                 dobEdit.setText(dateFormatter.format(newDate.getTime()));
-                try {
-                    Date minDate = dateFormatter.parse("01/01/2012");
-                    view.setMinDate(minDate.getTime());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
             }
-
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        dobEdit.setOnClickListener(new View.OnClickListener() {
+        dobDatePickerDialog.getDatePicker().setMaxDate(maxDate != null ? maxDate.getTime() : 0);
+        dobDatePickerDialog.setTitle("");
+
+        dobDatePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
-            public void onClick(View v) {
-                dobDatePickerDialog.show();
+            public void onCancel(DialogInterface dialog) {
+                dobEdit.setText("");
+                dialog.dismiss();
+            }
+        });
+
+        dobEdit.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) dobDatePickerDialog.show();
+                return false;
             }
         });
 

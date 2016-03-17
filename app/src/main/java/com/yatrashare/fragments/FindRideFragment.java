@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -94,7 +95,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
     private AvailableRidesAdapter mAdapter;
     private SearchRides searchRides;
-    private String date;
+    public String date;
     private String whereFrom;
     private String whereTo;
 
@@ -170,6 +171,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         mDateButton.setText(getString(R.string.ride_date));
+                        date = "";
                     }
                 });
 
@@ -179,7 +181,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                mDateButton.setText("" + dayOfMonth + " / " + (monthOfYear + 1)+ " / " + year);
+                date = "" + dayOfMonth + "/" + (monthOfYear + 1)+ "/" + year;
+                mDateButton.setText(date);
             }
         };
 
@@ -273,7 +276,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         if (!cancel) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
             FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, comfortLevel, "1", "1", "24", gender, rideType, vehicleType, "10");
+                    date, comfortLevel, "1", startTime, endTime, gender, rideType, vehicleType, "10");
 
             Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
             //asynchronous call
@@ -325,6 +328,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     public String vehicleType = "2";
     public String comfortLevel = "ALLTYPES";
     public String gender = "All";
+    public String startTime = "1";
+    public String endTime = "24";
 
     public static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     public static final int REQUEST_CODE_RIDE_FILTER = 2;
@@ -356,6 +361,22 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             vehicleType = data.getStringExtra("VEHICLE TYPE");
             comfortLevel = data.getStringExtra("COMFORT TYPE");
             gender = data.getStringExtra("GENDER");
+            date = data.getStringExtra("DATE");
+            startTime = data.getStringExtra("START TIME");
+            endTime = data.getStringExtra("END TIME");
+
+            if (date.equalsIgnoreCase("")){
+                mDateButton.setText(getString(R.string.ride_date));
+            } else {
+                mDateButton.setText(date);
+            }
+
+            if (rideType.equalsIgnoreCase("1")){
+                mRideTypeButton.setText("Long Ride");
+            } else if (rideType.equalsIgnoreCase("2")){
+                mRideTypeButton.setText("Daily Rides");
+            }
+
             searchRides();
 
         }

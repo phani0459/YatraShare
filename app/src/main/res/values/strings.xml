@@ -38,6 +38,8 @@
     <string name="longRide">Long Ride</string>
     <string name="dailyRide">Daily Ride</string>
     <string name="vehicleTypeHeading">Vehicle Type</string>
+    <string name="timeRangeHeading">Time</string>
+    <string name="timeRangeSubHeading">Departure Time 1 hr- 24 hrs</string>
     <string name="vehiclecomfortLevelHeading">Vehicle Comfort Level</string>
     <string name="GenderHeading">Gender</string>
     <string name="ladiesOnly">Ladies Only</string>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorLayoutBG"
+        android:orientation="vertical">
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:text="@string/rideTypeHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <RadioGroup
+            android:id="@+id/rg_rideType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <RadioButton
+                android:id="@+id/rbtn_longRide"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:text="@string/longRide" />
+
+            <RadioButton
+                android:id="@+id/rbtn_dailyRide"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/dailyRide"
+                android:textIsSelectable="true" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:text="@string/ride_date"
+            android:textColor="@color/colorPrimary" />
+
+
+        <EditText
+            android:id="@+id/et_dateFilter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
+            android:inputType="none"
+            android:singleLine="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:text="@string/timeRangeHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/timeRangeSubHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <com.appyvet.rangebar.RangeBar
+            android:id="@+id/timeRangeBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            custom:pinRadius="16dp"
+            custom:temporaryPins="false"
+            custom:tickColor="@color/colorPrimary"
+            custom:tickEnd="24"
+            custom:tickInterval="1"
+            custom:tickStart="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:text="@string/vehicleTypeHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <Spinner
+            android:id="@+id/sp_vehicleType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/vehicleType_array"
+            android:padding="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:text="@string/vehiclecomfortLevelHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <Spinner
+            android:id="@+id/sp_vehicleComforType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
+            android:entries="@array/comfortType_array"
+            android:padding="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:text="@string/GenderHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <RadioGroup
+            android:id="@+id/rg_genderType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <RadioButton
+                android:id="@+id/rbtn_ladiesOnly"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:text="@string/ladiesOnly" />
+
+            <RadioButton
+                android:id="@+id/rbtn_All"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/AllGenders"
+                android:textIsSelectable="true" />
+        </RadioGroup>
+
+    </LinearLayout>
+</ScrollView>

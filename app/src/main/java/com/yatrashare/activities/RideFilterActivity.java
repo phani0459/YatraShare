@@ -1,17 +1,31 @@
 package com.yatrashare.activities;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+import com.appyvet.rangebar.RangeBar;
 import com.yatrashare.R;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,7 +40,8 @@ public class RideFilterActivity extends AppCompatActivity {
     public Spinner vehicleTypeSpinner;
     @Bind(R.id.sp_vehicleComforType)
     public Spinner vehicleComfortTypeSpinner;
-
+    @Bind(R.id.et_dateFilter)
+    public EditText dateEditText;
     @Bind(R.id.rbtn_All)
     public RadioButton genderAllRadioBtn;
     @Bind(R.id.rbtn_dailyRide)
@@ -35,11 +50,15 @@ public class RideFilterActivity extends AppCompatActivity {
     public RadioButton ladiesOnlyRadioBtn;
     @Bind(R.id.rbtn_longRide)
     public RadioButton longRideRadioBtn;
+    @Bind(R.id.timeRangeBar)
+    public RangeBar rangeBar;
+    private Context mContext;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_ride_filter);
+        setContentView(R.layout.activity_ride_filter);
         ButterKnife.bind(this);
 
         Bundle data = getIntent().getExtras();
@@ -47,6 +66,11 @@ public class RideFilterActivity extends AppCompatActivity {
         vehicleType = data.getString("VEHICLE TYPE", "2");
         comfortLevel = data.getString("COMFORT TYPE", "ALLTYPES");
         gender = data.getString("GENDER", "All");
+        date = data.getString("DATE", "");
+        startTime = data.getString("START TIME", "1");
+        endTime = data.getString("END TIME", "24");
+
+        mContext = this;
 
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,6 +93,8 @@ public class RideFilterActivity extends AppCompatActivity {
             vehicleComfortTypeSpinner.setSelection(4);
         }
 
+        rangeBar.setRangePinsByValue(Float.parseFloat(startTime), Float.parseFloat(endTime));
+
         if (gender.equalsIgnoreCase("LadiesOnly")) {
             ladiesOnlyRadioBtn.setChecked(true);
         } else {
@@ -87,10 +113,22 @@ public class RideFilterActivity extends AppCompatActivity {
     public String vehicleType;
     public String comfortLevel;
     public String gender;
+    public String date;
+    public String startTime;
+    public String endTime;
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+                startTime = leftPinValue + "";
+                endTime = rightPinValue + "";
+            }
+        });
+
         vehicleTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -138,6 +176,41 @@ public class RideFilterActivity extends AppCompatActivity {
             }
         });
 
+        dateEditText.setText(date);
+        dateEditText.setInputType(InputType.TYPE_NULL);
+
+        final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
+        Calendar newCalendar = Calendar.getInstance();
+
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                date = dateFormatter.format(newDate.getTime());
+                dateEditText.setText(date);
+            }
+
+        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dateEditText.setText("");
+                date = "";
+                dialog.dismiss();
+            }
+        });
+
+        dateEditText.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) datePickerDialog.show();
+                return false;
+            }
+        });
+
     }
 
     public void prepareIntent() {
@@ -147,6 +220,9 @@ public class RideFilterActivity extends AppCompatActivity {
         returnIntent.putExtra("VEHICLE TYPE", vehicleType);
         returnIntent.putExtra("COMFORT TYPE", comfortLevel);
         returnIntent.putExtra("GENDER", gender);
+        returnIntent.putExtra("DATE", date);
+        returnIntent.putExtra("START TIME", startTime);
+        returnIntent.putExtra("END TIME", endTime);
         setResult(RESULT_OK, returnIntent);
     }
 

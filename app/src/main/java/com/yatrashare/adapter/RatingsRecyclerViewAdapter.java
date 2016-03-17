@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -15,19 +14,30 @@ import com.yatrashare.dtos.Rating;
 import com.yatrashare.fragments.TabsFragment;
 import com.yatrashare.utils.Constants;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
  * TODO: Replace the implementation with code for your data type.
  */
-public class RatingsRecyclerViewAdapter extends RecyclerView.Adapter<RatingsRecyclerViewAdapter.ViewHolder> {
+public class RatingsRecyclerViewAdapter extends RecyclerView.Adapter<RatingsRecyclerViewAdapter.ViewHolder> implements Comparator<Rating.RatingData>{
 
     private final List<Rating.RatingData> mValues;
     private int title;
+    SimpleDateFormat simpleDateFormat;
 
     public RatingsRecyclerViewAdapter(List<Rating.RatingData> items, int title) {
         mValues = items;
         this.title = title;
+        simpleDateFormat = new SimpleDateFormat("MMM dd, yyyy");
+
+        Collections.sort(mValues, this);
     }
 
     @Override
@@ -76,6 +86,19 @@ public class RatingsRecyclerViewAdapter extends RecyclerView.Adapter<RatingsRecy
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    @Override
+    public int compare(Rating.RatingData lhs, Rating.RatingData rhs) {
+        Date lhsDate = null, rhsDate = null;
+        try {
+            lhsDate = simpleDateFormat.parse(lhs.RatingGivenDate);
+            rhsDate = simpleDateFormat.parse(rhs.RatingGivenDate);
+            return rhsDate.compareTo(lhsDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
