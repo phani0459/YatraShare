@@ -196,7 +196,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
                 call = Utils.getYatraShareAPI().cancelSeat(userGuide, "" + data.RideBookingId);
                 break;
             case BookedRidesRecyclerViewAdapter.deleteRide:
-                call = Utils.getYatraShareAPI().deleteRide(userGuide, "" + data.PossibleRideGuid);
+                call = Utils.getYatraShareAPI().deleteRide(userGuide, "" + data.RideBookingId);
                 break;
             case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
                 call = Utils.getYatraShareAPI().sendJourneyDetails(userGuide, "" + data.RideBookingId);

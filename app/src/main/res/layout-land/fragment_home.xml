@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:gravity="center_horizontal"
         android:text="@string/going_smwr"
         android:textColor="#FFFFFF"
@@ -22,11 +22,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/label"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:gravity="center_horizontal"
         android:text="@string/share_ride_save_money"
         android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 
     <RelativeLayout
@@ -36,7 +36,7 @@
         android:layout_below="@+id/label_tag"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/bg_input_group">
 
         <EditText
@@ -47,11 +47,10 @@
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_ride_from"
             android:drawablePadding="4dp"
-            android:hint="@string/ride_where_from"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="8dp"
-            android:paddingTop="8dp"
-            android:singleLine="true"
+            android:paddingRight="8dp"
+            android:paddingTop="16dp"
             android:textSize="16sp" />
 
         <View
@@ -67,11 +66,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="24dp"
             android:src="@drawable/swap" />
 
         <EditText
-            android:id="@+id/et_where_to"
+            android:id="@+id/bottomEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/dividerView"
@@ -79,32 +78,30 @@
             android:background="@android:color/transparent"
             android:drawableLeft="@drawable/ic_ride_to"
             android:drawablePadding="4dp"
-            android:hint="@string/ride_where_to"
-            android:paddingBottom="8dp"
+            android:paddingBottom="16dp"
             android:paddingLeft="8dp"
-            android:paddingTop="8dp"
-            android:singleLine="true"
+            android:paddingRight="8dp"
+            android:paddingTop="16dp"
             android:textSize="16sp" />
-
 
     </RelativeLayout>
 
     <EditText
-        android:id="@+id/et_date"
+        android:id="@+id/dateEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/placeLayout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/bg_input_group"
         android:drawableLeft="@drawable/date"
         android:drawablePadding="4dp"
         android:hint="@string/ride_date"
-        android:paddingBottom="8dp"
+        android:paddingBottom="16dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:paddingTop="8dp"
+        android:paddingTop="16dp"
         android:textSize="16sp" />
 
     <LinearLayout
@@ -119,10 +116,7 @@
             android:id="@+id/searchRide"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="16dp"
+            android:layout_margin="16dp"
             android:layout_weight="1"
             android:background="@drawable/search_button_bg"
             android:text="@string/searchRide"
@@ -133,30 +127,13 @@
             android:id="@+id/offerRide"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_margin="16dp"
             android:layout_weight="1"
             android:background="@drawable/offerride_button_bg"
             android:text="@string/offerRide"
             android:textColor="#0FAAF0"
             android:textStyle="bold" />
+
     </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/rideProgress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <View
-        android:id="@+id/findRideProgressBGView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#40000000"
-        android:clickable="true"
-        android:visibility="gone" />
 
 </RelativeLayout>

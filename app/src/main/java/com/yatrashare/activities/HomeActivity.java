@@ -40,6 +40,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
+import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.RideDetails;
@@ -279,6 +280,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         searchRideFragment = new FindRideFragment();
                         bundle.putString("TITLE", "Find a ride");
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        bundle.putSerializable("Searched Rides", object != null ? (FoundRides) object : null);
                         searchRideFragment.setArguments(bundle);
                         if (init) {
                             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right)

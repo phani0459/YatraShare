@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#2B3E4F</color>
+    <color name="colorPrimaryDark">#1a2630</color>
     <color name="colorAccent">#0FAAF0</color>
     <color name="colorLayoutBG">#efefef</color>
     <color name="colorRideTextDayTime">#00BFFF</color>

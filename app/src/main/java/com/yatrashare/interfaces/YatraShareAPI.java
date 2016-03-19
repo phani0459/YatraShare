@@ -109,8 +109,8 @@ public interface YatraShareAPI {
     @POST("/api/Messages/GetUserMessagesConversation")
     Call<MessageDetails> getMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);
 
-    @POST("/api/Rides/DeleteRide")
-    Call<UserDataDTO> deleteRide(@Query("userGuid") String userGuide, @Query("rideGuid") String rideGuid);
+    @POST("/api/Rides/DeleteSeatBooking")
+    Call<UserDataDTO> deleteRide(@Query("userGuid") String userGuide, @Query("rideBookingId") String rideBookingId);
 
     @POST("/api/Rides/CancelSeatBooking")
     Call<UserDataDTO> cancelSeat(@Query("userGuid") String userGuide, @Query("rideBookingId") String rideBookingId);

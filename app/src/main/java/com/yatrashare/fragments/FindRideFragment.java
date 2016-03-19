@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,6 +37,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.AvailableRidesAdapter;
+import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.pojos.FindRide;
 import com.yatrashare.utils.Constants;
@@ -70,8 +70,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     public TextInputLayout mWhereToLayout;
     @Bind(R.id.whereFramLayout)
     public TextInputLayout mWhereFromLayout;
-    @Bind(R.id.rideProgress)
-    public ProgressBar mProgressView;
     private int year, month, day;
     private DatePickerDialog mDatePickerDialog;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
@@ -85,13 +83,14 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     public Button mRideTypeButton;
     @Bind(R.id.findRideProgressBGView)
     public View mProgressBGView;
+    @Bind(R.id.rideProgress)
+    public ProgressBar mProgressView;
     @Bind(R.id.emptyRidesHeading)
     public TextView emptyRidesHeading;
     @Bind(R.id.emptyRidesSubHeading)
     public TextView emptyRidesSubHeading;
 
     public boolean whereFromhasFocus;
-
 
     private AvailableRidesAdapter mAdapter;
     private SearchRides searchRides;
@@ -267,61 +266,61 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             mWhereToLayout.setErrorEnabled(false);
         }
 
-        searchRides();
+        if (!cancel) {
+            searchRides();
+        }
     }
 
     boolean cancel = true;
 
     public void searchRides() {
-        if (!cancel) {
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, comfortLevel, "1", startTime, endTime, gender, rideType, vehicleType, "10");
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+        FindRide findRide = new FindRide(whereFrom, whereTo,
+                date, comfortLevel, "1", startTime, endTime, gender, rideType, vehicleType, "10");
 
-            Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
-            //asynchronous call
-            call.enqueue(new Callback<SearchRides>() {
-                /**
-                 * Successful HTTP response.
-                 *
-                 * @param response
-                 * @param retrofit
-                 */
-                @Override
-                public void onResponse(retrofit.Response<SearchRides> response, Retrofit retrofit) {
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                    if (response.body() != null) {
-                        android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
-                        FindRideFragment.this.searchRides = response.body();
-                        if (searchRides != null) {
-                            if (searchRides.Data != null && searchRides.Data.size() > 0) {
-                                emptyRidesLayout.setVisibility(View.GONE);
-                                mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
-                                mRecyclerView.setAdapter(mAdapter);
-                            } else {
-                                emptyRidesLayout.setVisibility(View.VISIBLE);
-                                mRecyclerView.setAdapter(null);
-                            }
+        Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
+        //asynchronous call
+        call.enqueue(new Callback<SearchRides>() {
+            /**
+             * Successful HTTP response.
+             *
+             * @param response
+             * @param retrofit
+             */
+            @Override
+            public void onResponse(retrofit.Response<SearchRides> response, Retrofit retrofit) {
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                if (response.body() != null) {
+                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
+                    FindRideFragment.this.searchRides = response.body();
+                    if (searchRides != null) {
+                        if (searchRides.Data != null && searchRides.Data.size() > 0) {
+                            emptyRidesLayout.setVisibility(View.GONE);
+                            mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
+                            mRecyclerView.setAdapter(mAdapter);
                         } else {
-                            ((HomeActivity)mContext).showSnackBar("No rides available at this time, Try again!");
+                            emptyRidesLayout.setVisibility(View.VISIBLE);
+                            mRecyclerView.setAdapter(null);
                         }
+                    } else {
+                        ((HomeActivity)mContext).showSnackBar("No rides available at this time, Try again!");
                     }
                 }
+            }
 
-                /**
-                 * Invoked when a network or unexpected exception occurred during the HTTP request.
-                 *
-                 * @param t
-                 */
-                @Override
-                public void onFailure(Throwable t) {
-                    android.util.Log.e(TAG, "FAILURE RESPONSE");
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                    ((HomeActivity)mContext).showSnackBar(getString(R.string.tryagain));
-                }
-            });
-        }
+            /**
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                ((HomeActivity)mContext).showSnackBar(getString(R.string.tryagain));
+            }
+        });
     }
 
     public String rideType = "2";
@@ -408,7 +407,11 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     @Override
     public void onPause() {
         if (searchRides != null) {
-            getArguments().putSerializable("Searched Rides", searchRides);
+            foundRides.searchRides = searchRides;
+            foundRides.destinationPlace = whereFrom;
+            foundRides.arriavalPlace = whereTo;
+            foundRides.selectedDate = date;
+            getArguments().putSerializable("Searched Rides", foundRides);
         }
         super.onPause();
     }
@@ -420,7 +423,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         ((HomeActivity)mContext).prepareMenu();
         Bundle bundle = getArguments();
         if (bundle != null) {
-            this.searchRides = (SearchRides) bundle.getSerializable("Searched Rides");
+            this.foundRides = (FoundRides) bundle.getSerializable("Searched Rides");
+            this.searchRides = foundRides.searchRides;
             if (searchRides != null) {
                 if (searchRides.Data != null && searchRides.Data.size() > 0) {
                     emptyRidesLayout.setVisibility(View.GONE);
@@ -439,4 +443,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         SearchRides.SearchData searchData = mAdapter.getItem(position);
         ((HomeActivity) mContext).loadScreen(HomeActivity.BOOK_a_RIDE_SCREEN, false, searchData, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
     }
+
+    public FoundRides foundRides;
 }
