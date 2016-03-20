@@ -117,6 +117,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.LOGIN_SCREEN);
         mFBLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

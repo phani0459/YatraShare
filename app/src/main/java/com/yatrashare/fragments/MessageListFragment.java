@@ -16,6 +16,7 @@ import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.MessagesRecyclerViewAdapter;
 import com.yatrashare.dtos.MessagesList;
+import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
@@ -124,11 +125,45 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     }
 
     @Override
-    public void onItemClick(boolean isView, int position) {
+    public void onItemClick(boolean isView, final int position) {
         if (adapter != null) {
             MessagesList.MessagesListData messageData = adapter.getItem(position);
             if (isView) {
                 ((HomeActivity)mContext).loadScreen(HomeActivity.MESSAGE_DETAILS_SCREEN, false, messageData, Constants.MESSAGE_SCREEN_NAME);
+            } else {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                Call<UserDataDTO> call = Utils.getYatraShareAPI().deleteMessage(userGuid, messageData.MessageGuid);
+                //asynchronous call
+                call.enqueue(new Callback<UserDataDTO>() {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param response
+                     * @param retrofit
+                     */
+                    @Override
+                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                        if (response.body() != null && response.body().Data.equalsIgnoreCase("SUCCESS")) {
+                            try {
+                                adapter.removeItem(position);
+                            } catch (Exception e) { e.printStackTrace(); }
+                        }
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
+
+                    /**
+                     * Invoked when a network or unexpected exception occurred during the HTTP request.
+                     *
+                     * @param t
+                     */
+                    @Override
+                    public void onFailure(Throwable t) {
+                        android.util.Log.e(TAG, "FAILURE RESPONSE");
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                    }
+                });
             }
         }
     }

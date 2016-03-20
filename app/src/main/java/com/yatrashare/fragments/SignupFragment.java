@@ -138,6 +138,12 @@ public class SignupFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.SIGNUP_SCREEN);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {

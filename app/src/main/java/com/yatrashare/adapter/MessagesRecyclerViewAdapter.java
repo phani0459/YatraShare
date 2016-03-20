@@ -39,6 +39,11 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<MessagesRe
         return mMessages.get(position);
     }
 
+    public void removeItem(int position) {
+        mMessages.remove(position);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.msgSentTime.setText(mMessages.get(position).MessageSentTime);

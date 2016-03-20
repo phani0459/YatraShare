@@ -92,7 +92,7 @@ public interface YatraShareAPI {
     Call<MessagesList> userInboxMessages(@Query("userGuid") String userGuide, @Query("currentpage") String currentpage, @Query("pagesize") String pagesize);
 
     @GET("/api/Messages/DeleteMessage")
-    Call<MessagesList> deleteMessage(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);
+    Call<UserDataDTO> deleteMessage(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);
 
     @POST("/api/Profile/GiveRatingtoUser")
     Call<UserDataDTO> giveRatingtoUser(@Query("userGuid") String userGuide, @Body UserRating userRating);

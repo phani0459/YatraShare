@@ -1,19 +1,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorLayoutBG">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/road_1">
 
-    <TextView
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#36000000" />
+
+    <ImageView
         android:id="@+id/label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
         android:gravity="center_horizontal"
-        android:text="@string/app_name"
-        android:textColor="@color/colorPrimary"
-        android:textSize="32sp"
-        android:textStyle="bold"/>
+        android:src="@drawable/logo_image" />
 
     <LinearLayout
         android:id="@+id/email_login_form"
@@ -30,8 +35,7 @@
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="12dp"
-            />
+            android:layout_marginTop="12dp" />
 
         <Button
             android:id="@+id/email_sign_in_button"
@@ -46,7 +50,7 @@
             android:inputType="textCapWords"
             android:paddingLeft="8dp"
             android:text="@string/action_sign_in"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
 
 
         <Button
@@ -64,7 +68,7 @@
             android:inputType="textCapWords"
             android:paddingLeft="8dp"
             android:text="@string/action_sign_up"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
 
         <TextView
             android:id="@+id/signup_tag"
@@ -77,7 +81,7 @@
             android:layout_marginTop="16dp"
             android:gravity="center_horizontal"
             android:text="@string/signup_tag"
-            android:textColor="#AA000000"/>
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 
@@ -87,7 +91,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/fbLoginProgress"
@@ -95,5 +99,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

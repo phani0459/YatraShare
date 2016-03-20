@@ -137,6 +137,12 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         return inflatedLayout;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN);
+    }
+
     private void showForgotPwdDialog() {
         final Dialog dialog = new Dialog(mContext, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
         dialog.setContentView(R.layout.dialog_forgotpwd);

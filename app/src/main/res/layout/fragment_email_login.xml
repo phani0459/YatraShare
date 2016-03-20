@@ -1,19 +1,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorLayoutBG">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/road_1">
 
-    <TextView
+    <ImageView
         android:id="@+id/label"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
         android:gravity="center_horizontal"
-        android:text="@string/app_name"
-        android:textColor="@color/colorPrimary"
-        android:textSize="32sp"
-        android:textStyle="bold"/>
+        android:src="@drawable/logo_image" />
 
     <LinearLayout
         android:id="@+id/email_login_form"
@@ -41,7 +41,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:padding="8dp"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -66,7 +66,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:padding="8dp"
-                android:singleLine="true"/>
+                android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -78,7 +78,7 @@
             android:layout_margin="8dp"
             android:background="@drawable/search_button_bg"
             android:text="@string/action_sign_in"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/fgtPwdText"
@@ -89,7 +89,7 @@
             android:gravity="center"
             android:text="@string/forgotPwd"
             android:textAllCaps="false"
-            android:textColor="#000000"/>
+            android:textColor="#000000" />
     </LinearLayout>
 
 
@@ -99,7 +99,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/login_progress"
@@ -108,5 +108,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

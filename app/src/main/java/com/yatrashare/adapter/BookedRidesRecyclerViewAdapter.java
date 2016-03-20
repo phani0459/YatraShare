@@ -29,6 +29,7 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
     public static final int cancelRide = 0;
     public static final int getOwnerDetailsbySMS = 1;
     public static final int deleteRide = 2;
+    public static final int viewRide = 3;
 
     public BookedRidesRecyclerViewAdapter(ArrayList<BookedRides.BookedData> data, int mTitle, SetOnItemClickListener setOnItemClickListener) {
         mValues = data;
@@ -65,6 +66,9 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mTitle == TabsFragment.UPCOMING_BOOKED_RIDES) {
+                    setOnItemClickListener.onItemClick(viewRide, position);
+                }
             }
         });
 
