@@ -24,13 +24,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -184,8 +182,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (userName.isEmpty()) {
+            userNameTextView.setVisibility(View.GONE);
             userNameTextView.setText(getString(R.string.login_rationale));
         } else {
+            userNameTextView.setVisibility(View.VISIBLE);
             userNameTextView.setText(userName);
         }
 
