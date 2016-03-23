@@ -87,6 +87,7 @@
     <string name="ride_find">Find a Ride</string>
     <string name="ride_date">Date(optional)</string>
     <string name="Rs">\u20B9</string>
+    <string name="createEmailAlert">Create an Email Alert</string>
 
     <string name="provide_rating">Publish</string>
 
@@ -117,6 +118,7 @@
     <string name="error_field_required">Email is required</string>
     <string name="success_login">Login Successfully</string>
     <string name="resetpwd_ratioanle">An Email is sent to registered Mail, to reset Password.</string>
+    <string name="emailalertCreated_rationale">We will send an email, Once the ride is available.</string>
     <string name="userguide_ratioanle">There is a problem with login. Please Logout and Login Again.</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."

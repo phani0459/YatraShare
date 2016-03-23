@@ -37,6 +37,10 @@ public interface YatraShareAPI {
     @POST("/api/Rides/BookYourSeat")
     Call<UserDataDTO> bookRide(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid, @Query("passengers") String passengers);
 
+    @POST("/api/Rides/CreateEmailAlert")
+    Call<UserDataDTO> createEmailAlert(@Query("userGuid") String userGuide, @Query("email") String email, @Query("departureDate") String departureDate
+                                        ,@Query("departurePoint") String departurePoint, @Query("arrivalPoint") String arrivalPoint, @Query("rideType") String rideType, @Query("vehicleType") String vehicleType);
+
     @POST("/api/Rides/SearchRides")
     Call<SearchRides> FindRides(@Body FindRide findRide);
 

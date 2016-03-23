@@ -2,39 +2,26 @@ package com.yatrashare.fragments;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
-import com.yatrashare.dtos.BookedRides;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
-import com.yatrashare.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -113,14 +100,22 @@ public class TabsFragment extends Fragment  {
         return bookedRidesFragment;
     }
 
+    public Fragment getOfferedFragment(int arg) {
+        Bundle bundle = new Bundle();
+        OfferedRidesFragment offeredRidesFragment = new OfferedRidesFragment();
+        bundle.putInt("TITLE", arg);
+        offeredRidesFragment.setArguments(bundle);
+        return offeredRidesFragment;
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         if (mTitle == HomeActivity.BOOKED_RIDES_SCREEN) {
             adapter.addFragment(getFragment(UPCOMING_BOOKED_RIDES), "Upcoming");
             adapter.addFragment(getFragment(PAST_BOOKED_RIDES), "Past");
         } else if (mTitle == HomeActivity.OFFERED_RIDES_SCREEN) {
-            adapter.addFragment(getFragment(UPCOMING_OFFERED_RIDES), "Upcoming");
-            adapter.addFragment(getFragment(PAST_OFFERED_RIDES), "Past Journeys");
+            adapter.addFragment(getOfferedFragment(UPCOMING_OFFERED_RIDES), "Upcoming");
+            adapter.addFragment(getOfferedFragment(PAST_OFFERED_RIDES), "Past Journeys");
         } else if (mTitle == HomeActivity.RATINGS_SCREEN) {
             adapter.addFragment(getRatingsFragment(RECEIVED_RATINGS), "Received Ratings");
             adapter.addFragment(getRatingsFragment(GIVEN_RATINGS), "Given Ratings");

@@ -21,7 +21,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
-import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,12 +34,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.UserFgtPassword;
 import com.yatrashare.pojos.UserLogin;
 import com.yatrashare.utils.Constants;
@@ -53,7 +50,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -79,8 +75,6 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     public EditText mPasswordView;
     @Bind(R.id.login_progress)
     public ProgressBar mProgressView;
-    private View inflatedLayout;
-    private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mSharedPrefEditor;
     private Context mContext;
     @Bind(R.id.emailLayout)
@@ -97,7 +91,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        inflatedLayout = inflater.inflate(R.layout.fragment_email_login, null);
+        View inflatedLayout = inflater.inflate(R.layout.fragment_email_login, null);
         mContext = getActivity();
 
         ((HomeActivity)mContext).setTitle("Login with email");
@@ -132,7 +126,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             }
         });
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
         return inflatedLayout;
     }
@@ -155,6 +149,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         cancelButton = (Button) dialog.findViewById(R.id.btnCancel);
         mFgtPwdProgressBar = (ProgressBar) dialog.findViewById(R.id.fgtPwdProgress);
 
+        fgtPhoneEdit.setHint(getString(R.string.prompt_mobile));
+
         cancelButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,10 +171,10 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 if (TextUtils.isEmpty(email)) {
                     fgtEmailLayout.setError(getString(R.string.error_field_required));
                     cancel = true;
-                } else if (!isEmailValid(email)) {
+                } else if (!Utils.isEmailValid(email)) {
                     fgtEmailLayout.setError(getString(R.string.error_invalid_email));
                     cancel = true;
-                } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
+                } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isPhoneValid(phoneNumber)) {
                     fgtPhoneLayout.setError(getString(R.string.error_invalid_phone));
                     cancel = true;
                 }
@@ -187,6 +183,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                     // Show a progress bar, and kick off a background task to
                     // perform the user forgot password attempt.
                     Utils.hideSoftKeyboard(fgtPhoneEdit);
+                    fgtEmailLayout.setErrorEnabled(false);
+                    fgtPhoneLayout.setErrorEnabled(false);
                     showFgtPwdProgress(true);
                     userFgtPwdTask(email, phoneNumber, dialog);
                     dialog.setCancelable(false);
@@ -267,13 +265,6 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         });
     }
 
-    private boolean isPhoneValid(String phoneNumber) {
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            return phoneNumber.length() == 10;
-        } else {
-            return false;
-        }
-    }
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -335,7 +326,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         if (TextUtils.isEmpty(userId)) {
             mEmailLayout.setError(getString(R.string.userid_field_required));
             cancel = true;
-        } else if (!isEmailValid(userId) && !isPhoneValid(userId)) {
+        } else if (!Utils.isEmailValid(userId) && !Utils.isPhoneValid(userId)) {
             mEmailLayout.setError(getString(R.string.error_invalid_user));
             cancel = true;
         } else if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
@@ -352,10 +343,6 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             Utils.showProgress(true, mProgressView, mProgressBGView);
             userLoginTask(userId, password);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPasswordValid(String password) {

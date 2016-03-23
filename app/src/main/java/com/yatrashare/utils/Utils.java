@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -62,6 +63,19 @@ public class Utils {
                     .build();
         }
         return retrofit;
+    }
+
+    public static boolean isEmailValid(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+
+    public static boolean isPhoneValid(String phoneNumber) {
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            return phoneNumber.length() == 10;
+        } else {
+            return false;
+        }
     }
 
     public static OkHttpClient getOkHttpClient() {

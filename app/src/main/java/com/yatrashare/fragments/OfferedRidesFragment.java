@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.facebook.login.LoginManager;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.BookedRidesRecyclerViewAdapter;
@@ -35,8 +34,8 @@ import retrofit.Retrofit;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class BookedRidesFragment extends Fragment implements Callback<BookedRides>, BookedRidesRecyclerViewAdapter.SetOnItemClickListener {
-    private static final String TAG = BookedRidesFragment.class.getSimpleName();
+public class OfferedRidesFragment extends Fragment implements Callback<BookedRides>, BookedRidesRecyclerViewAdapter.SetOnItemClickListener {
+    private static final String TAG = OfferedRidesFragment.class.getSimpleName();
 
     private android.content.Context mContext;
     private int mTitle;
@@ -61,7 +60,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public BookedRidesFragment() {
+    public OfferedRidesFragment() {
     }
 
     @Override
@@ -196,7 +195,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
+                switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
                         switch (clickedItem) {
                             case BookedRidesRecyclerViewAdapter.cancelRide:

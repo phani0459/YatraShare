@@ -17,6 +17,8 @@
         layout="@layout/no_rides_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/btn_createEmailAlert"
+        android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_margin="4dp"
         android:visibility="gone" />
@@ -35,5 +37,21 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btn_createEmailAlert"
+        style="?android:textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="8dp"
+        android:background="@drawable/search_button_bg"
+        android:drawableLeft="@drawable/email_white"
+        android:drawablePadding="-8dp"
+        android:inputType="textCapWords"
+        android:paddingLeft="8dp"
+        android:text="@string/createEmailAlert"
+        android:textColor="#FFFFFF"
         android:visibility="gone" />
 </RelativeLayout>

@@ -191,7 +191,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
             userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
-        } else if (!userFBId.isEmpty()){
+        } else if (!userFBId.isEmpty()) {
             Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
             userDraweeImageView.setImageURI(uri);
         } else if (!userProfilePic.isEmpty()) {
