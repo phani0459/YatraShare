@@ -3,6 +3,7 @@ package com.yatrashare.interfaces;
 import com.yatrashare.dtos.BookedRides;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
+import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.Rating;
 import com.yatrashare.dtos.RatingReceiverInfo;
@@ -30,6 +31,12 @@ public interface YatraShareAPI {
 
     @GET("/api/Rides/GetUserConnectedRides")
     Call<BookedRides> bookedRides(@Query("userGuid") String userGuide, @Query("typeOfRide") String typeOfRide);
+
+    @GET("/api/Rides/GetUserUpcommingMainRides")
+    Call<OfferedRides> upComingOfferedRides(@Query("userGuid") String userGuide, @Query("upcommingRidePageIndex") String upcommingRidePageIndex, @Query("pageSize") String pageSize);
+
+    @GET("/api/Rides/GetUserPastRides")
+    Call<OfferedRides> pastOfferedRides(@Query("userGuid") String userGuide, @Query("pastRidePageIndex") String pastRidePageIndex, @Query("pageSize") String pageSize);
 
     @POST("/api/User/Login")
     Call<String> userLogin(@Body UserLogin userLogin);

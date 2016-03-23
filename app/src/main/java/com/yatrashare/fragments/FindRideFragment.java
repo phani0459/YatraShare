@@ -219,7 +219,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",  new DialogInterface.OnClickListener() {
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mDateEdit.setText("");
@@ -325,7 +325,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         dialog.dismiss();
-                        ((HomeActivity)mContext).showSnackBar(getString(R.string.emailalertCreated_rationale));
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.emailalertCreated_rationale));
                     } else {
                         Utils.showToast(mContext, response.body().Data);
                     }
@@ -397,10 +397,12 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             if (searchRides != null) {
                 if (searchRides.Data != null && searchRides.Data.size() > 0) {
                     emptyRidesLayout.setVisibility(View.GONE);
+                    createEmailAlertBtn.setVisibility(View.GONE);
                     mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     emptyRidesLayout.setVisibility(View.VISIBLE);
+                    createEmailAlertBtn.setVisibility(View.VISIBLE);
                     mRecyclerView.setAdapter(null);
                 }
             }

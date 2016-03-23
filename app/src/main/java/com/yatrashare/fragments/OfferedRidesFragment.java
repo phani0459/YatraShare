@@ -19,7 +19,8 @@ import android.widget.TextView;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.BookedRidesRecyclerViewAdapter;
-import com.yatrashare.dtos.BookedRides;
+import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
+import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -34,7 +35,7 @@ import retrofit.Retrofit;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class OfferedRidesFragment extends Fragment implements Callback<BookedRides>, BookedRidesRecyclerViewAdapter.SetOnItemClickListener {
+public class OfferedRidesFragment extends Fragment implements Callback<OfferedRides>, OfferedRidesRecyclerViewAdapter.SetOnItemClickListener {
     private static final String TAG = OfferedRidesFragment.class.getSimpleName();
 
     private android.content.Context mContext;
@@ -47,12 +48,12 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
     public ScrollView emptyRidesLayout;
     @Bind(R.id.ridesList)
     public RecyclerView recyclerView;
-    private BookedRides bookedRides;
+    private OfferedRides offeredRides;
     @Bind(R.id.getRidesProgress)
     public ProgressBar mProgressView;
     @Bind(R.id.bukdRidesProgressBGView)
     public View mProgressBGView;
-    private BookedRidesRecyclerViewAdapter adapter;
+    private OfferedRidesRecyclerViewAdapter adapter;
     private String userGuide;
 
 
@@ -74,7 +75,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         setEmptyRidesTexts();
-        getBookedRides();
+        getOfferedRides();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -96,28 +97,38 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
     @Override
     public void onPause() {
         super.onPause();
-        if (bookedRides != null) {
-            getArguments().putSerializable("RIDES", bookedRides);
+        if (offeredRides != null) {
+            getArguments().putSerializable("RIDES", offeredRides);
         }
     }
 
-    public void getBookedRides() {
-        android.util.Log.e("getBookedRides", userGuide);
+    public void getOfferedRides() {
+        android.util.Log.e("getOfferedRides", userGuide);
         if (!TextUtils.isEmpty(userGuide)) {
             toggleProgress(true);
-            Call<BookedRides> call = Utils.getYatraShareAPI().bookedRides(userGuide, "" + (mTitle + 1));
+            Call<OfferedRides> call = null;
+            switch (mTitle) {
+                case TabsFragment.UPCOMING_OFFERED_RIDES:
+                    call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, "1", "10");
+                    break;
+                case TabsFragment.PAST_OFFERED_RIDES:
+                    call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, "1", "10");
+                    break;
+            }
             //asynchronous call
-            call.enqueue(this);
+            if (call != null) {
+                call.enqueue(this);
+            }
         } else {
             ((HomeActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
         }
     }
 
-    public void loadBookedRides() {
-        if (bookedRides != null && bookedRides.Data != null && bookedRides.Data.size() > 0) {
+    public void loadOfferedRides() {
+        if (offeredRides != null && offeredRides.Data != null && offeredRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            adapter = new BookedRidesRecyclerViewAdapter(bookedRides.Data, mTitle, this);
+            adapter = new OfferedRidesRecyclerViewAdapter(offeredRides.Data, mTitle, this);
             recyclerView.setAdapter(adapter);
         } else {
             recyclerView.setVisibility(View.GONE);
@@ -132,13 +143,13 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
         * @param retrofit
         */
     @Override
-    public void onResponse(retrofit.Response<BookedRides> response, Retrofit retrofit) {
+    public void onResponse(retrofit.Response<OfferedRides> response, Retrofit retrofit) {
         android.util.Log.e("RESPONSE raw", response.raw() + "");
         toggleProgress(false);
         if (response.body() != null) {
             try {
-                bookedRides = response.body();
-                loadBookedRides();
+                offeredRides = response.body();
+                loadOfferedRides();
             } catch (Exception e) {
                 e.printStackTrace();
                 recyclerView.setVisibility(View.GONE);
@@ -161,23 +172,15 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.BOOKED_RIDES_SCREEN);
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.OFFERED_RIDES_SCREEN);
         if (getArguments() != null) {
-            bookedRides = (BookedRides) getArguments().getSerializable("RIDES");
-            loadBookedRides();
+            offeredRides = (OfferedRides) getArguments().getSerializable("RIDES");
+            loadOfferedRides();
         }
     }
 
     public void setEmptyRidesTexts() {
         switch (mTitle) {
-            case TabsFragment.UPCOMING_BOOKED_RIDES:
-                emptyRidesHeading.setText("You have'nt arranged any rides yet.");
-                emptyRidesSubHeading.setText("Once you do, you'll find them here.");
-                break;
-            case TabsFragment.PAST_BOOKED_RIDES:
-                emptyRidesHeading.setText("You have'nt arranged any rides.");
-                emptyRidesSubHeading.setText("Once you do, you'll find them here.");
-                break;
             case TabsFragment.UPCOMING_OFFERED_RIDES:
                 emptyRidesHeading.setText("You have'nt offered any rides yet.");
                 emptyRidesSubHeading.setText("Why not set one up now?");
@@ -195,7 +198,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which){
+                switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         switch (clickedItem) {
                             case BookedRidesRecyclerViewAdapter.cancelRide:
@@ -220,69 +223,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<BookedRid
 
     @Override
     public void onItemClick(final int clickedItem, final int position) {
-        if (clickedItem != BookedRidesRecyclerViewAdapter.viewRide) {
-            Call<UserDataDTO> call = null;
-            final BookedRides.BookedData data = adapter.getItem(position);
-            switch (clickedItem) {
-                case BookedRidesRecyclerViewAdapter.cancelRide:
-                case BookedRidesRecyclerViewAdapter.deleteRide:
-                    call = areYouSureDialog(clickedItem, "" + data.RideBookingId);
-                    break;
-                case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
-                    call = Utils.getYatraShareAPI().sendJourneyDetails(userGuide, "" + data.RideBookingId);
-                    break;
-            }
+        OfferedRides.OfferedRideData offeredRide = adapter.getItem(position);
 
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-
-            //asynchronous call
-            if (call != null) {
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response response from server
-                     * @param retrofit adapter
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data != null) {
-                            if (response.body().Data.equalsIgnoreCase("Success")) {
-                                switch (clickedItem) {
-                                    case BookedRidesRecyclerViewAdapter.cancelRide:
-                                        ((HomeActivity) mContext).showSnackBar("Ride Cancelled");
-                                        break;
-                                    case BookedRidesRecyclerViewAdapter.deleteRide:
-                                        ((HomeActivity) mContext).showSnackBar("Ride Deleted successfully");
-                                        adapter.remove(position);
-                                        break;
-                                    case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
-                                        ((HomeActivity) mContext).showSnackBar("Message Successfully sent");
-                                        break;
-                                }
-                            } else {
-                                ((HomeActivity) mContext).showSnackBar(response.body().Data);
-                            }
-                        }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
-
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t exception
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                    }
-                });
-            }
-        } else {
-            Utils.showToast(mContext, "etewtewtewt");
-        }
     }
 }

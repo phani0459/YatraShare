@@ -190,6 +190,8 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 if (whereFromhasFocus) whereFromEditText.setText(place.getAddress());
                 else whereToEditText.setText(place.getAddress());
 
+                whereFromEditText.setError(null);
+                whereToEditText.setError(null);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);
                 Log.e(TAG, "Error: Status = " + status.toString());

@@ -18,9 +18,6 @@ import com.yatrashare.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO: Replace the implementation with code for your data type.
- */
 public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedRidesRecyclerViewAdapter.ViewHolder> {
 
     private final List<BookedRides.BookedData> mValues;

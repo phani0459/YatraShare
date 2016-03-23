@@ -1,10 +1,12 @@
 package com.yatrashare.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,7 +32,7 @@ import retrofit.Retrofit;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class MessageListFragment extends Fragment implements MessagesRecyclerViewAdapter.SetOnItemClickListener{
+public class MessageListFragment extends Fragment implements MessagesRecyclerViewAdapter.SetOnItemClickListener {
 
     private static final String TAG = MessageListFragment.class.getSimpleName();
     private int mColumnCount = 1;
@@ -77,9 +79,9 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)mContext).setTitle("Messages");
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.MESSAGES_SCREEN);
-        ((HomeActivity)mContext).prepareMenu();
+        ((HomeActivity) mContext).setTitle("Messages");
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.MESSAGES_SCREEN);
+        ((HomeActivity) mContext).prepareMenu();
     }
 
     public void getMessages() {
@@ -118,10 +120,68 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     }
 
     private void loadMessages(MessagesList messagesList) {
-        if (messagesList != null && messagesList.Data != null && messagesList.Data.size()  > 0) {
+        if (messagesList != null && messagesList.Data != null && messagesList.Data.size() > 0) {
             adapter = new MessagesRecyclerViewAdapter(mContext, messagesList.Data, this);
             messagesRecycleView.setAdapter(adapter);
         }
+    }
+
+    public void deleteMessage(MessagesList.MessagesListData messageData, final int position) {
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().deleteMessage(userGuid, messageData.MessageGuid);
+        //asynchronous call
+        call.enqueue(new Callback<UserDataDTO>() {
+            /**
+             * Successful HTTP response.
+             *
+             * @param response
+             * @param retrofit
+             */
+            @Override
+            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                if (response.body() != null && response.body().Data.equalsIgnoreCase("SUCCESS")) {
+                    try {
+                        adapter.removeItem(position);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+            }
+
+            /**
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+            }
+        });
+    }
+
+    public void areYouSureDialog(final MessagesList.MessagesListData messagesListData, final int position) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Utils.showProgress(true, mProgressView, mProgressBGView);
+                        deleteMessage(messagesListData, position);
+                        dialog.dismiss();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 
     @Override
@@ -129,41 +189,9 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
         if (adapter != null) {
             MessagesList.MessagesListData messageData = adapter.getItem(position);
             if (isView) {
-                ((HomeActivity)mContext).loadScreen(HomeActivity.MESSAGE_DETAILS_SCREEN, false, messageData, Constants.MESSAGE_SCREEN_NAME);
+                ((HomeActivity) mContext).loadScreen(HomeActivity.MESSAGE_DETAILS_SCREEN, false, messageData, Constants.MESSAGE_SCREEN_NAME);
             } else {
-                Utils.showProgress(true, mProgressView, mProgressBGView);
-                Call<UserDataDTO> call = Utils.getYatraShareAPI().deleteMessage(userGuid, messageData.MessageGuid);
-                //asynchronous call
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response
-                     * @param retrofit
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data.equalsIgnoreCase("SUCCESS")) {
-                            try {
-                                adapter.removeItem(position);
-                            } catch (Exception e) { e.printStackTrace(); }
-                        }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
-
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                    }
-                });
+                areYouSureDialog(messageData, position);
             }
         }
     }
