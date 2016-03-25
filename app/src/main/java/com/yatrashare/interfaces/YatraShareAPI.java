@@ -1,9 +1,11 @@
 package com.yatrashare.interfaces;
 
 import com.yatrashare.dtos.BookedRides;
+import com.yatrashare.dtos.GetUserBookings;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.OfferedRides;
+import com.yatrashare.dtos.OfferedSubRides;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.Rating;
 import com.yatrashare.dtos.RatingReceiverInfo;
@@ -38,6 +40,15 @@ public interface YatraShareAPI {
     @GET("/api/Rides/GetUserPastRides")
     Call<OfferedRides> pastOfferedRides(@Query("userGuid") String userGuide, @Query("pastRidePageIndex") String pastRidePageIndex, @Query("pageSize") String pageSize);
 
+    @GET("/api/Rides/GetUserUpcommingSubRides")
+    Call<OfferedSubRides> upComingSubRides(@Query("userGuid") String userGuide, @Query("rideGuid") String rideGuid);
+
+    @GET("/api/Rides/GetUserPastSubRides")
+    Call<OfferedSubRides> pastSubRides(@Query("userGuid") String userGuide, @Query("rideGuid") String rideGuid);
+
+    @GET("/api/Rides/GetUserBookings")
+    Call<GetUserBookings> getUserBookings(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid);
+
     @POST("/api/User/Login")
     Call<String> userLogin(@Body UserLogin userLogin);
 
@@ -45,8 +56,8 @@ public interface YatraShareAPI {
     Call<UserDataDTO> bookRide(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid, @Query("passengers") String passengers);
 
     @POST("/api/Rides/CreateEmailAlert")
-    Call<UserDataDTO> createEmailAlert(@Query("userGuid") String userGuide, @Query("email") String email, @Query("departureDate") String departureDate
-                                        ,@Query("departurePoint") String departurePoint, @Query("arrivalPoint") String arrivalPoint, @Query("rideType") String rideType, @Query("vehicleType") String vehicleType);
+    Call<UserDataDTO> createEmailAlert(@Query("userGuid") String userGuide, @Query("email") String email, @Query("departureDate") String departureDate,
+                                       @Query("departurePoint") String departurePoint, @Query("arrivalPoint") String arrivalPoint, @Query("rideType") String rideType, @Query("vehicleType") String vehicleType);
 
     @POST("/api/Rides/SearchRides")
     Call<SearchRides> FindRides(@Body FindRide findRide);

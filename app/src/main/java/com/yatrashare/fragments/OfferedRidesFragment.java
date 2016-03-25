@@ -1,6 +1,7 @@
 package com.yatrashare.fragments;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.SubRidesActivity;
 import com.yatrashare.adapter.BookedRidesRecyclerViewAdapter;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
 import com.yatrashare.dtos.OfferedRides;
@@ -128,7 +130,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         if (offeredRides != null && offeredRides.Data != null && offeredRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            adapter = new OfferedRidesRecyclerViewAdapter(offeredRides.Data, mTitle, this);
+            adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
             recyclerView.setAdapter(adapter);
         } else {
             recyclerView.setVisibility(View.GONE);
@@ -223,7 +225,11 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
 
     @Override
     public void onItemClick(final int clickedItem, final int position) {
-        OfferedRides.OfferedRideData offeredRide = adapter.getItem(position);
-
+        OfferedRides.OfferedRideData offeredRide = (OfferedRides.OfferedRideData) adapter.getItem(position);
+        Intent intent = new Intent(mContext, SubRidesActivity.class);
+        intent.putExtra("TITLE", mTitle);
+        intent.putExtra("SELECTED RIDE", offeredRide);
+        intent.putExtra("UserGuide", userGuide);
+        startActivity(intent);
     }
 }
