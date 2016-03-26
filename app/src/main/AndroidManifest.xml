@@ -56,7 +56,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.SubRidesActivity"></activity>
+        <activity android:name=".activities.SubRidesActivity" />
+        <activity android:name=".activities.UserBookingsActivity"></activity>
     </application>
 
 </manifest>

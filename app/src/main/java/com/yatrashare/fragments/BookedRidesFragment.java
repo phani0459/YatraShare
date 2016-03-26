@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.facebook.login.LoginManager;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.BookedRidesRecyclerViewAdapter;
@@ -82,18 +81,6 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         return view;
     }
 
-    public void toggleProgress(boolean visibility) {
-        if (visibility) {
-            mProgressView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.GONE);
-        } else {
-            mProgressView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -105,7 +92,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
     public void getBookedRides() {
         android.util.Log.e("getBookedRides", userGuide);
         if (!TextUtils.isEmpty(userGuide)) {
-            toggleProgress(true);
+            Utils.showProgress(true, mProgressView, mProgressBGView);
             Call<BookedRides> call = Utils.getYatraShareAPI().bookedRides(userGuide, "" + (mTitle + 1));
             //asynchronous call
             call.enqueue(this);
@@ -135,7 +122,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
     @Override
     public void onResponse(retrofit.Response<BookedRides> response, Retrofit retrofit) {
         android.util.Log.e("RESPONSE raw", response.raw() + "");
-        toggleProgress(false);
+        Utils.showProgress(false, mProgressView, mProgressBGView);
         if (response.body() != null) {
             try {
                 bookedRides = response.body();
@@ -156,7 +143,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
     @Override
     public void onFailure(Throwable t) {
         android.util.Log.e(TAG, t.getLocalizedMessage() + "");
-        toggleProgress(false);
+        Utils.showProgress(false, mProgressView, mProgressBGView);
     }
 
     @Override

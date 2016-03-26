@@ -1,5 +1,6 @@
 package com.yatrashare.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
@@ -58,7 +59,6 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
 
         mTitle = getIntent().getExtras().getInt("TITLE");
         offeredRideData = (OfferedRides.OfferedRideData) getIntent().getExtras().getSerializable("SELECTED RIDE");
-
         userGuide = getIntent().getExtras().getString("UserGuide", "");
 
         setEmptyRidesTexts();
@@ -69,18 +69,6 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Stopover Points");
-    }
-
-    public void toggleProgress(boolean visibility) {
-        if (visibility) {
-            mProgressView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.GONE);
-        } else {
-            mProgressView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -98,7 +86,7 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
     public void getOfferedSubRides() {
         android.util.Log.e("getOfferedRides", userGuide);
         if (!TextUtils.isEmpty(userGuide)) {
-            toggleProgress(true);
+            Utils.showProgress(true, mProgressView, mProgressBGView);
             Call<OfferedSubRides> call = null;
             switch (mTitle) {
                 case TabsFragment.UPCOMING_OFFERED_RIDES:
@@ -138,7 +126,7 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
     @Override
     public void onResponse(retrofit.Response<OfferedSubRides> response, Retrofit retrofit) {
         android.util.Log.e("RESPONSE raw", response.raw() + "");
-        toggleProgress(false);
+        Utils.showProgress(false, mProgressView, mProgressBGView);
         if (response.body() != null) {
             try {
                 offeredSubRides = response.body();
@@ -159,7 +147,7 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
     @Override
     public void onFailure(Throwable t) {
         android.util.Log.e(TAG, t.getLocalizedMessage() + "");
-        toggleProgress(false);
+        Utils.showProgress(false, mProgressView, mProgressBGView);
     }
 
     @Override
@@ -194,5 +182,10 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
     @Override
     public void onItemClick(final int clickedItem, final int position) {
         OfferedSubRides.SubRideData subRide = (OfferedSubRides.SubRideData) adapter.getItem(position);
+        Intent intent = new Intent(mContext, UserBookingsActivity.class);
+        intent.putExtra("TITLE", mTitle);
+        intent.putExtra("SELECTED SUB RIDE", subRide);
+        intent.putExtra("UserGuide", userGuide);
+        startActivity(intent);
     }
 }

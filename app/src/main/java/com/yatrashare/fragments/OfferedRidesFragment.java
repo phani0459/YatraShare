@@ -1,12 +1,10 @@
 package com.yatrashare.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.SubRidesActivity;
-import com.yatrashare.adapter.BookedRidesRecyclerViewAdapter;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.UserDataDTO;
@@ -84,18 +81,6 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         return view;
     }
 
-    public void toggleProgress(boolean visibility) {
-        if (visibility) {
-            mProgressView.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.GONE);
-        } else {
-            mProgressView.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -107,7 +92,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     public void getOfferedRides() {
         android.util.Log.e("getOfferedRides", userGuide);
         if (!TextUtils.isEmpty(userGuide)) {
-            toggleProgress(true);
+            Utils.showProgress(true, mProgressView, mProgressBGView);
             Call<OfferedRides> call = null;
             switch (mTitle) {
                 case TabsFragment.UPCOMING_OFFERED_RIDES:
@@ -147,7 +132,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     @Override
     public void onResponse(retrofit.Response<OfferedRides> response, Retrofit retrofit) {
         android.util.Log.e("RESPONSE raw", response.raw() + "");
-        toggleProgress(false);
+        Utils.showProgress(false, mProgressView, mProgressBGView);
         if (response.body() != null) {
             try {
                 offeredRides = response.body();
@@ -168,7 +153,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     @Override
     public void onFailure(Throwable t) {
         android.util.Log.e(TAG, t.getLocalizedMessage() + "");
-        toggleProgress(false);
+        Utils.showProgress(false, mProgressView, mProgressBGView);
     }
 
     @Override
@@ -184,44 +169,17 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     public void setEmptyRidesTexts() {
         switch (mTitle) {
             case TabsFragment.UPCOMING_OFFERED_RIDES:
-                emptyRidesHeading.setText("You have'nt offered any rides yet.");
+                emptyRidesHeading.setText("You don't have any upcoming Rides.");
                 emptyRidesSubHeading.setText("Why not set one up now?");
                 break;
             case TabsFragment.PAST_OFFERED_RIDES:
-                emptyRidesHeading.setText("You have'nt offered any rides yet.");
-                emptyRidesSubHeading.setText("Why not set one up now?");
+                emptyRidesHeading.setText("You have'nt offered any rides in the past.");
+                emptyRidesSubHeading.setText("");
                 break;
         }
     }
 
     Call<UserDataDTO> call = null;
-
-    public Call<UserDataDTO> areYouSureDialog(final int clickedItem, final String rideBookingId) {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        switch (clickedItem) {
-                            case BookedRidesRecyclerViewAdapter.cancelRide:
-                                call = Utils.getYatraShareAPI().cancelSeat(userGuide, "" + rideBookingId);
-                                break;
-                            case BookedRidesRecyclerViewAdapter.deleteRide:
-                                call = Utils.getYatraShareAPI().deleteRide(userGuide, "" + rideBookingId);
-                                break;
-                        }
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
-                .setNegativeButton("No", dialogClickListener).show();
-        return call;
-    }
 
     @Override
     public void onItemClick(final int clickedItem, final int position) {

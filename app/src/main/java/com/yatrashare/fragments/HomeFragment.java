@@ -195,9 +195,13 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);
                 Log.e(TAG, "Error: Status = " + status.toString());
+                if (whereFromhasFocus) whereFromEditText.setText("");
+                else whereToEditText.setText("");
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // Indicates that the activity closed before a selection was made. For example if
                 // the user pressed the back button.
+                if (whereFromhasFocus) whereFromEditText.setText("");
+                else whereToEditText.setText("");
             }
         }
     }
