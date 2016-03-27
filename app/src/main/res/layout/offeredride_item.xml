@@ -60,19 +60,39 @@
             android:layout_height="1dp"
             android:background="#E1E1E1" />
 
-        <TextView
-            android:id="@+id/tv_rideDate"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/date"
-            android:drawablePadding="4dp"
-            android:gravity="center_vertical"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
             android:paddingBottom="4dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="4dp"
-            android:textColor="@color/colorPrimary" />
+            android:weightSum="8">
+
+            <TextView
+                android:id="@+id/tv_rideDate"
+                style="@android:style/TextAppearance.DeviceDefault.Small"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:drawableLeft="@drawable/date"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorPrimary" />
+
+            <ImageView
+                android:id="@+id/im_delete_ofrdRide"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@android:drawable/ic_menu_delete" />
+
+        </LinearLayout>
 
         <View
             android:id="@+id/remainSeats_divider"

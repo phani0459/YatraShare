@@ -5,11 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
+import com.yatrashare.fragments.TabsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,9 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
             holder.rideDeparturePoint.setText(offeredRide.DeparturePoint);
             holder.rideAraivalPoint.setText(offeredRide.ArrivalPoint);
             holder.rideDateText.setText(offeredRide.DepartureDate);
+            if (mTitle == TabsFragment.UPCOMING_OFFERED_RIDES) {
+                holder.deleteRide.setVisibility(View.VISIBLE);
+            }
         } else {
             OfferedSubRides.SubRideData subRideData = subRides.get(position);
             holder.rideDeparturePoint.setText(subRideData.DeparturePoint);
@@ -71,6 +76,13 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
             @Override
             public void onClick(View v) {
                 setOnItemClickListener.onItemClick(1, position);
+            }
+        });
+
+        holder.deleteRide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setOnItemClickListener.onItemClick(2, position);
             }
         });
     }
@@ -106,6 +118,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
         private TextView rideDeparturePoint, rideDateText, rideAraivalPoint;
         private TextView remainingSeats, bookedSeats, seatPrice;
         private View remainingSeatsView, bookedSeatsView;
+        private ImageView deleteRide;
 
         public ViewHolder(View view) {
             super(view);
@@ -119,6 +132,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
             seatPrice = (TextView) view.findViewById(R.id.tv_seatPrice);
 
             remainingSeatsView = view.findViewById(R.id.remainSeats_divider);
+            deleteRide = (ImageView) view.findViewById(R.id.im_delete_ofrdRide);
             bookedSeatsView = view.findViewById(R.id.bukdSeats_divider);
         }
 

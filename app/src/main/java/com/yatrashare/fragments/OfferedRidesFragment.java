@@ -184,10 +184,49 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     @Override
     public void onItemClick(final int clickedItem, final int position) {
         OfferedRides.OfferedRideData offeredRide = (OfferedRides.OfferedRideData) adapter.getItem(position);
-        Intent intent = new Intent(mContext, SubRidesActivity.class);
-        intent.putExtra("TITLE", mTitle);
-        intent.putExtra("SELECTED RIDE", offeredRide);
-        intent.putExtra("UserGuide", userGuide);
-        startActivity(intent);
+        if (clickedItem == 1) {
+            Intent intent = new Intent(mContext, SubRidesActivity.class);
+            intent.putExtra("TITLE", mTitle);
+            intent.putExtra("SELECTED RIDE", offeredRide);
+            intent.putExtra("UserGuide", userGuide);
+            startActivity(intent);
+        } else if (clickedItem == 2) {
+            deleteRide(offeredRide, position);
+        }
+    }
+
+    private void deleteRide(OfferedRides.OfferedRideData offeredRide, final int position) {
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().deleteOfferedRide(userGuide, offeredRide.RideGuid);
+        call.enqueue(new Callback<UserDataDTO>() {
+            /**
+             * Successful HTTP response.
+             *
+             * @param response
+             * @param retrofit
+             */
+            @Override
+            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                if (response.body() != null && response.body().Data != null) {
+                    if (response.body().Data.equalsIgnoreCase("Success")) {
+                        adapter.remove(position);
+                        ((HomeActivity) mContext).showSnackBar("Success");
+                    }
+                }
+            }
+
+            /**
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+            }
+        });
     }
 }

@@ -69,7 +69,7 @@ public interface YatraShareAPI {
     Call<UserDataDTO> approveSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
 
     @POST("/api/Rides/DeleteRide")
-    Call<UserDataDTO> deleteOfferedSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
+    Call<UserDataDTO> deleteOfferedRide(@Query("userGuid") String userGuid, @Query("RideGuid") String RideGuid);
 
     @POST("/api/Rides/RejectSeatBooking")
     Call<UserDataDTO> rejectSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
