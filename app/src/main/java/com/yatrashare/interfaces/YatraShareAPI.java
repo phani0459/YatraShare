@@ -65,6 +65,15 @@ public interface YatraShareAPI {
     @POST("/api/User/ForgotPassword")
     Call<UserDataDTO> userFgtPwd(@Body UserFgtPassword userFgtPwd);
 
+    @POST("/api/Rides/ApproveSeatBooking")
+    Call<UserDataDTO> approveSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
+
+    @POST("/api/Rides/DeleteRide")
+    Call<UserDataDTO> deleteOfferedSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
+
+    @POST("/api/Rides/RejectSeatBooking")
+    Call<UserDataDTO> rejectSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
+
     @POST("/api/User/LoginUsingFacebook")
     Call<String> userFBLogin(@Body UserFBLogin userFBLogin);
 

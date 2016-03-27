@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/approveSeat"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Approve" />
+    <item
+        android:id="@+id/rejectSeat"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="Reject" />
+    <item
+        android:id="@+id/sendMessage"
+        android:icon="@android:drawable/sym_action_email"
+        android:title="Send Message" />
+
+</menu>

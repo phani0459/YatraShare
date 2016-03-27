@@ -57,7 +57,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SubRidesActivity" />
-        <activity android:name=".activities.UserBookingsActivity"></activity>
+        <activity android:name=".activities.UserBookingsActivity" />
+        <activity android:name=".activities.MessageDetailsActivity" />
     </application>
 
 </manifest>

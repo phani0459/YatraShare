@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,7 +52,6 @@ import com.yatrashare.fragments.FindRideFragment;
 import com.yatrashare.fragments.HomeFragment;
 import com.yatrashare.fragments.LoginFragment;
 import com.yatrashare.fragments.LoginWithEmailFragment;
-import com.yatrashare.fragments.MessageDetailsFragment;
 import com.yatrashare.fragments.MessageListFragment;
 import com.yatrashare.fragments.MoreFragment;
 import com.yatrashare.fragments.ProfileFragment;
@@ -106,7 +106,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Menu menu;
     private ProfileFragment profileFragment;
     private MessageListFragment messageListFragment;
-    private MessageDetailsFragment messageDetailFragment;
+    private MessageDetailsActivity messageDetailFragment;
     private FindRideFragment searchRideFragment;
 
     @Override
@@ -200,10 +200,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (!init) {
-            if (getSupportFragmentManager().getBackStackEntryCount() > 0) popBackFragment(fragmentName);
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+                popBackFragment(fragmentName);
         } else {
             setCurrentScreen(HOME_SCREEN);
-            try{
+            try {
                 Fragment fragment = new HomeFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 if (init && fragmentName != null) {
@@ -211,7 +212,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 } else {
                     fragmentManager.beginTransaction().replace(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -225,11 +226,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void loadScreen(int SCREEN_NAME, boolean init, Object object, String originScreen) {
-        try{
+        try {
             Bundle bundle = new Bundle();
             if (getCurrentScreen() != SCREEN_NAME) {
                 setCurrentScreen(SCREEN_NAME);
-                switch (SCREEN_NAME){
+                switch (SCREEN_NAME) {
                     case LOGIN_SCREEN:
                         LoginFragment loginFragment = new LoginFragment();
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
@@ -352,7 +353,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case WEB_SCREEN:
                         WebViewFragment webViewFragment = new WebViewFragment();
-                        bundle.putString("URL", (String)object);
+                        bundle.putString("URL", (String) object);
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
                         webViewFragment.setArguments(bundle);
                         if (init) {
@@ -406,19 +407,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         }
                         break;
                     case MESSAGE_DETAILS_SCREEN:
-                        messageDetailFragment = new MessageDetailsFragment();
-                        bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        Intent intent = new Intent(this, MessageDetailsActivity.class);
+                        intent.putExtra(Constants.ORIGIN_SCREEN_KEY, originScreen);
                         if (originScreen.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME) || originScreen.equalsIgnoreCase(Constants.RIDE_CONFIRM_SCREEN_NAME)) {
-                            bundle.putSerializable("Message", (RideDetails.RideDetailData)object);
+                            intent.putExtra("Message", (RideDetails.RideDetailData) object);
                         } else {
-                            bundle.putSerializable("Message", (MessagesList.MessagesListData)object);
+                            intent.putExtra("Message", (MessagesList.MessagesListData) object);
                         }
-                        messageDetailFragment.setArguments(bundle);
-                        if (init) {
-                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, messageDetailFragment).addToBackStack(Constants.MESSAGE_DETAILS_SCREEN_NAME).commit();
-                        } else {
-                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, messageDetailFragment).addToBackStack(Constants.MESSAGE_DETAILS_SCREEN_NAME).commit();
-                        }
+                        startActivity(intent);
                         break;
                     case PROVIDE_RATING_SCREEN:
                         ProvideRatingFragment provideRatingFragment = new ProvideRatingFragment();
@@ -441,15 +437,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         bundle.putSerializable("RIDE DATA", (RideDetails.RideDetailData) object);
                         rideConfirmScreen.setArguments(bundle);
                         if (init) {
-                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, rideConfirmScreen).addToBackStack(Constants.RIDE_CONFIRM_SCREEN_NAME).commit();
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, rideConfirmScreen).commit();
                         } else {
-                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, rideConfirmScreen).addToBackStack(Constants.RIDE_CONFIRM_SCREEN_NAME).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.content_layout, rideConfirmScreen).commit();
                         }
                         break;
                 }
             }
             onPrepareOptionsMenu(menu);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -471,7 +467,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if (getCurrentScreen() == WEB_SCREEN) {
                 loadScreen(MORE_SCREEN, false, null, Constants.WEB_SCREEN_NAME);
-            } if (getCurrentScreen() != HOME_SCREEN) {
+            }
+            if (getCurrentScreen() != HOME_SCREEN) {
                 popBackFragment(null);
             } else {
                 if (doubleBackToExitPressedOnce) {
@@ -641,7 +638,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
                                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, "");

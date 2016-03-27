@@ -3,6 +3,7 @@ package com.yatrashare.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -101,7 +102,7 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
                 call.enqueue(this);
             }
         } else {
-            ((HomeActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
+            Snackbar.make(recyclerView, getString(R.string.userguide_ratioanle), Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
     }
 

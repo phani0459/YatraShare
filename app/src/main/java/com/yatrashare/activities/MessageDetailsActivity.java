@@ -1,27 +1,25 @@
-package com.yatrashare.fragments;
+package com.yatrashare.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.yatrashare.R;
-import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.ChatDetailsAdapter;
+import com.yatrashare.dtos.GetUserBookings;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.UserDataDTO;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
@@ -32,14 +30,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
  * Created by pkandagatla on 6/3/16.
  */
-public class MessageDetailsFragment extends Fragment {
-    private static final String TAG = MessageDetailsFragment.class.getSimpleName();
+public class MessageDetailsActivity extends AppCompatActivity {
+    private static final String TAG = MessageDetailsActivity.class.getSimpleName();
     @Bind(R.id.list_view_messages)
     public ListView messagesDetailsListView;
     private Context mContext;
@@ -48,34 +45,37 @@ public class MessageDetailsFragment extends Fragment {
     public ProgressBar mProgressView;
     @Bind(R.id.msgsDetailsProgressBGView)
     public View mProgressBGView;
-    @Bind(R.id.btnSend)
-    public Button btnSend;
     @Bind(R.id.inputMsg)
     public EditText inputMsgEdit;
     private MessagesList.MessagesListData messagesListData;
     private MessageDetails messagesDetailsList;
     private ChatDetailsAdapter adapter;
-    private SharedPreferences mSharedPreferences;
     private RideDetails.RideDetailData rideDetailData;
     private String screenName;
+    GetUserBookings.UserBookingData userBookingData;
+    private String PossibleRideGuid;
 
-    @Nullable
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_chat_details, container, false);
-        ButterKnife.bind(this, view);
-        mContext = getActivity();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat_details);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        ButterKnife.bind(this);
+        mContext = this;
+
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        screenName = getArguments().getString(Constants.ORIGIN_SCREEN_KEY, "");
+        screenName = getIntent().getExtras().getString(Constants.ORIGIN_SCREEN_KEY, "");
 
         if (screenName.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME) || screenName.equalsIgnoreCase(Constants.RIDE_CONFIRM_SCREEN_NAME)) {
-            rideDetailData = (RideDetails.RideDetailData) getArguments().getSerializable("Message");
+            rideDetailData = (RideDetails.RideDetailData) getIntent().getExtras().getSerializable("Message");
+        } else if (screenName.equalsIgnoreCase("User Bookings")) {
+            userBookingData = (GetUserBookings.UserBookingData) getIntent().getExtras().getSerializable("Message");
+            PossibleRideGuid = getIntent().getExtras().getString("PossibleRideGuid");
         } else {
-            messagesListData = (MessagesList.MessagesListData) getArguments().getSerializable("Message");
+            messagesListData = (MessagesList.MessagesListData) getIntent().getExtras().getSerializable("Message");
         }
 
         adapter = new ChatDetailsAdapter(mContext, new ArrayList<MessageDetails.MessageDetailData>());
@@ -83,19 +83,31 @@ public class MessageDetailsFragment extends Fragment {
 
         getConversationList();
 
-        return view;
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getSupportActionBar().setTitle("Message Details");
+        if (messagesListData != null) {
+            getSupportActionBar().setTitle(messagesListData.Route);
+        } else if (rideDetailData != null) {
+            getSupportActionBar().setTitle("" + rideDetailData.UserName);
+        } else if (userBookingData != null) {
+            getSupportActionBar().setTitle("" + userBookingData.BookedUserName);
+        }
     }
 
     @OnClick(R.id.btnSend)
     public void sendMessage() {
         final String msg = inputMsgEdit.getText().toString();
         Utils.hideSoftKeyboard(inputMsgEdit);
-        if (msg != null && !msg.isEmpty()) {
+        if (!msg.isEmpty()) {
             Call<UserDataDTO> call = null;
             if (messagesDetailsList != null && messagesDetailsList.Data != null && messagesDetailsList.Data.size() > 0) {
                 call = Utils.getYatraShareAPI().SendReplyMessage(userGuid, messagesDetailsList.Data.get(0).MessageGuid, msg);
             } else if (rideDetailData != null && rideDetailData.PossibleRideGuid != null && rideDetailData.UserGuid != null) {
                 call = Utils.getYatraShareAPI().sendMessage(userGuid, rideDetailData.UserGuid, rideDetailData.PossibleRideGuid, msg);
+            } else if (userBookingData != null) {
+                call = Utils.getYatraShareAPI().sendMessage(userGuid, userBookingData.BookedUserGuid, PossibleRideGuid, msg);
             }
             if (call != null) {
                 Utils.showProgress(true, mProgressView, mProgressBGView);
@@ -135,7 +147,7 @@ public class MessageDetailsFragment extends Fragment {
                     public void onFailure(Throwable t) {
                         android.util.Log.e(TAG, "FAILURE RESPONSE");
                         Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                        showSnackBar(getString(R.string.tryagain));
                     }
                 });
             }
@@ -144,17 +156,14 @@ public class MessageDetailsFragment extends Fragment {
         }
     }
 
+    public void showSnackBar(String msg) {
+        Snackbar.make(messagesDetailsListView, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
     @Override
-    public void onResume() {
-        super.onResume();
-        ((HomeActivity)mContext).setTitle("Message Details");
-        if (messagesListData != null) {
-            ((HomeActivity)mContext).setTitle(messagesListData.Route);
-        } else if (rideDetailData != null) {
-            ((HomeActivity)mContext).setTitle("" + rideDetailData.UserName);
-        }
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.MESSAGE_DETAILS_SCREEN);
-        ((HomeActivity)mContext).prepareMenu();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) finish();
+        return super.onOptionsItemSelected(item);
     }
 
     public void getConversationList() {
@@ -188,7 +197,7 @@ public class MessageDetailsFragment extends Fragment {
                 public void onFailure(Throwable t) {
                     android.util.Log.e(TAG, "FAILURE RESPONSE");
                     Utils.showProgress(false, mProgressView, mProgressBGView);
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                    showSnackBar(getString(R.string.tryagain));
                 }
             });
         }
