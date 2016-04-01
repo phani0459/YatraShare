@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -99,6 +100,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private int currentScreen;
     @Bind(R.id.toolbar)
     public Toolbar mToolbar;
+    @Bind(R.id.toolBarLogo)
+    public ImageView toolBarLogo;
     private SimpleDraweeView userDraweeImageView;
     private TextView userNameTextView;
     @Bind(R.id.nav_view)
@@ -154,7 +157,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userDraweeImageView = (SimpleDraweeView) view.findViewById(R.id.userDraweeView);
 
         loadHomePage(true, "");
-
     }
 
     public void showSnackBar(String msg) {
@@ -220,6 +222,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
+
+        if (getCurrentScreen() == HOME_SCREEN) {
+            toolBarLogo.setVisibility(View.VISIBLE);
+        } else {
+            toolBarLogo.setVisibility(View.GONE);
+        }
+
         if (menu != null)
             onPrepareOptionsMenu(menu);
 
@@ -444,6 +453,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         break;
                 }
             }
+
+            if (getCurrentScreen() == HOME_SCREEN) {
+                toolBarLogo.setVisibility(View.VISIBLE);
+            } else {
+                toolBarLogo.setVisibility(View.GONE);
+            }
+
             onPrepareOptionsMenu(menu);
         } catch (Exception e) {
             e.printStackTrace();
@@ -490,6 +506,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         prepareMenu();
+
+        if (getCurrentScreen() == HOME_SCREEN) {
+            toolBarLogo.setVisibility(View.VISIBLE);
+        } else {
+            toolBarLogo.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -642,9 +664,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                             case DialogInterface.BUTTON_POSITIVE:
                                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
                                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_GUID, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_NAME, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, "");
-                                    mSharedPrefEditor.putString(Constants.PREF_USER_GUID, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, "");
                                     mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
                                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, false);

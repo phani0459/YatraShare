@@ -157,7 +157,7 @@ public class ProvideRatingFragment extends Fragment {
                     @Override
                     public void onResponse(retrofit.Response<RatingReceiverInfo> response, Retrofit retrofit) {
                         android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data != null) {
+                        if (response.body() != null && response.body().Data != null && response.body().Data.Email != null && response.body().Data.MobileNumber != null) {
                             showFindMemberBtn.setVisibility(View.VISIBLE);
                             receiverInfoLayout.setVisibility(View.VISIBLE);
                             giveFeedBackLayout.setVisibility(View.VISIBLE);

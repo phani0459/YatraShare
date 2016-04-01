@@ -27,6 +27,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.pojos.FindRide;
@@ -157,13 +158,18 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
 
     @OnClick(R.id.offerRide)
     public void offerRide() {
-        ((HomeActivity) getActivity()).loadScreen(HomeActivity.OFFER_RIDE_SCREEN, false, null, null);
+        Intent intent = new Intent(mContext, OfferRideActivity.class);
+        intent.putExtra("DEPARTURE", whereFromEditText.getText().toString());
+        intent.putExtra("ARRIVAL", whereToEditText.getText().toString());
+        intent.putExtra("DATE", dateEditText.getText().toString());
+        startActivity(intent);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         ((HomeActivity) getActivity()).setCurrentScreen(HomeActivity.HOME_SCREEN);
+        ((HomeActivity) getActivity()).setTitle("");
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

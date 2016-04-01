@@ -58,7 +58,10 @@
         </activity>
         <activity android:name=".activities.SubRidesActivity" />
         <activity android:name=".activities.UserBookingsActivity" />
-        <activity android:name=".activities.MessageDetailsActivity" />
+        <activity
+            android:name=".activities.MessageDetailsActivity"
+            android:theme="@style/AppTheme.MessageDetailTheme" />
+        <activity android:name=".activities.OfferRideActivity"></activity>
     </application>
 
 </manifest>

@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -64,6 +65,9 @@ public class MessageDetailsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = this;
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
@@ -90,7 +94,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         if (messagesListData != null) {
             getSupportActionBar().setTitle(messagesListData.Route);
         } else if (rideDetailData != null) {
-            getSupportActionBar().setTitle("" + rideDetailData.UserName);
+            getSupportActionBar().setTitle("Send message to " + rideDetailData.UserName);
         } else if (userBookingData != null) {
             getSupportActionBar().setTitle("" + userBookingData.BookedUserName);
         }
@@ -110,7 +114,12 @@ public class MessageDetailsActivity extends AppCompatActivity {
                 call = Utils.getYatraShareAPI().sendMessage(userGuid, userBookingData.BookedUserGuid, PossibleRideGuid, msg);
             }
             if (call != null) {
-                Utils.showProgress(true, mProgressView, mProgressBGView);
+                MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
+                messageDetailData.Message = msg;
+                messageDetailData.TypeOfMessage = "Sent";
+                messageDetailData.Name = "Me";
+                messageDetailData.MessageSentTime = "Sending..";
+                adapter.addMessage(messageDetailData);
                 call.enqueue(new Callback<UserDataDTO>() {
                     /**
                      * Successful HTTP response.
@@ -124,18 +133,21 @@ public class MessageDetailsActivity extends AppCompatActivity {
                         if (response.body() != null && response.body().Data != null) {
                             if (response.body().Data.equalsIgnoreCase("") || response.body().Data.equalsIgnoreCase("Success")) {
                                 inputMsgEdit.setText("");
+                                adapter.removeLast();
                                 MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
                                 messageDetailData.Message = msg;
                                 messageDetailData.TypeOfMessage = "Sent";
                                 messageDetailData.Name = "Me";
+                                messageDetailData.MessageSentTime = "Now";
                                 adapter.addMessage(messageDetailData);
                             } else {
+                                adapter.removeLast();
                                 Utils.showToast(mContext, getResources().getString(R.string.tryagain));
                             }
                         } else {
+                            adapter.removeLast();
                             Utils.showToast(mContext, getResources().getString(R.string.tryagain));
                         }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
                     }
 
                     /**
@@ -146,7 +158,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Throwable t) {
                         android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                        adapter.removeLast();
                         showSnackBar(getString(R.string.tryagain));
                     }
                 });

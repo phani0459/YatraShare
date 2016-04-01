@@ -84,7 +84,6 @@ public class UpdateMobileFragment extends Fragment {
         saveBt.getBackground().setLevel(1);
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
-        verifyBt.setEnabled(false);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mEditor = mSharedPreferences.edit();
@@ -111,6 +110,7 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.save_bt)
     public void saveMobileNumber() {
+        verificationCodeEdit.setEnabled(true);
         if (isPhoneValid(phoneEdit.getText().toString())) {
             isPhoneSaved = true;
             phoneEdit.setEnabled(false);
@@ -127,6 +127,7 @@ public class UpdateMobileFragment extends Fragment {
     @OnClick(R.id.cancel_bt)
     public void cancelMobileNumber() {
         phoneEdit.setEnabled(false);
+        verificationCodeEdit.setEnabled(true);
         verifyBtnLayout.setVisibility(View.VISIBLE);
         editNumberBtnsLayout.setVisibility(View.GONE);
     }
@@ -136,6 +137,7 @@ public class UpdateMobileFragment extends Fragment {
         if (!verificationCodeEdit.getText().toString().isEmpty()) {
             verifyCodeLayout.setError(null);
             verifyCodeLayout.setErrorEnabled(false);
+            Utils.showProgress(true, mProgressView, mProgressBGView);
             Call<UserDataDTO> call = Utils.getYatraShareAPI().verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
             //asynchronous call
             call.enqueue(new Callback<UserDataDTO>() {
@@ -228,6 +230,8 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.edit_number_bt)
     public void editMobileNumber() {
+        resendCodeBt.setText("Send Code");
+        verificationCodeEdit.setEnabled(false);
         if(editNumberBtnsLayout.getVisibility() == View.GONE) {
             phoneEdit.setEnabled(true);
             editNumberBtnsLayout.setVisibility(View.VISIBLE);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Yatra Share</string>
+    <string name="app_name">Yatrashare</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -79,8 +79,48 @@
     <string name="resetPwd">Reset</string>
     <string name="signup_tag">If you aren\’t a member yet and you log in with Facebook, we’ll register you as a new userLogin . You\’ll also be agreeing to our Terms &amp; conditions</string>
 
+
+    <!-- Offer Ride Strings -->
+
+    <string name="selectVehicle">Select Your Vehicle</string>
+    <string name="car">Car</string>
+    <string name="byk">Bike</string>
+    <string name="provideRidedetails">Provide your Ride Details here</string>
+    <string name="nextstep">Next Step</string>
+    <string name="publishRide">Publish Ride</string>
+
+    <string-array name="luggageSizeType_array">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <string-array name="timeFlexibileType_array">
+        <item>Around 15 mins</item>
+        <item>Around 30 mins</item>
+        <item>Around 1 hour</item>
+        <item>Around 2 hours</item>
+    </string-array>
+
+    <string-array name="detourType_array">
+        <item>I am not willing to make detour</item>
+        <item>15 mins detour Max</item>
+        <item>30 mins detour Max</item>
+        <item>Any detour</item>
+    </string-array>
+
+    <string name="agreeTerms">I agree Terms and Condtions and I have valid driving Licence.</string>
+
+    <!--Offer Ride Strings -->
     <string name="findmember">Find Member</string>
 
+    <string name="add_stopovers">Add stopovers and get more co-travellers</string>
+    <string name="departuredate">Departure Date</string>
+    <string name="returndate">\tReturn Date\t\t</string>
+    <string name="time">Time</string>
+    <string name="round_trip">Round trip</string>
+    <string name="datentime">Date and Time</string>
+    <string name="ride_stopovers">Stopover point</string>
     <string name="ride_where_from">Where from?</string>
     <string name="ride_where_to">Where to?</string>
     <string name="ride_submit">Submit</string>

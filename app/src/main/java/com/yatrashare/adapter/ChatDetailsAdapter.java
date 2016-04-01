@@ -47,6 +47,10 @@ public class ChatDetailsAdapter extends BaseAdapter {
         return position;
     }
 
+    public void removeLast() {
+        messagesItems.remove(messagesItems.size() - 1);
+    }
+
     @SuppressLint("InflateParams")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -74,9 +78,11 @@ public class ChatDetailsAdapter extends BaseAdapter {
 
         TextView lblFrom = (TextView) convertView.findViewById(R.id.lblMsgFrom);
         TextView txtMsg = (TextView) convertView.findViewById(R.id.txtMsg);
+        TextView txtMsgsentAt = (TextView) convertView.findViewById(R.id.lblMsgFrom_sentat);
 
         txtMsg.setText(m.Message);
         lblFrom.setText(m.Name);
+        txtMsgsentAt.setText(m.MessageSentTime);
 
         return convertView;
     }
