@@ -30,16 +30,17 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
-import com.yatrashare.fragments.PublishRideFragment;
+import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class OfferRideActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener {
+public class OfferRideActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = OfferRideActivity.class.getSimpleName();
     @Bind(R.id.et_ofr_where_from)
@@ -77,6 +78,21 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     private float totalKM;
     @Bind(R.id.weeksLayout)
     public LinearLayout weeksLinearLayout;
+    @Bind(R.id.cb_monday)
+    public CheckBox mondayCheckBox;
+    @Bind(R.id.cb_tueday)
+    public CheckBox tuesDayCheckBox;
+    @Bind(R.id.cb_wedday)
+    public CheckBox weddayCheckBox;
+    @Bind(R.id.cb_thuday)
+    public CheckBox thudayCheckBox;
+    @Bind(R.id.cb_friday)
+    public CheckBox fridayCheckBox;
+    @Bind(R.id.cb_satday)
+    public CheckBox satdayCheckBox;
+    @Bind(R.id.cb_sunday)
+    public CheckBox sundayCheckBox;
+
 
     public void updatePrice() {
         if (departurePlace != null && arrivalPlace != null) {
@@ -129,6 +145,9 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Offer a Ride");
 
+        longRideRB.setChecked(true);
+        Utils.collapse(weeksLinearLayout);
+
         offerWhereFromEdit.setOnTouchListener(this);
         offerWhereToEdit.setOnTouchListener(this);
         stopOverEdit.setOnTouchListener(this);
@@ -136,13 +155,55 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         arrivalDateBtn.setOnClickListener(this);
         departureTimeBtn.setOnClickListener(this);
         arrivalTimeBtn.setOnClickListener(this);
+        mondayCheckBox.setOnCheckedChangeListener(this);
+        tuesDayCheckBox.setOnCheckedChangeListener(this);
+        weddayCheckBox.setOnCheckedChangeListener(this);
+        thudayCheckBox.setOnCheckedChangeListener(this);
+        fridayCheckBox.setOnCheckedChangeListener(this);
+        satdayCheckBox.setOnCheckedChangeListener(this);
+        sundayCheckBox.setOnCheckedChangeListener(this);
     }
 
     int selectedEditText;
 
+    /**
+     * Long Ride = 1
+     * Daily Ride  = 2
+     */
+
     @OnClick(R.id.btn_nxtStep)
     public void nextStep() {
-        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, new PublishRideFragment(), null).commit();
+        RideInfoDto rideInfoDto = new RideInfoDto();
+        Utils.hideSoftKeyboard(offerWhereFromEdit);
+        String rideDeparture = offerWhereFromEdit.getText().toString();
+        String rideArrival = offerWhereToEdit.getText().toString();
+        String rideDepartureDate = departureDateBtn.getText().toString();
+        String rideDepartureTime = departureTimeBtn.getText().toString();
+        String rideArrivalDate = arrivalDateBtn.getText().toString();
+        String rideArrivalTime = arrivalTimeBtn.getText().toString();
+
+        if (!rideDeparture.isEmpty() && !rideArrival.isEmpty()) {
+            if (!rideDepartureDate.isEmpty() && !rideDepartureTime.isEmpty()) {
+                rideInfoDto.setmTotalprice(totalPrice + "");
+                rideInfoDto.setmTotalkilometers(totalKM + "");
+                rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
+                rideInfoDto.setmReturnTime(rideArrivalTime);
+                rideInfoDto.setmDepartureTime(rideDepartureTime);
+                rideInfoDto.setmRideArrival(rideArrival);
+                rideInfoDto.setmRideDeparture(rideDeparture);
+                rideInfoDto.setmSelectedWeekdays(longRideRB.isChecked() ? null : weekDays);
+            } else {
+                Utils.showToast(this, "Enter Departure Date and Time");
+            }
+        } else {
+            Utils.showToast(this, "Enter Departure and Arrival");
+        }
+
+        for (int i = 0; i < weekDays.size(); i++) {
+            Log.e("safsafsafsa", "ertretretre" + weekDays.get(i));
+        }
+
+//        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, new PublishRideFragment(), null).commit();
     }
 
     private void openAutocompleteActivity(int editTextId) {
@@ -422,6 +483,63 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         }
                     }
                 });
+                break;
+        }
+    }
+
+    ArrayList<String> weekDays = new ArrayList<>();
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.cb_monday:
+                if (isChecked) {
+                    weekDays.add("Mon");
+                } else {
+                    if (weekDays.contains("Mon")) weekDays.remove("Mon");
+                }
+                break;
+            case R.id.cb_tueday:
+                if (isChecked) {
+                    weekDays.add("Tue");
+                } else {
+                    if (weekDays.contains("Tue")) weekDays.remove("Tue");
+                }
+                break;
+            case R.id.cb_wedday:
+                if (isChecked) {
+                    weekDays.add("Wed");
+                } else {
+                    if (weekDays.contains("Wed")) weekDays.remove("Wed");
+                }
+                break;
+            case R.id.cb_thuday:
+                if (isChecked) {
+                    weekDays.add("Thu");
+                } else {
+                    if (weekDays.contains("Thu")) weekDays.remove("Thu");
+                }
+                break;
+            case R.id.cb_friday:
+                if (isChecked) {
+                    weekDays.add("Fri");
+                } else {
+                    if (weekDays.contains("Fri")) weekDays.remove("Fri");
+                }
+                break;
+            case R.id.cb_satday:
+                if (isChecked) {
+                    weekDays.add("Sat");
+                } else {
+                    if (weekDays.contains("Sat")) weekDays.remove("Sat");
+                }
+                break;
+            case R.id.cb_sunday:
+                if (isChecked) {
+                    weekDays.add("Sun");
+                } else {
+                    if (weekDays.contains("Sun")) weekDays.remove("Sun");
+                }
                 break;
         }
     }
