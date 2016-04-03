@@ -18,7 +18,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.yatrashare.R;
@@ -67,8 +66,6 @@ public class PublishRideFragment extends Fragment {
     public View mProgressBGView;
     @Bind(R.id.publishRide_progress)
     public ProgressBar mProgressBar;
-    @Bind(R.id.vehicleGroup)
-    public RadioGroup mVehicleRadioGroup;
     public String selectedVehicle;
 
     private Context mContext;
@@ -170,7 +167,7 @@ public class PublishRideFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                     ArrayList<String> vehicleDatas = response.body().Data;
                     if (vehicleDatas != null && vehicleDatas.size() > 0) {
-                        for (int i = 0; i< vehicleDatas.size(); i++) {
+                        for (int i = 0; i < vehicleDatas.size(); i++) {
                             if (!vehicleDatas.get(i).isEmpty()) {
                                 vehicleSeats.add(vehicleDatas.get(i));
                             }
@@ -214,7 +211,7 @@ public class PublishRideFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                     vehicleDatas = response.body().Data;
                     if (vehicleDatas != null && vehicleDatas.size() > 0) {
-                        for (int i = 0; i< vehicleDatas.size(); i++) {
+                        for (int i = 0; i < vehicleDatas.size(); i++) {
                             if (!vehicleDatas.get(i).ModelName.isEmpty()) {
                                 vehicleModels.add(vehicleDatas.get(i).ModelName);
                             }

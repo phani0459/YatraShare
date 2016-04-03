@@ -89,6 +89,14 @@
     <string name="nextstep">Next Step</string>
     <string name="publishRide">Publish Ride</string>
 
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+
     <string-array name="luggageSizeType_array">
         <item>Select Luggage size</item>
         <item>Small</item>
@@ -133,6 +141,7 @@
     <string name="departuredate">Departure Date</string>
     <string name="returndate">\tReturn Date\t\t</string>
     <string name="time">Time</string>
+    <string name="returnTime">Return Time</string>
     <string name="round_trip">Round trip</string>
     <string name="datentime">Date and Time</string>
     <string name="ride_stopovers">Stopover point</string>

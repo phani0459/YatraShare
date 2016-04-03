@@ -94,7 +94,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         View inflatedLayout = inflater.inflate(R.layout.fragment_email_login, null);
         mContext = getActivity();
 
-        ((HomeActivity)mContext).setTitle("Login with email");
+        ((HomeActivity) mContext).setTitle("Login with email");
         ButterKnife.bind(this, inflatedLayout);
 
         TextView mForgotPwdTextView = (TextView) inflatedLayout.findViewById(R.id.fgtPwdText);
@@ -134,7 +134,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN);
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN);
     }
 
     private void showForgotPwdDialog() {
@@ -241,7 +241,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 if (response.body() != null && response.body().Data != null) {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         dialog.dismiss();
-                        ((HomeActivity)mContext).showSnackBar(getString(R.string.resetpwd_ratioanle));
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.resetpwd_ratioanle));
                     } else {
                         fgtPhoneLayout.setError(response.body().Data);
                     }

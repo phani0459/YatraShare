@@ -5,9 +5,6 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class RideInfo {
-    /*
-    SelectedWeekdays: []*/
-
     @SerializedName("RideDeparture")
     String mRideDeparture;
 
@@ -22,6 +19,9 @@ public class RideInfo {
 
     @SerializedName("Totalkilometers")
     String mTotalkilometers;
+
+    @SerializedName("SelectedWeekdays")
+    ArrayList<String> mSelectedWeekdays;
 
     @SerializedName("StopOvers")
     ArrayList<StopOverPoints> mStopOvers;
@@ -68,13 +68,14 @@ public class RideInfo {
     public RideInfo(String mRideDeparture, String mRideArrival, String mTotalkilometers, String mTotalprice, String mTimeFlexi, String mDetour, String mSeats,
                     String mOtherDetails, String mCompanyDetails,
                     String mUserVehicleModelId, String mDepartureTime,
-                    String mReturnTime, String ladiesOnly,
+                    String mReturnTime, String ladiesOnly, ArrayList<String> selectedWeekDays,
                     String rideType, String vehicleType, String mMaxLuggageSize,
                     ArrayList<PossibleRoutes> mMainPossibleRoutes, ArrayList<PossibleRoutes> mAllPossibleRoutes, ArrayList<StopOverPoints> mStopOvers) {
         this.mRideDeparture = mRideDeparture;
         this.mRideArrival = mRideArrival;
         this.mTotalkilometers = mTotalkilometers;
         this.mTotalprice = mTotalprice;
+        this.mSelectedWeekdays = selectedWeekDays;
         this.mTimeFlexi = mTimeFlexi;
         this.mDetour = mDetour;
         this.mSeats = mSeats;
