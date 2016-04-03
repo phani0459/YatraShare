@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -68,6 +69,28 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     @Bind(R.id.return_date_layout)
     public LinearLayout returnDateLayout;
     private int clickedButton;
+    private Place departurePlace;
+    private Place arrivalPlace;
+    @Bind(R.id.et_RidePrice)
+    public EditText ridePriceEditText;
+    private long totalPrice;
+    private float totalKM;
+    @Bind(R.id.weeksLayout)
+    public LinearLayout weeksLinearLayout;
+
+    public void updatePrice() {
+        if (departurePlace != null && arrivalPlace != null) {
+            float[] results = new float[1];
+            Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude, arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude, results);
+            totalKM = results[0] / 1000;
+            if (totalKM > 0 && totalKM < 10) {
+                totalPrice = 20;
+            } else {
+                totalPrice = Math.round(totalKM * 1.8 / 10) * 10;
+            }
+            ridePriceEditText.setText("" + totalPrice);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,21 +168,41 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
     }
 
-    public void setEditValues(String editValue) {
+    public void setEditValues(Place selectedPlace) {
         switch (selectedEditText) {
             case R.id.et_ofr_where_from:
-                offerWhereFromEdit.setText(editValue);
+                if (selectedPlace != null) {
+                    departurePlace = selectedPlace;
+                    offerWhereFromEdit.setText(selectedPlace.getAddress());
+                } else {
+                    offerWhereFromEdit.setText("");
+                }
+                updatePrice();
                 break;
             case R.id.et_ofr_where_to:
-                offerWhereToEdit.setText(editValue);
+                if (selectedPlace != null) {
+                    arrivalPlace = selectedPlace;
+                    offerWhereToEdit.setText(selectedPlace.getAddress());
+                } else {
+                    offerWhereToEdit.setText("");
+                }
+                updatePrice();
                 break;
             case R.id.et_stopover_point:
-                stopOverEdit.setText(editValue);
+                if (selectedPlace != null) {
+                    stopOverEdit.setText(selectedPlace.getAddress());
+                } else {
+                    stopOverEdit.setText("");
+                }
                 break;
             default:
                 try {
                     EditText editText = (EditText) stopOversLayout.findViewById(selectedEditText);
-                    editText.setText(editValue);
+                    if (selectedPlace != null) {
+                        editText.setText(selectedPlace.getAddress());
+                    } else {
+                        editText.setText("");
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -231,6 +274,29 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 }
             }
         };
+
+        longRideRB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    arrivalDateBtn.setVisibility(View.VISIBLE);
+                    arrivalTimeBtn.setText(getString(R.string.time));
+                    Utils.collapse(weeksLinearLayout);
+                }
+            }
+        });
+
+        dailyRideRB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    arrivalDateBtn.setVisibility(View.GONE);
+                    arrivalTimeBtn.setText(getString(R.string.returnTime));
+                    Utils.expand(weeksLinearLayout);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -243,7 +309,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             Log.e(TAG, "Place Selected: " + place.getAddress());
 
             // Format the place's details and display them in the TextView.
-            setEditValues((String) place.getAddress());
+            setEditValues(place);
 
             stopOverEdit.setError(null);
             offerWhereFromEdit.setError(null);
@@ -251,11 +317,11 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
             Status status = PlaceAutocomplete.getStatus(this, data);
             Log.e(TAG, "Error: Status = " + status.toString());
-            setEditValues("");
+            setEditValues(null);
         } else if (resultCode == Activity.RESULT_CANCELED) {
             // Indicates that the activity closed before a selection was made. For example if
             // the user pressed the back button.
-            setEditValues("");
+            setEditValues(null);
         }
     }
 
@@ -347,7 +413,11 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                                 departureTimeBtn.setText(getResources().getString(R.string.time));
                                 break;
                             case R.id.bt_arrivaltime:
-                                arrivalTimeBtn.setText(getResources().getString(R.string.time));
+                                if (arrivalDateBtn.getVisibility() == View.VISIBLE) {
+                                    arrivalTimeBtn.setText(getResources().getString(R.string.time));
+                                } else {
+                                    arrivalTimeBtn.setText(getResources().getString(R.string.returnTime));
+                                }
                                 break;
                         }
                     }
