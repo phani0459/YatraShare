@@ -11,7 +11,9 @@ import com.yatrashare.dtos.Rating;
 import com.yatrashare.dtos.RatingReceiverInfo;
 import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.SearchRides;
+import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.UserDataDTO;
+import com.yatrashare.dtos.Vehicle;
 import com.yatrashare.pojos.FindRide;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.pojos.UserFgtPassword;
@@ -148,5 +150,18 @@ public interface YatraShareAPI {
 
     @POST("/api/Rides/SendJourneyDetails")
     Call<UserDataDTO> sendJourneyDetails(@Query("userGuid") String userGuide, @Query("rideBookingId") String rideBookingId);
+
+    @GET("/api/Vehicle/GetVehicleBrands")
+    Call<Vehicle> getVehicleBrands(@Query("userGuid") String userGuide, @Query("vehicleType") String vehicleType);
+
+    @GET("/api/Vehicle/GetVehicleModels")
+    Call<Vehicle> getVehicleModels(@Query("userGuid") String userGuide, @Query("vehicleType") String vehicleType, @Query("vehicleBrandName") String vehicleBrandName);
+
+    @GET("/api/Vehicle/GetUserVehicleModels")
+    Call<Vehicle> getUserVehicleModels(@Query("userGuid") String userGuide, @Query("vehicleType") String vehicleType);
+
+    @GET("/api/Vehicle/GetUserVehicleSeats")
+    Call<Seats> getUserVehicleSeats(@Query("userGuid") String userGuide, @Query("UserVehicleId") String vehicleType);
+
 
 }

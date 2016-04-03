@@ -90,12 +90,22 @@
     <string name="publishRide">Publish Ride</string>
 
     <string-array name="luggageSizeType_array">
+        <item>Select Luggage size</item>
         <item>Small</item>
         <item>Medium</item>
         <item>High</item>
     </string-array>
 
+    <string-array name="selectModel_array">
+        <item>Select Model</item>
+    </string-array>
+
+    <string-array name="selectSeats_array">
+        <item>Select Seats</item>
+    </string-array>
+
     <string-array name="timeFlexibileType_array">
+        <item>Time Flexibility</item>
         <item>Around 15 mins</item>
         <item>Around 30 mins</item>
         <item>Around 1 hour</item>
@@ -103,16 +113,21 @@
     </string-array>
 
     <string-array name="detourType_array">
+        <item>Select detour</item>
         <item>I am not willing to make detour</item>
         <item>15 mins detour Max</item>
         <item>30 mins detour Max</item>
         <item>Any detour</item>
     </string-array>
 
+
+    <string name="selectvehicleModel">Select Model</string>
     <string name="agreeTerms">I agree Terms and Condtions and I have valid driving Licence.</string>
 
     <!--Offer Ride Strings -->
     <string name="findmember">Find Member</string>
+    <string name="registervehicle"><u>Register New Vehicle</u></string>
+    <string name="addStopOverPoints"><u>Add more cities on your route</u></string>
 
     <string name="add_stopovers">Add stopovers and get more co-travellers</string>
     <string name="departuredate">Departure Date</string>

@@ -20,24 +20,25 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/selectVehicle"
                 android:textColor="@color/colorPrimaryDark" />
 
             <RadioGroup
+                android:id="@+id/vehicleGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 android:padding="4dp"
                 android:weightSum="2">
 
                 <RadioButton
-                    android:id="@+id/rbtn_ofr_long_ride"
+                    android:id="@+id/rbtn_vehicle_car"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -47,7 +48,7 @@
                     android:textSize="16sp" />
 
                 <RadioButton
-                    android:id="@+id/rbtn_ofr_daily_ride"
+                    android:id="@+id/rbtn_vehicle_bike"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -59,40 +60,45 @@
 
             <Spinner
                 android:id="@+id/selectModel"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:entries="@array/selectModel_array"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="4dp" />
+
+            <TextView
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:text="@string/registervehicle"
+                android:textColor="@color/colorAccent" />
 
             <Spinner
                 android:id="@+id/selectSeats"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
+                android:entries="@array/selectSeats_array"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="8dp" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="4dp"
-                android:background="#FFFFFF" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/rideDetailsDesc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp">
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/et_provideRideDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_bg"
                     android:gravity="top"
                     android:hint="@string/provideRidedetails"
                     android:minLines="4"
@@ -102,54 +108,48 @@
 
             <Spinner
                 android:id="@+id/luggageSpinner"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="6dp"
                 android:entries="@array/luggageSizeType_array" />
 
             <Spinner
                 android:id="@+id/timeFlexiSpinner"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="6dp"
                 android:entries="@array/timeFlexibileType_array" />
 
             <Spinner
                 android:id="@+id/detourSpinner"
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="6dp"
                 android:entries="@array/detourType_array" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="4dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="4dp"
-                android:background="#FFFFFF" />
 
             <CheckBox
                 android:id="@+id/cb_ladiesOnly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:text="@string/ladiesOnly" />
 
             <CheckBox
                 android:id="@+id/cb_agreeTerms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_marginTop="4dp"
                 android:text="@string/agreeTerms" />
 
@@ -157,10 +157,10 @@
                 android:id="@+id/btn_PublishRide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"
                 android:layout_weight="1"
                 android:background="@drawable/search_button_bg"
                 android:text="@string/publishRide"
@@ -168,4 +168,22 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
+
+
+    <View
+        android:id="@+id/publishRideBGView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:clickable="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/publishRide_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 </RelativeLayout>

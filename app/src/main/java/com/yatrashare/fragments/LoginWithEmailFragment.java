@@ -442,36 +442,6 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
             }
         });
-
-        /*RequestParams params = new RequestParams();
-        params.put("Email", mEmail);
-        params.put("Password", mPassword);
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        client.post(Constants.LOGIN_URL, params, new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                try {
-                    UtilsLog.w("myapp","success status code..." + statusCode);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                UtilsLog.w("myapp", "failure status code..." + statusCode);
-                try {
-                    UtilsLog.w("myapp", "error ..." + errorResponse.toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });*/
-
     }
 
     private void getBasicProfileInfo(String userGuid) {
