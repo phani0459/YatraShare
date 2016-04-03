@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -30,11 +32,15 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
+import com.yatrashare.pojos.RideInfo;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -124,6 +130,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         hour = calendar.get(Calendar.HOUR);
         minute = calendar.get(Calendar.MINUTE);
 
+        ridePriceEditText.setText("0");
+
         offerWhereFromEdit.setInputType(InputType.TYPE_NULL);
         offerWhereToEdit.setInputType(InputType.TYPE_NULL);
         stopOverEdit.setInputType(InputType.TYPE_NULL);
@@ -184,6 +192,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
         if (!rideDeparture.isEmpty() && !rideArrival.isEmpty()) {
             if (!rideDepartureDate.isEmpty() && !rideDepartureTime.isEmpty()) {
+                ArrayList<RideInfoDto.PossibleRoutesDto> mainPossibleRoutes = new ArrayList<>();
                 rideInfoDto.setmTotalprice(totalPrice + "");
                 rideInfoDto.setmTotalkilometers(totalKM + "");
                 rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
@@ -192,6 +201,30 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 rideInfoDto.setmRideArrival(rideArrival);
                 rideInfoDto.setmRideDeparture(rideDeparture);
                 rideInfoDto.setmSelectedWeekdays(longRideRB.isChecked() ? null : weekDays);
+
+                RideInfoDto.PossibleRoutesDto mainPossibleRoute = new RideInfoDto().new PossibleRoutesDto();
+                mainPossibleRoute.setmDeparture(departurePlace.getAddress() + "");
+                mainPossibleRoute.setmArrival(arrivalPlace.getAddress() + "");
+
+                Address arrivalAddress = getAddress(arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude);
+                if (arrivalAddress != null) {
+                    mainPossibleRoute.setmArrivalCity(arrivalAddress.getAddressLine(0));
+                    mainPossibleRoute.setmArrivalState(arrivalAddress.getAddressLine(1));
+                }
+
+                Address departureAddress = getAddress(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude);
+                if (departureAddress != null) {
+                    mainPossibleRoute.setmArrivalCity(departureAddress.getAddressLine(0));
+                    mainPossibleRoute.setmArrivalState(departureAddress.getAddressLine(1));
+                }
+                mainPossibleRoute.setmRoutePrice(totalPrice + "");
+                mainPossibleRoute.setmUserUpdatedPrice(ridePriceEditText.getText().toString() + "");
+                mainPossibleRoute.setMkilometers(totalKM + "");
+                mainPossibleRoutes.add(mainPossibleRoute);
+
+                rideInfoDto.setmMainPossibleRoutes(mainPossibleRoutes);
+                rideInfoDto.setmAllPossibleRoutes(mainPossibleRoutes);
+
             } else {
                 Utils.showToast(this, "Enter Departure Date and Time");
             }
@@ -199,11 +232,22 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             Utils.showToast(this, "Enter Departure and Arrival");
         }
 
-        for (int i = 0; i < weekDays.size(); i++) {
-            Log.e("safsafsafsa", "ertretretre" + weekDays.get(i));
-        }
-
 //        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, new PublishRideFragment(), null).commit();
+    }
+
+    public Address getAddress(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses != null && addresses.size() > 0) {
+            return addresses.get(0);
+        } else {
+            return null;
+        }
     }
 
     private void openAutocompleteActivity(int editTextId) {
