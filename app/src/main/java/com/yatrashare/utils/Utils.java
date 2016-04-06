@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,10 +24,14 @@ import android.widget.Toast;
 import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.interfaces.YatraShareAPI;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import retrofit.Call;
+import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
@@ -60,7 +65,6 @@ public class Utils {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(YatraShareAPI.BASE_URL)
-                    .client(Utils.getOkHttpClient())
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(getOkHttpClient())
                     .build();

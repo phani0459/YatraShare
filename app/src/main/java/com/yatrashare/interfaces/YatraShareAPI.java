@@ -1,7 +1,9 @@
 package com.yatrashare.interfaces;
 
+import com.google.gson.JsonElement;
 import com.yatrashare.dtos.BookedRides;
 import com.yatrashare.dtos.GetUserBookings;
+import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.OfferedRides;
@@ -138,6 +140,9 @@ public interface YatraShareAPI {
 
     @GET("/api/Rides/GetRideDetails")
     Call<RideDetails> getRideDetails(@Query("possibleRideGuid") String possibleRideGuid);
+
+    @GET("/maps/api/directions/json?sensor=false")
+    Call<GoogleMapsDto> getGoogleMapsAPI(@Query("origin") String origin, @Query("destination") String destination);
 
     @POST("/api/Messages/GetUserMessagesConversation")
     Call<MessageDetails> getMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);

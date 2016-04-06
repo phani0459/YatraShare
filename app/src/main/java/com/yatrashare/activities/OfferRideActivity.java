@@ -32,19 +32,26 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
-import com.yatrashare.pojos.RideInfo;
+import com.yatrashare.dtos.GoogleMapsDto;
+import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
 public class OfferRideActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -99,19 +106,95 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     @Bind(R.id.cb_sunday)
     public CheckBox sundayCheckBox;
 
+    ArrayList<GoogleMapsDto.Routes> routes;
+
+    public void getDuration(double departureLat, double departureLng, double arrivalLat, double arrivalLng) {
+        Log.e("Google Map API", ":  " + "http://maps.googleapis.com/maps/api/directions/json?sensor=false&origin=" +
+                departureLat + "," + departureLng + "&destination=" + arrivalLat + "," + arrivalLng);
+        try {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://maps.googleapis.com")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(Utils.getOkHttpClient())
+                    .build();
+            YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
+            Call<GoogleMapsDto> call = yatraShareAPI.getGoogleMapsAPI(departureLat + "," + departureLng, arrivalLat + "," + arrivalLng);
+            call.enqueue(new Callback<GoogleMapsDto>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response
+                 * @param retrofit
+                 */
+                @Override
+                public void onResponse(retrofit.Response<GoogleMapsDto> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    if (response.body() != null && response.isSuccess()) {
+                        routes = response.body().routes;
+                        if (routes != null && routes.size() > 0 && routes.get(0).legs != null && routes.get(0).legs.size() > 0) {
+                            Log.e("sdfsafs", "rtetet" + routes.get(0).legs.get(0).duration.text);
+                        }
+                    }
+                }
+
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e("", "FAILURE RESPONSE");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void updatePrice() {
         if (departurePlace != null && arrivalPlace != null) {
             float[] results = new float[1];
-            Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude, arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude, results);
-            totalKM = results[0] / 1000;
+            if (stopOverPlacesHashMap != null && stopOverPlacesHashMap.size() > 0) {
+                ArrayList<Place> stopOverPlaces = new ArrayList<>();
+                for (Iterator<Integer> iterator = stopOverPlacesHashMap.keySet().iterator(); iterator.hasNext();){
+                    stopOverPlaces.add(stopOverPlaces.get(iterator.next()));
+                }
+                if (stopOverPlaces.size() > 0) {
+                    Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude,
+                            stopOverPlaces.get(0).getLatLng().latitude, stopOverPlaces.get(0).getLatLng().longitude, results);
+                    totalKM = results[0] / 1000;
+                    Log.e("totalKM", "--:   " +totalKM);
+                    for (int i = 0; i < stopOverPlaces.size(); i++) {
+                        results = new float[1];
+                        Location.distanceBetween(stopOverPlaces.get(i).getLatLng().latitude, stopOverPlaces.get(i).getLatLng().longitude,
+                                stopOverPlaces.get(i + 1).getLatLng().latitude, stopOverPlaces.get(i + 1).getLatLng().longitude, results);
+                        totalKM = totalKM + results[0] / 1000;
+                        Log.e("totalKM", i + ":   " +totalKM);
+                    }
+
+                }
+                results = new float[1];
+                Location.distanceBetween(stopOverPlaces.get(stopOverPlaces.size() - 1).getLatLng().latitude, stopOverPlaces.get(stopOverPlaces.size() - 1).getLatLng().longitude,
+                        arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude, results);
+                totalKM = totalKM + (results[0] / 1000);
+                Log.e("totalKM", "last :   " +totalKM);
+            } else {
+                Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude, arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude, results);
+                totalKM = results[0] / 1000;
+            }
+            Log.e("totalKM", "3333333:   " + totalKM);
             if (totalKM > 0 && totalKM < 10) {
                 totalPrice = 20;
             } else {
                 totalPrice = Math.round(totalKM * 1.8 / 10) * 10;
             }
-            ridePriceEditText.setText("" + totalPrice);
+            getDuration(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude, arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude);
+        } else {
+            totalKM = 0;
+            totalPrice = 0;
         }
+        ridePriceEditText.setText("" + totalPrice);
     }
 
     @Override
@@ -220,6 +303,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 mainPossibleRoute.setmRoutePrice(totalPrice + "");
                 mainPossibleRoute.setmUserUpdatedPrice(ridePriceEditText.getText().toString() + "");
                 mainPossibleRoute.setMkilometers(totalKM + "");
+                mainPossibleRoute.setmTimeframe("3");
                 mainPossibleRoutes.add(mainPossibleRoute);
 
                 rideInfoDto.setmMainPossibleRoutes(mainPossibleRoutes);
@@ -280,6 +364,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     departurePlace = selectedPlace;
                     offerWhereFromEdit.setText(selectedPlace.getAddress());
                 } else {
+                    departurePlace = null;
                     offerWhereFromEdit.setText("");
                 }
                 updatePrice();
@@ -289,31 +374,48 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     arrivalPlace = selectedPlace;
                     offerWhereToEdit.setText(selectedPlace.getAddress());
                 } else {
+                    arrivalPlace = null;
                     offerWhereToEdit.setText("");
                 }
                 updatePrice();
                 break;
             case R.id.et_stopover_point:
                 if (selectedPlace != null) {
+                    if (!stopOverPlacesHashMap.containsKey(stopOverEdit.getId())) {
+                        stopOverPlacesHashMap.put(stopOverEdit.getId(), selectedPlace);
+                    }
                     stopOverEdit.setText(selectedPlace.getAddress());
                 } else {
+                    if (!stopOverPlacesHashMap.containsKey(stopOverEdit.getId())) {
+                        stopOverPlacesHashMap.remove(stopOverEdit.getId());
+                    }
                     stopOverEdit.setText("");
                 }
+                updatePrice();
                 break;
             default:
                 try {
                     EditText editText = (EditText) stopOversLayout.findViewById(selectedEditText);
                     if (selectedPlace != null) {
+                        if (!stopOverPlacesHashMap.containsKey(selectedEditText)) {
+                            stopOverPlacesHashMap.put(selectedEditText, selectedPlace);
+                        }
                         editText.setText(selectedPlace.getAddress());
                     } else {
+                        if (stopOverPlacesHashMap.containsKey(selectedEditText)) {
+                            stopOverPlacesHashMap.remove(selectedEditText);
+                        }
                         editText.setText("");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                updatePrice();
                 break;
         }
     }
+
+    HashMap<Integer, Place> stopOverPlacesHashMap = new HashMap<>();
 
     @OnClick(R.id.tv_addStopOverPoints)
     public void addStopOverEditText() {
@@ -454,6 +556,10 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 case R.id.et_stopover_point:
                     if (event.getRawX() >= (stopOverEdit.getRight() - stopOverEdit.getCompoundDrawables()[2].getBounds().width())) {
                         stopOverEdit.setText("");
+                        if (!stopOverPlacesHashMap.containsKey(stopOverEdit.getId())) {
+                            stopOverPlacesHashMap.remove(stopOverEdit.getId());
+                        }
+                        updatePrice();
                         return true;
                     } else {
                         openAutocompleteActivity(R.id.et_stopover_point);
