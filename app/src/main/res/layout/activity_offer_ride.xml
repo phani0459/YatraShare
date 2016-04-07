@@ -292,8 +292,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
-                    android:gravity="center"
                     android:layout_weight="2"
+                    android:gravity="center"
                     android:text="@string/time"
                     android:textAllCaps="false" />
             </LinearLayout>
@@ -407,4 +407,22 @@
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
+
+
+    <View
+        android:id="@+id/offerRideView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:clickable="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/offerRideProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
 </FrameLayout>
