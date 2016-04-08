@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import com.yatrashare.R;
 import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.Vehicle;
+import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
@@ -84,6 +85,7 @@ public class PublishRideFragment extends Fragment {
         mContext = getActivity();
 
         ButterKnife.bind(this, inflatedLayout);
+        RideInfoDto rideInfoDto = (RideInfoDto) getArguments().getSerializable("RIDE INFO");
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");

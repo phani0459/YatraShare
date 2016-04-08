@@ -12,7 +12,7 @@ public class RideInfoDto implements Serializable {
     String mLadiesOnly;
     String mTotalkilometers;
     ArrayList<String> mSelectedWeekdays;
-    ArrayList<StopOverPointsDto> mStopOvers;
+    ArrayList<Place> mStopOvers;
     ArrayList<PossibleRoutesDto> mMainPossibleRoutes;
     ArrayList<PossibleRoutesDto> mAllPossibleRoutes;
     String mTotalprice;
@@ -75,11 +75,11 @@ public class RideInfoDto implements Serializable {
         this.mSelectedWeekdays = mSelectedWeekdays;
     }
 
-    public ArrayList<StopOverPointsDto> getmStopOvers() {
+    public ArrayList<Place> getmStopOvers() {
         return mStopOvers;
     }
 
-    public void setmStopOvers(ArrayList<StopOverPointsDto> mStopOvers) {
+    public void setmStopOvers(ArrayList<Place> mStopOvers) {
         this.mStopOvers = mStopOvers;
     }
 
@@ -186,18 +186,6 @@ public class RideInfoDto implements Serializable {
 
     public void setmMaxLuggageSize(String mMaxLuggageSize) {
         this.mMaxLuggageSize = mMaxLuggageSize;
-    }
-
-    public class StopOverPointsDto implements Serializable {
-        public Place getStopOves() {
-            return stopOves;
-        }
-
-        public void setStopOves(Place stopOves) {
-            this.stopOves = stopOves;
-        }
-
-        Place stopOves;
     }
 
     public class PossibleRoutesDto implements Serializable {

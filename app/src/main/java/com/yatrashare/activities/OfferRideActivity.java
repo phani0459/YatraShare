@@ -34,6 +34,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
 import com.yatrashare.dtos.GoogleMapsDto;
+import com.yatrashare.fragments.PublishRideFragment;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Utils;
@@ -79,8 +80,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     public Button arrivalDateBtn;
     @Bind(R.id.bt_arrivaltime)
     public Button arrivalTimeBtn;
-    @Bind(R.id.btn_nxtStep)
-    public Button offerRideButn;
     @Bind(R.id.return_date_layout)
     public LinearLayout returnDateLayout;
     private int clickedButton;
@@ -112,6 +111,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     public ProgressBar mProgressBar;
 
     ArrayList<GoogleMapsDto.Routes> routes;
+    private ArrayList<Place> stopOverPlaces;
 
     public synchronized void getDuration(final Place departurePlace, final Place arrivalPlace, final float distance, final boolean isLast) {
         Utils.showProgress(true, mProgressBar, mProgressBGView);
@@ -137,7 +137,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     if (response.body() != null && response.isSuccess()) {
                         routes = response.body().routes;
                         if (routes != null && routes.size() > 0 && routes.get(0).legs != null && routes.get(0).legs.size() > 0) {
-                            addMainRoute(departurePlace, arrivalPlace, distance, routes.get(0).legs.get(0).duration.text);
+//                            addMainRoute(departurePlace, arrivalPlace, distance, routes.get(0).legs.get(0).duration.text);
                         }
                     }
                     if (isLast) {
@@ -149,7 +149,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 /**
                  * Invoked when a network or unexpected exception occurred during the HTTP request.
                  *
-                 * @param t
+                 * @param t throwable error
                  */
                 @Override
                 public void onFailure(Throwable t) {
@@ -165,9 +165,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
     }
 
-
-    @OnClick(R.id.btn_nxtStep)
-    public void allPossibleRoutes() {
+    public void possibleRoutes() {
         allossibleRoutes = new ArrayList<>();
         mainPossibleRoutes = new ArrayList<>();
         if (departurePlace != null && arrivalPlace != null) {
@@ -177,7 +175,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             allossibleRoutes.add(possibleRoutesDto);
             mainPossibleRoutes.add(possibleRoutesDto);
             if (stopOverPlacesHashMap != null && stopOverPlacesHashMap.size() > 0) {
-                ArrayList<Place> stopOverPlaces = new ArrayList<>();
+                stopOverPlaces = new ArrayList<>();
                 for (Iterator<Integer> iterator = stopOverPlacesHashMap.keySet().iterator(); iterator.hasNext(); ) {
                     stopOverPlaces.add(stopOverPlacesHashMap.get(iterator.next()));
                 }
@@ -202,17 +200,25 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         }
 
                         if (i == 0) {
-                            mainRoutesMap.put(departurePlace, stopOverPlaces.get(i));
+                            possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
+                            possibleRoutesDto.setDeparture(departurePlace);
+                            possibleRoutesDto.setArrival(stopOverPlaces.get(i));
+                            mainPossibleRoutes.add(possibleRoutesDto);
                         }
                         if (i == stopOverPlaces.size() - 1) {
-                            mainRoutesMap.put(stopOverPlaces.get(i), arrivalPlace);
+                            possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
+                            possibleRoutesDto.setDeparture(stopOverPlaces.get(i));
+                            possibleRoutesDto.setArrival(arrivalPlace);
+                            mainPossibleRoutes.add(possibleRoutesDto);
                         }
                         if (i < stopOverPlaces.size() - 1) {
-                            mainRoutesMap.put(stopOverPlaces.get(i), stopOverPlaces.get(i + 1));
+                            possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
+                            possibleRoutesDto.setDeparture(stopOverPlaces.get(i));
+                            possibleRoutesDto.setArrival(stopOverPlaces.get(i + 1));
+                            mainPossibleRoutes.add(possibleRoutesDto);
                         }
                     }
                 }
-                Log.e("ff" + allRoutesMap.size(), "tt" + mainRoutesMap.size());
             }
         }
     }
@@ -225,8 +231,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             float[] results = new float[1];
             if (stopOverPlacesHashMap != null && stopOverPlacesHashMap.size() > 0) {
                 ArrayList<Place> stopOverPlaces = new ArrayList<>();
-                for (Iterator<Integer> iterator = stopOverPlacesHashMap.keySet().iterator(); iterator.hasNext(); ) {
-                    stopOverPlaces.add(stopOverPlacesHashMap.get(iterator.next()));
+                for (Integer integer : stopOverPlacesHashMap.keySet()) {
+                    stopOverPlaces.add(stopOverPlacesHashMap.get(integer));
                 }
                 if (stopOverPlaces.size() > 0) {
                     Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude,
@@ -251,7 +257,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             }
 
             totalPrice = getPrice(totalKM);
-            Log.e("totalKM", "3333333:   " + totalKM);
         } else {
             totalKM = 0;
             totalPrice = 0;
@@ -341,7 +346,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 if (stopOverPlaces.size() > 0) {
                     Log.e("stopOverPlaces", "::::::::::" + stopOverPlacesHashMap.size());
                     float[] results = new float[1];
-                    mainRoutesMap.put(departurePlace, stopOverPlaces.get(0));
                     /*Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude,
                             stopOverPlaces.get(0).getLatLng().latitude, stopOverPlaces.get(0).getLatLng().longitude, results);
 
@@ -349,7 +353,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
                     for (int i = 0; i < stopOverPlaces.size() - 1; i++) {
                         results = new float[1];
-                        mainRoutesMap.put(stopOverPlaces.get(i), stopOverPlaces.get(i + 1));
                         /*Location.distanceBetween(stopOverPlaces.get(i).getLatLng().latitude, stopOverPlaces.get(i).getLatLng().longitude,
                                 stopOverPlaces.get(i + 1).getLatLng().latitude, stopOverPlaces.get(i + 1).getLatLng().longitude, results);
                         getDuration(stopOverPlaces.get(i), stopOverPlaces.get(i + 1), results[0] / 1000, false);*/
@@ -359,13 +362,11 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     /*Location.distanceBetween(stopOverPlaces.get(stopOverPlaces.size() - 1).getLatLng().latitude, stopOverPlaces.get(stopOverPlaces.size() - 1).getLatLng().longitude,
                             arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude, results);
                     getDuration(stopOverPlaces.get(stopOverPlaces.size() - 1), arrivalPlace, results[0] / 1000, false);*/
-                    mainRoutesMap.put(stopOverPlaces.get(stopOverPlaces.size() - 1), arrivalPlace);
 
                     results = new float[1];
                     /*Location.distanceBetween(departurePlace.getLatLng().latitude, departurePlace.getLatLng().longitude,
                             arrivalPlace.getLatLng().latitude, arrivalPlace.getLatLng().longitude, results);
                     getDuration(departurePlace, arrivalPlace, results[0] / 1000, true);*/
-                    mainRoutesMap.put(departurePlace, arrivalPlace);
                 }
             } else {
                 float[] results = new float[1];
@@ -382,18 +383,29 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
      * Long Ride = 1
      * Daily Ride  = 2
      */
+    @OnClick(R.id.btn_nxtStep)
     public void nextStep() {
         Utils.hideSoftKeyboard(offerWhereFromEdit);
         RideInfoDto rideInfoDto = new RideInfoDto();
         String rideDeparture = offerWhereFromEdit.getText().toString();
         String rideArrival = offerWhereToEdit.getText().toString();
-        String rideDepartureDate = departureDateBtn.getText().toString();
-        String rideDepartureTime = departureTimeBtn.getText().toString();
-        String rideArrivalDate = arrivalDateBtn.getText().toString();
+        String rideDepartureDate = departureDateBtn.getText().toString().equalsIgnoreCase(getString(R.string.departuredate)) ? "" : departureDateBtn.getText().toString();
+        String rideDepartureTime = departureTimeBtn.getText().toString().equalsIgnoreCase(getString(R.string.time)) ? "" : departureTimeBtn.getText().toString();
+        String rideArrivalDate = arrivalDateBtn.getText().toString().equalsIgnoreCase(getString(R.string.returndate)) ? "" : arrivalDateBtn.getText().toString();
         String rideArrivalTime = arrivalTimeBtn.getText().toString();
+
+        if (rideArrivalTime.equalsIgnoreCase(getString(R.string.time)) || rideArrivalTime.equalsIgnoreCase(getString(R.string.returnTime))) {
+            rideArrivalTime = "";
+        }
 
         if (!rideDeparture.isEmpty() && !rideArrival.isEmpty()) {
             if (!rideDepartureDate.isEmpty() && !rideDepartureTime.isEmpty()) {
+                if (roundTripCheckBox.isChecked()) {
+                    if (rideArrivalDate.isEmpty() || rideArrivalTime.isEmpty()) {
+                        Utils.showToast(this, "Enter Return Date and Time");
+                        return;
+                    }
+                }
                 rideInfoDto.setmTotalprice(totalPrice + "");
                 rideInfoDto.setmTotalkilometers(totalKM + "");
                 rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
@@ -403,7 +415,20 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 rideInfoDto.setmRideDeparture(rideDeparture);
                 rideInfoDto.setmSelectedWeekdays(longRideRB.isChecked() ? null : weekDays);
 
-                Log.e("sagsafsafsa", "retrewtrt" + mainPossibleRoutes.size());
+                possibleRoutes();
+
+                rideInfoDto.setmAllPossibleRoutes(allossibleRoutes);
+                rideInfoDto.setmMainPossibleRoutes(mainPossibleRoutes);
+                rideInfoDto.setmStopOvers(stopOverPlaces);
+
+                Log.e("allossibleRoutes" + allossibleRoutes.size(), "mainPossibleRoutes" + mainPossibleRoutes.size());
+
+                PublishRideFragment publishRideFragment = new PublishRideFragment();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("RIDE INFO", rideInfoDto);
+                publishRideFragment.setArguments(bundle);
+
+//                getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
 
             } else {
                 Utils.showToast(this, "Enter Departure Date and Time");
@@ -412,7 +437,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             Utils.showToast(this, "Enter Departure and Arrival");
         }
 
-//        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, new PublishRideFragment(), null).commit();
     }
 
     public Address getAddress(double latitude, double longitude) {
