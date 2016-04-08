@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Retrofit;
@@ -38,7 +40,7 @@ import retrofit.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PublishRideFragment extends Fragment {
+public class PublishRideFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = PublishRideFragment.class.getSimpleName();
     @Bind(R.id.rbtn_vehicle_car)
@@ -72,6 +74,8 @@ public class PublishRideFragment extends Fragment {
     private Context mContext;
     private String userGuid;
     private ArrayList<Vehicle.VehicleData> vehicleDatas;
+    private String selectedVehicleId, selectedModel;
+    private String seatsSelected, selectedLuggageSize, selectedTimeFlexi, selectedDetour;
 
     public PublishRideFragment() {
         // Required empty public constructor
@@ -119,24 +123,39 @@ public class PublishRideFragment extends Fragment {
             }
         });
 
+        luggageSpinner.setOnItemSelectedListener(this);
+        selectModelSpinner.setOnItemSelectedListener(this);
+        selectSeatsSpinner.setOnItemSelectedListener(this);
+        timeFlexiSpinner.setOnItemSelectedListener(this);
+        detourSpinner.setOnItemSelectedListener(this);
+    }
 
-        selectModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedModel = (String) parent.getAdapter().getItem(position);
-                String vehicleId = getVehicleId(selectedModel);
-                if (vehicleId != null) {
-                    getVehicleSeats(vehicleId);
-                }
-
+    @OnClick(R.id.btn_PublishRide)
+    public void publishRide() {
+        if (vehicleDatas != null && vehicleDatas.size() > 0) {
+            if (TextUtils.isEmpty(selectedModel) || selectedModel.equalsIgnoreCase("Select Model")) {
+                Utils.showToast(mContext, "Select Vehicle Model");
+                return;
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            if (TextUtils.isEmpty(seatsSelected) || seatsSelected.equalsIgnoreCase("Select Seats")) {
+                Utils.showToast(mContext, "Select Seats");
+                return;
             }
-        });
-
+            if (TextUtils.isEmpty(selectedLuggageSize) || selectedLuggageSize.equalsIgnoreCase("Select Luggage size")) {
+                Utils.showToast(mContext, "Select Luggage Size");
+                return;
+            }
+            if (TextUtils.isEmpty(selectedDetour) || selectedDetour.equalsIgnoreCase("Select detour")) {
+                Utils.showToast(mContext, "Select detour");
+                return;
+            }
+            if (TextUtils.isEmpty(selectedTimeFlexi) || selectedTimeFlexi.equalsIgnoreCase("Time Flexibility")) {
+                Utils.showToast(mContext, "Select Time Flexibility");
+                return;
+            }
+        } else {
+            Utils.showToast(mContext, "Register New Vehicle");
+        }
     }
 
     private String getVehicleId(String selectedModel) {
@@ -201,8 +220,8 @@ public class PublishRideFragment extends Fragment {
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response response from server
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
@@ -242,4 +261,33 @@ public class PublishRideFragment extends Fragment {
         Snackbar.make(selectModelSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch (view.getId()) {
+            case R.id.selectModel:
+                selectedModel = (String) parent.getAdapter().getItem(position);
+                selectedVehicleId = getVehicleId(selectedModel);
+                if (selectedVehicleId != null) {
+                    getVehicleSeats(selectedVehicleId);
+                }
+                break;
+            case R.id.selectSeats:
+                seatsSelected = (String) parent.getAdapter().getItem(position);
+                break;
+            case R.id.timeFlexiSpinner:
+                selectedTimeFlexi = (String) parent.getAdapter().getItem(position);
+                break;
+            case R.id.detourSpinner:
+                selectedDetour = (String) parent.getAdapter().getItem(position);
+                break;
+            case R.id.luggageSpinner:
+                selectedLuggageSize = (String) parent.getAdapter().getItem(position);
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

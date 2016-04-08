@@ -166,13 +166,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     }
 
     public void possibleRoutes() {
-        allossibleRoutes = new ArrayList<>();
+        allPossibleRoutes = new ArrayList<>();
         mainPossibleRoutes = new ArrayList<>();
         if (departurePlace != null && arrivalPlace != null) {
             RideInfoDto.PossibleRoutesDto possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
             possibleRoutesDto.setDeparture(departurePlace);
             possibleRoutesDto.setArrival(arrivalPlace);
-            allossibleRoutes.add(possibleRoutesDto);
+            allPossibleRoutes.add(possibleRoutesDto);
             mainPossibleRoutes.add(possibleRoutesDto);
             if (stopOverPlacesHashMap != null && stopOverPlacesHashMap.size() > 0) {
                 stopOverPlaces = new ArrayList<>();
@@ -185,18 +185,18 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
                         possibleRoutesDto.setDeparture(departurePlace);
                         possibleRoutesDto.setArrival(stopOverPlaces.get(i));
-                        allossibleRoutes.add(possibleRoutesDto);
+                        allPossibleRoutes.add(possibleRoutesDto);
 
                         possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
                         possibleRoutesDto.setDeparture(stopOverPlaces.get(i));
                         possibleRoutesDto.setArrival(arrivalPlace);
-                        allossibleRoutes.add(possibleRoutesDto);
+                        allPossibleRoutes.add(possibleRoutesDto);
 
                         if (i < stopOverPlaces.size() - 1) {
                             possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
                             possibleRoutesDto.setDeparture(stopOverPlaces.get(i));
                             possibleRoutesDto.setArrival(stopOverPlaces.get(i + 1));
-                            allossibleRoutes.add(possibleRoutesDto);
+                            allPossibleRoutes.add(possibleRoutesDto);
                         }
 
                         if (i == 0) {
@@ -223,7 +223,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
     }
 
-    ArrayList<RideInfoDto.PossibleRoutesDto> allossibleRoutes = new ArrayList<>();
+    ArrayList<RideInfoDto.PossibleRoutesDto> allPossibleRoutes = new ArrayList<>();
     ArrayList<RideInfoDto.PossibleRoutesDto> mainPossibleRoutes = new ArrayList<>();
 
     public void updatePrice() {
@@ -386,6 +386,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     @OnClick(R.id.btn_nxtStep)
     public void nextStep() {
         Utils.hideSoftKeyboard(offerWhereFromEdit);
+
         RideInfoDto rideInfoDto = new RideInfoDto();
         String rideDeparture = offerWhereFromEdit.getText().toString();
         String rideArrival = offerWhereToEdit.getText().toString();
@@ -405,6 +406,11 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         Utils.showToast(this, "Enter Return Date and Time");
                         return;
                     }
+
+                    if (rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
+                        Utils.showToast(this, "Return Time and departure time cannot be same");
+                        return;
+                    }
                 }
                 rideInfoDto.setmTotalprice(totalPrice + "");
                 rideInfoDto.setmTotalkilometers(totalKM + "");
@@ -417,18 +423,18 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
                 possibleRoutes();
 
-                rideInfoDto.setmAllPossibleRoutes(allossibleRoutes);
+                rideInfoDto.setmAllPossibleRoutes(allPossibleRoutes);
                 rideInfoDto.setmMainPossibleRoutes(mainPossibleRoutes);
                 rideInfoDto.setmStopOvers(stopOverPlaces);
 
-                Log.e("allossibleRoutes" + allossibleRoutes.size(), "mainPossibleRoutes" + mainPossibleRoutes.size());
+                Log.e("allPossibleRoutes" + allPossibleRoutes.size(), "mainPossibleRoutes" + mainPossibleRoutes.size());
 
                 PublishRideFragment publishRideFragment = new PublishRideFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("RIDE INFO", rideInfoDto);
                 publishRideFragment.setArguments(bundle);
 
-//                getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
 
             } else {
                 Utils.showToast(this, "Enter Departure Date and Time");
