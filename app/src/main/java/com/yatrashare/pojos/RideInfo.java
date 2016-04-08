@@ -65,6 +65,10 @@ public class RideInfo {
     @SerializedName("MaxLuggageSize")
     String mMaxLuggageSize;
 
+    public RideInfo() {
+
+    }
+
     public RideInfo(String mRideDeparture, String mRideArrival, String mTotalkilometers, String mTotalprice, String mTimeFlexi, String mDetour, String mSeats,
                     String mOtherDetails, String mCompanyDetails,
                     String mUserVehicleModelId, String mDepartureTime,
@@ -177,8 +181,6 @@ public class RideInfo {
             this.mDepartureState = mDepartureState;
             this.mArrivalState = mArrivalState;
             this.mRoutePrice = mRoutePrice;
-
-
             this.mUserUpdatedPrice = mUserUpdatedPrice;
             this.mreadOnly = mreadOnly;
             this.mkilometers = mkilometers;

@@ -1,7 +1,5 @@
 package com.yatrashare.pojos;
 
-import com.google.android.gms.location.places.Place;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -12,7 +10,7 @@ public class RideInfoDto implements Serializable {
     String mLadiesOnly;
     String mTotalkilometers;
     ArrayList<String> mSelectedWeekdays;
-    ArrayList<Place> mStopOvers;
+    ArrayList<StopOvers> mStopOvers;
     ArrayList<PossibleRoutesDto> mMainPossibleRoutes;
     ArrayList<PossibleRoutesDto> mAllPossibleRoutes;
     String mTotalprice;
@@ -75,11 +73,11 @@ public class RideInfoDto implements Serializable {
         this.mSelectedWeekdays = mSelectedWeekdays;
     }
 
-    public ArrayList<Place> getmStopOvers() {
+    public ArrayList<StopOvers> getmStopOvers() {
         return mStopOvers;
     }
 
-    public void setmStopOvers(ArrayList<Place> mStopOvers) {
+    public void setmStopOvers(ArrayList<StopOvers> mStopOvers) {
         this.mStopOvers = mStopOvers;
     }
 
@@ -188,24 +186,84 @@ public class RideInfoDto implements Serializable {
         this.mMaxLuggageSize = mMaxLuggageSize;
     }
 
+
+    public class StopOvers implements Serializable {
+        public double getStopOverLatitude() {
+            return stopOverLatitude;
+        }
+
+        public void setStopOverLatitude(double stopOverLatitude) {
+            this.stopOverLatitude = stopOverLatitude;
+        }
+
+        public double getStopOverLongitude() {
+            return stopOverLongitude;
+        }
+
+        public void setStopOverLongitude(double stopOverLongitude) {
+            this.stopOverLongitude = stopOverLongitude;
+        }
+
+        double stopOverLatitude;
+        double stopOverLongitude;
+    }
+
     public class PossibleRoutesDto implements Serializable {
-        Place departure;
-        Place arrival;
+        double departureLatitude;
+        double departureLongitude;
+        String mainDeparturePlace;
+        String mainArrivalPlace;
 
-        public Place getDeparture() {
-            return departure;
+        public String getMainDeparturePlace() {
+            return mainDeparturePlace;
         }
 
-        public void setDeparture(Place departure) {
-            this.departure = departure;
+        public void setMainDeparturePlace(String mainDeparturePlace) {
+            this.mainDeparturePlace = mainDeparturePlace;
         }
 
-        public Place getArrival() {
-            return arrival;
+        public String getMainArrivalPlace() {
+            return mainArrivalPlace;
         }
 
-        public void setArrival(Place arrival) {
-            this.arrival = arrival;
+        public void setMainArrivalPlace(String mainArrivalPlace) {
+            this.mainArrivalPlace = mainArrivalPlace;
         }
+
+        public double getDepartureLatitude() {
+            return departureLatitude;
+        }
+
+        public void setDepartureLatitude(double departureLatitude) {
+            this.departureLatitude = departureLatitude;
+        }
+
+        public double getDepartureLongitude() {
+            return departureLongitude;
+        }
+
+        public void setDepartureLongitude(double departureLongitude) {
+            this.departureLongitude = departureLongitude;
+        }
+
+        public double getArrivalLatitude() {
+            return arrivalLatitude;
+        }
+
+        public void setArrivalLatitude(double arrivalLatitude) {
+            this.arrivalLatitude = arrivalLatitude;
+        }
+
+        public double getArrivalLongitude() {
+            return arrivalLongitude;
+        }
+
+        public void setArrivalLongitude(double arrivalLongitude) {
+            this.arrivalLongitude = arrivalLongitude;
+        }
+
+        double arrivalLatitude;
+        double arrivalLongitude;
+
     }
 }

@@ -3,11 +3,14 @@ package com.yatrashare.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,19 +25,26 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 
 import com.yatrashare.R;
+import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.Vehicle;
+import com.yatrashare.interfaces.YatraShareAPI;
+import com.yatrashare.pojos.RideInfo;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -76,6 +86,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     private ArrayList<Vehicle.VehicleData> vehicleDatas;
     private String selectedVehicleId, selectedModel;
     private String seatsSelected, selectedLuggageSize, selectedTimeFlexi, selectedDetour;
+    private RideInfoDto rideInfoDto;
 
     public PublishRideFragment() {
         // Required empty public constructor
@@ -89,7 +100,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         mContext = getActivity();
 
         ButterKnife.bind(this, inflatedLayout);
-        RideInfoDto rideInfoDto = (RideInfoDto) getArguments().getSerializable("RIDE INFO");
+        rideInfoDto = (RideInfoDto) getArguments().getSerializable("RIDE INFO");
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
@@ -142,19 +153,181 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                 return;
             }
             if (TextUtils.isEmpty(selectedLuggageSize) || selectedLuggageSize.equalsIgnoreCase("Select Luggage size")) {
-                Utils.showToast(mContext, "Select Luggage Size");
-                return;
-            }
-            if (TextUtils.isEmpty(selectedDetour) || selectedDetour.equalsIgnoreCase("Select detour")) {
-                Utils.showToast(mContext, "Select detour");
-                return;
+                luggageSpinner.setSelection(1);
+                selectedLuggageSize = (String) luggageSpinner.getSelectedItem();
             }
             if (TextUtils.isEmpty(selectedTimeFlexi) || selectedTimeFlexi.equalsIgnoreCase("Time Flexibility")) {
-                Utils.showToast(mContext, "Select Time Flexibility");
+                timeFlexiSpinner.setSelection(1);
+                selectedTimeFlexi = (String) timeFlexiSpinner.getSelectedItem();
+            }
+            if (TextUtils.isEmpty(selectedDetour) || selectedDetour.equalsIgnoreCase("Select detour")) {
+                detourSpinner.setSelection(1);
+                selectedDetour = (String) detourSpinner.getSelectedItem();
+            }
+
+            if (!agreeTermsCheckBox.isChecked()) {
+                Utils.showToast(mContext, "Agree Terms and Conditions");
                 return;
             }
+
+            mainPossibleRoutes = new ArrayList<>();
+            allPossibleRoutes = new ArrayList<>();
+
+            addRoutes(true);
+
         } else {
             Utils.showToast(mContext, "Register New Vehicle");
+        }
+    }
+
+    ArrayList<RideInfo.PossibleRoutes> mainPossibleRoutes = new ArrayList<>();
+    ArrayList<RideInfo.PossibleRoutes> allPossibleRoutes = new ArrayList<>();
+
+    private void addRoutes(boolean isMain) {
+        if (rideInfoDto != null) {
+            if (isMain) {
+                getMainRoutes(0, rideInfoDto.getmMainPossibleRoutes(), isMain);
+            } else {
+                getMainRoutes(0, rideInfoDto.getmAllPossibleRoutes(), isMain);
+            }
+        }
+    }
+
+
+    public long getPrice(float km) {
+        long price;
+        if (km > 0 && km < 10) {
+            price = 20;
+        } else {
+            price = Math.round(km * 1.8 / 10) * 10;
+        }
+        return price;
+    }
+
+    public void addMainRoute(RideInfoDto.PossibleRoutesDto route, String duration, String distance, int order, boolean isLast, boolean isMain) {
+        Address arrivalAddress = getAddress(route.getArrivalLatitude(), route.getArrivalLongitude());
+        Address departureAddress = getAddress(route.getDepartureLatitude(), route.getDepartureLongitude());
+
+        String mDeparture = "";
+        String mArrival = "";
+        String mDepartureCity = "";
+        String mArrivalCity = "";
+        String mDepartureState = "";
+        String mArrivalState = "";
+        String mRoutePrice = "";
+        String mUserUpdatedPrice = "";
+        String mreadOnly = "";
+        String mkilometers = "";
+        String morder = "";
+        String mMainRoute = "";
+        String mTimeframe = "";
+
+        if (arrivalAddress != null && departureAddress != null) {
+            mDeparture = route.getMainDeparturePlace();
+            mArrival = route.getMainArrivalPlace();
+
+            mDepartureCity = departureAddress.getLocality();
+            mArrivalCity = arrivalAddress.getLocality();
+
+            mDepartureState = departureAddress.getAdminArea();
+            mArrivalState = arrivalAddress.getAdminArea();
+
+            mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
+            mUserUpdatedPrice = "";
+            mreadOnly = "";
+
+            mkilometers = distance;
+            morder = "" + order;
+            mMainRoute = route.getMainDeparturePlace() + " to " + route.getMainArrivalPlace();
+            mTimeframe = duration;
+        }
+        RideInfo.PossibleRoutes possibleRoute = new RideInfo().new PossibleRoutes(mDeparture, mArrival, mDepartureCity, mMainRoute,
+                mTimeframe, mArrivalCity, mDepartureState, mArrivalState, mRoutePrice, mUserUpdatedPrice, mreadOnly, mkilometers, morder);
+
+        if (isMain) {
+            mainPossibleRoutes.add(possibleRoute);
+        } else {
+            allPossibleRoutes.add(possibleRoute);
+        }
+
+        if (isLast) {
+            if (isMain) {
+                Log.e("mainPossibleRoutes", "tt" + mainPossibleRoutes.size());
+                addRoutes(false);
+            } else {
+                Log.e("alPOssl", "tt" + allPossibleRoutes.size());
+            }
+        }
+    }
+
+    public Address getAddress(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (addresses != null && addresses.size() > 0) {
+            return addresses.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
+    private void getMainRoutes(final int pos, final ArrayList<RideInfoDto.PossibleRoutesDto> possibleRoutesDtos, final boolean isMain) {
+        if (possibleRoutesDtos != null && possibleRoutesDtos.size() > 0) {
+            Utils.showProgress(true, mProgressBar, mProgressBGView);
+            try {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("http://maps.googleapis.com")
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(Utils.getOkHttpClient())
+                        .build();
+                YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
+                Call<GoogleMapsDto> call = yatraShareAPI.getGoogleMapsAPI(possibleRoutesDtos.get(pos).getDepartureLatitude() + "," + possibleRoutesDtos.get(pos).getDepartureLongitude(),
+                        possibleRoutesDtos.get(pos).getArrivalLatitude() + "," + possibleRoutesDtos.get(pos).getArrivalLongitude());
+                call.enqueue(new Callback<GoogleMapsDto>() {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param response
+                     * @param retrofit
+                     */
+                    @Override
+                    public void onResponse(retrofit.Response<GoogleMapsDto> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                        if (response.body() != null && response.isSuccess()) {
+                            ArrayList<GoogleMapsDto.Routes> routes = response.body().routes;
+                            if (routes != null && routes.size() > 0 && routes.get(0).legs != null && routes.get(0).legs.size() > 0) {
+                                addMainRoute(possibleRoutesDtos.get(pos), routes.get(0).legs.get(0).duration.text, routes.get(0).legs.get(0).distance.text, pos,
+                                        (pos == possibleRoutesDtos.size() - 1), isMain);
+                                if (pos < possibleRoutesDtos.size()) {
+                                    getMainRoutes(pos + 1, possibleRoutesDtos, isMain);
+                                }
+                            }
+                        }
+                        if (pos == possibleRoutesDtos.size() - 1) {
+                            Utils.showProgress(false, mProgressBar, mProgressBGView);
+                        }
+                    }
+
+                    /**
+                     * Invoked when a network or unexpected exception occurred during the HTTP request.
+                     *
+                     * @param t throwable error
+                     */
+                    @Override
+                    public void onFailure(Throwable t) {
+
+                        android.util.Log.e("", "FAILURE RESPONSE");
+                        Utils.showProgress(false, mProgressBar, mProgressBGView);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -263,7 +436,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        switch (view.getId()) {
+        switch (parent.getId()) {
             case R.id.selectModel:
                 selectedModel = (String) parent.getAdapter().getItem(position);
                 selectedVehicleId = getVehicleId(selectedModel);
