@@ -1,5 +1,7 @@
 package com.yatrashare.pojos;
 
+import com.google.android.gms.location.places.Place;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -187,188 +189,35 @@ public class RideInfoDto implements Serializable {
     }
 
     public class StopOverPointsDto implements Serializable {
-        String mstopover_location;
-        String mStopOverState;
-        String mOrder;
-        String mLatitude;
-        String mLongitude;
-        String mstopoverAddressDetails;
-        String mStopOverCity;
-
-        public String getMstopover_location() {
-            return mstopover_location;
+        public Place getStopOves() {
+            return stopOves;
         }
 
-        public void setMstopover_location(String mstopover_location) {
-            this.mstopover_location = mstopover_location;
+        public void setStopOves(Place stopOves) {
+            this.stopOves = stopOves;
         }
 
-        public String getmStopOverState() {
-            return mStopOverState;
-        }
-
-        public void setmStopOverState(String mStopOverState) {
-            this.mStopOverState = mStopOverState;
-        }
-
-        public String getmOrder() {
-            return mOrder;
-        }
-
-        public void setmOrder(String mOrder) {
-            this.mOrder = mOrder;
-        }
-
-        public String getmLatitude() {
-            return mLatitude;
-        }
-
-        public void setmLatitude(String mLatitude) {
-            this.mLatitude = mLatitude;
-        }
-
-        public String getmLongitude() {
-            return mLongitude;
-        }
-
-        public void setmLongitude(String mLongitude) {
-            this.mLongitude = mLongitude;
-        }
-
-        public String getMstopoverAddressDetails() {
-            return mstopoverAddressDetails;
-        }
-
-        public void setMstopoverAddressDetails(String mstopoverAddressDetails) {
-            this.mstopoverAddressDetails = mstopoverAddressDetails;
-        }
-
-        public String getmStopOverCity() {
-            return mStopOverCity;
-        }
-
-        public void setmStopOverCity(String mStopOverCity) {
-            this.mStopOverCity = mStopOverCity;
-        }
+        Place stopOves;
     }
 
     public class PossibleRoutesDto implements Serializable {
-        String mDeparture;
-        String mArrival;
-        String mDepartureCity;
-        String mArrivalCity;
-        String mDepartureState;
-        String mArrivalState;
-        String mRoutePrice;
-        String mUserUpdatedPrice;
-        String mreadOnly;
-        String mkilometers;
-        String morder;
-        String mMainRoute;
-        String mTimeframe;
+        Place departure;
+        Place arrival;
 
-        public String getmDeparture() {
-            return mDeparture;
+        public Place getDeparture() {
+            return departure;
         }
 
-        public void setmDeparture(String mDeparture) {
-            this.mDeparture = mDeparture;
+        public void setDeparture(Place departure) {
+            this.departure = departure;
         }
 
-        public String getmArrival() {
-            return mArrival;
+        public Place getArrival() {
+            return arrival;
         }
 
-        public void setmArrival(String mArrival) {
-            this.mArrival = mArrival;
-        }
-
-        public String getmDepartureCity() {
-            return mDepartureCity;
-        }
-
-        public void setmDepartureCity(String mDepartureCity) {
-            this.mDepartureCity = mDepartureCity;
-        }
-
-        public String getmArrivalCity() {
-            return mArrivalCity;
-        }
-
-        public void setmArrivalCity(String mArrivalCity) {
-            this.mArrivalCity = mArrivalCity;
-        }
-
-        public String getmDepartureState() {
-            return mDepartureState;
-        }
-
-        public void setmDepartureState(String mDepartureState) {
-            this.mDepartureState = mDepartureState;
-        }
-
-        public String getmArrivalState() {
-            return mArrivalState;
-        }
-
-        public void setmArrivalState(String mArrivalState) {
-            this.mArrivalState = mArrivalState;
-        }
-
-        public String getmRoutePrice() {
-            return mRoutePrice;
-        }
-
-        public void setmRoutePrice(String mRoutePrice) {
-            this.mRoutePrice = mRoutePrice;
-        }
-
-        public String getmUserUpdatedPrice() {
-            return mUserUpdatedPrice;
-        }
-
-        public void setmUserUpdatedPrice(String mUserUpdatedPrice) {
-            this.mUserUpdatedPrice = mUserUpdatedPrice;
-        }
-
-        public String getMreadOnly() {
-            return mreadOnly;
-        }
-
-        public void setMreadOnly(String mreadOnly) {
-            this.mreadOnly = mreadOnly;
-        }
-
-        public String getMkilometers() {
-            return mkilometers;
-        }
-
-        public void setMkilometers(String mkilometers) {
-            this.mkilometers = mkilometers;
-        }
-
-        public String getMorder() {
-            return morder;
-        }
-
-        public void setMorder(String morder) {
-            this.morder = morder;
-        }
-
-        public String getmMainRoute() {
-            return mMainRoute;
-        }
-
-        public void setmMainRoute(String mMainRoute) {
-            this.mMainRoute = mMainRoute;
-        }
-
-        public String getmTimeframe() {
-            return mTimeframe;
-        }
-
-        public void setmTimeframe(String mTimeframe) {
-            this.mTimeframe = mTimeframe;
+        public void setArrival(Place arrival) {
+            this.arrival = arrival;
         }
     }
 }
