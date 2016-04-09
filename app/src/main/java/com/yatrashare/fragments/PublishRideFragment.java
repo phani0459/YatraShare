@@ -1,11 +1,14 @@
 package com.yatrashare.fragments;
 
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -24,17 +26,25 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.Seats;
+import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.dtos.Vehicle;
 import com.yatrashare.interfaces.YatraShareAPI;
+import com.yatrashare.pojos.OfferRide;
 import com.yatrashare.pojos.RideInfo;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -73,8 +83,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     public CheckBox ladiesOnlyCheckBox;
     @Bind(R.id.cb_agreeTerms)
     public CheckBox agreeTermsCheckBox;
-    @Bind(R.id.btn_PublishRide)
-    public Button publishRideButton;
     @Bind(R.id.publishRideBGView)
     public View mProgressBGView;
     @Bind(R.id.publishRide_progress)
@@ -187,9 +195,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     private void addRoutes(boolean isMain) {
         if (rideInfoDto != null) {
             if (isMain) {
-                getMainRoutes(0, rideInfoDto.getmMainPossibleRoutes(), isMain);
+                getMainRoutes(0, rideInfoDto.getmMainPossibleRoutes(), true);
             } else {
-                getMainRoutes(0, rideInfoDto.getmAllPossibleRoutes(), isMain);
+                getMainRoutes(0, rideInfoDto.getmAllPossibleRoutes(), false);
             }
         }
     }
@@ -257,7 +265,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             } else {
                 Log.e("mainPossibleRoutes: " + mainPossibleRoutes.size(), "allPossibleRoutes: " + allPossibleRoutes.size());
                 getStopOvers();
-                Utils.showProgress(false, mProgressBar, mProgressBGView);
             }
         }
     }
@@ -279,7 +286,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                 mLatitude = rideInfoDto.getmStopOvers().get(i).getStopOverLatitude() + "";
                 mLongitude = rideInfoDto.getmStopOvers().get(i).getStopOverLongitude() + "";
                 mstopoverAddressDetails = rideInfoDto.getmStopOvers().get(i).getStopOverLocation();
-                mOrder = i + "";
+                mOrder = (i + 1) + "";
                 mStopOverCity = address.getLocality();
                 mStopOverState = address.getAdminArea();
                 if (address.getMaxAddressLineIndex() >= 2) {
@@ -292,6 +299,64 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             }
         }
         Log.e("stopOvers", "size " + stopOverPoints.size());
+
+        prepareRide();
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private void prepareRide() {
+        String mRideDeparture = rideInfoDto.getmRideDeparture();
+        String mRideArrival = rideInfoDto.getmRideArrival();
+        String mRideType = rideInfoDto.getmRideType();
+        String mLadiesOnly = ladiesOnlyCheckBox.isChecked() ? "true" : "false";
+        String mTotalkilometers = rideInfoDto.getmTotalkilometers();
+        ArrayList<String> mSelectedWeekdays = rideInfoDto.getmSelectedWeekdays();
+        String mTotalprice = rideInfoDto.getmTotalprice();
+        String mVehicleType = radioButtonCar.isChecked() ? "1" : "2";
+        String mOtherDetails = provideRideDetEditText.getText().toString();
+        String mCompanyDetails = "";
+        String mDepartureTime = rideInfoDto.getmDepartureTime();
+        String mReturnTime = rideInfoDto.getmReturnTime();
+
+        RideInfo rideInfo = new RideInfo(mRideDeparture, mRideArrival, mTotalkilometers, mTotalprice, selectedTimeFlexi, selectedDetour, seatsSelected, mOtherDetails,
+                mCompanyDetails, selectedVehicleId, mDepartureTime, mReturnTime, mLadiesOnly, mSelectedWeekdays, mRideType, mVehicleType, selectedLuggageSize, mainPossibleRoutes, allPossibleRoutes, stopOverPoints);
+
+        OfferRide offerRide = new OfferRide(rideInfo);
+        Gson gson = new Gson();
+        String s = gson.toJson(offerRide);
+        Log.e("AFFS", "trtrtr" + s);
+
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, offerRide);
+        call.enqueue(new Callback<UserDataDTO>() {
+            /**
+             * Successful HTTP response.
+             *
+             * @param response response from server
+             * @param retrofit adapter
+             */
+            @Override
+            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                if (response.body() != null && response.body().Data != null) {
+                    if (response.body().Data.equalsIgnoreCase("Success")) {
+                        Utils.showToast(mContext, response.body().Data);
+                    }
+                }
+            }
+
+            /**
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t throwable error
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showToast(mContext, "Something went wrong, try again later!");
+            }
+        });
+
     }
 
     public Address getAddress(double latitude, double longitude) {
@@ -312,7 +377,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
     private void getMainRoutes(final int pos, final ArrayList<RideInfoDto.PossibleRoutesDto> possibleRoutesDtos, final boolean isMain) {
         if (possibleRoutesDtos != null && possibleRoutesDtos.size() > 0) {
-            Utils.showProgress(true, mProgressBar, mProgressBGView);
+            if (mProgressBar.getVisibility() == View.GONE) {
+                Utils.showProgress(true, mProgressBar, mProgressBGView);
+            }
             try {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://maps.googleapis.com")
@@ -326,8 +393,8 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                     /**
                      * Successful HTTP response.
                      *
-                     * @param response
-                     * @param retrofit
+                     * @param response response from server
+                     * @param retrofit adapter
                      */
                     @Override
                     public void onResponse(retrofit.Response<GoogleMapsDto> response, Retrofit retrofit) {
@@ -335,11 +402,13 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                         if (response.body() != null && response.isSuccess()) {
                             ArrayList<GoogleMapsDto.Routes> routes = response.body().routes;
                             if (routes != null && routes.size() > 0 && routes.get(0).legs != null && routes.get(0).legs.size() > 0) {
-                                addMainRoute(possibleRoutesDtos.get(pos), routes.get(0).legs.get(0).duration.text, routes.get(0).legs.get(0).distance.text, pos,
+                                addMainRoute(possibleRoutesDtos.get(pos), routes.get(0).legs.get(0).duration.text, routes.get(0).legs.get(0).distance.text, (pos + 1),
                                         (pos == possibleRoutesDtos.size() - 1), isMain);
                                 if (pos < possibleRoutesDtos.size()) {
                                     getMainRoutes(pos + 1, possibleRoutesDtos, isMain);
                                 }
+                                if (!isMain && pos == possibleRoutesDtos.size() - 1)
+                                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                             }
                         }
                     }
@@ -379,8 +448,8 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response response from server
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<Seats> response, Retrofit retrofit) {
@@ -405,7 +474,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t throwable Error
              */
             @Override
             public void onFailure(Throwable t) {
@@ -449,7 +518,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t throwable Error
              */
             @Override
             public void onFailure(Throwable t) {

@@ -66,7 +66,7 @@ public class Constants {
 
      */
 
-    public static final String defaultPicURL = "http://www.yatrashare.com/Temp/ProfilePics/avatar.jpg";
+    public static final String defaultPicURL = "http://www.mediafire.com/convkey/5b62/1bi4vdi37z3wfvczg.jpg?size_id=3";
 
     public static Uri getDefaultPicURI() {
         Uri uri = Uri.parse(defaultPicURL);

@@ -126,6 +126,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             possibleRoutesDto.setDepartureLongitude(departurePlace.getLatLng().longitude);
             possibleRoutesDto.setArrivalLatitude(arrivalPlace.getLatLng().latitude);
             possibleRoutesDto.setArrivalLongitude(arrivalPlace.getLatLng().longitude);
+            possibleRoutesDto.setMainArrivalPlace(arrivalPlace.getAddress() + "");
+            possibleRoutesDto.setMainDeparturePlace(departurePlace.getAddress() + "");
             allPossibleRoutes.add(possibleRoutesDto);
             mainPossibleRoutes.add(possibleRoutesDto);
             if (stopOverPlacesHashMap != null && stopOverPlacesHashMap.size() > 0) {
