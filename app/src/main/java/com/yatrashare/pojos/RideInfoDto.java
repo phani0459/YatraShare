@@ -206,6 +206,16 @@ public class RideInfoDto implements Serializable {
 
         double stopOverLatitude;
         double stopOverLongitude;
+
+        public String getStopOverLocation() {
+            return stopOverLocation;
+        }
+
+        public void setStopOverLocation(String stopOverLocation) {
+            this.stopOverLocation = stopOverLocation;
+        }
+
+        String stopOverLocation;
     }
 
     public class PossibleRoutesDto implements Serializable {

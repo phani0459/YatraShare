@@ -172,6 +172,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
             mainPossibleRoutes = new ArrayList<>();
             allPossibleRoutes = new ArrayList<>();
+            stopOverPoints = new ArrayList<>();
 
             addRoutes(true);
 
@@ -252,12 +253,45 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
         if (isLast) {
             if (isMain) {
-                Log.e("mainPossibleRoutes", "tt" + mainPossibleRoutes.size());
                 addRoutes(false);
             } else {
-                Log.e("alPOssl", "tt" + allPossibleRoutes.size());
+                Log.e("mainPossibleRoutes: " + mainPossibleRoutes.size(), "allPossibleRoutes: " + allPossibleRoutes.size());
+                getStopOvers();
+                Utils.showProgress(false, mProgressBar, mProgressBGView);
             }
         }
+    }
+
+    ArrayList<RideInfo.StopOverPoints> stopOverPoints = new ArrayList<>();
+
+    private void getStopOvers() {
+        if (rideInfoDto.getmStopOvers() != null && rideInfoDto.getmStopOvers().size() > 0) {
+            for (int i = 0; i < rideInfoDto.getmStopOvers().size(); i++) {
+                String mstopover_location = "";
+                String mStopOverState;
+                String mOrder;
+                String mLatitude;
+                String mLongitude;
+                String mstopoverAddressDetails;
+                String mStopOverCity;
+                Address address = getAddress(rideInfoDto.getmStopOvers().get(i).getStopOverLatitude(), rideInfoDto.getmStopOvers().get(i).getStopOverLongitude());
+
+                mLatitude = rideInfoDto.getmStopOvers().get(i).getStopOverLatitude() + "";
+                mLongitude = rideInfoDto.getmStopOvers().get(i).getStopOverLongitude() + "";
+                mstopoverAddressDetails = rideInfoDto.getmStopOvers().get(i).getStopOverLocation();
+                mOrder = i + "";
+                mStopOverCity = address.getLocality();
+                mStopOverState = address.getAdminArea();
+                if (address.getMaxAddressLineIndex() >= 2) {
+                    mstopover_location = address.getAddressLine(0) + address.getAddressLine(1);
+                }
+
+                RideInfo.StopOverPoints stopOverPoint = new RideInfo().new StopOverPoints(mstopover_location, mStopOverState, mOrder, mLatitude, mLongitude, mstopoverAddressDetails, mStopOverCity);
+
+                stopOverPoints.add(stopOverPoint);
+            }
+        }
+        Log.e("stopOvers", "size " + stopOverPoints.size());
     }
 
     public Address getAddress(double latitude, double longitude) {
@@ -308,9 +342,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                                 }
                             }
                         }
-                        if (pos == possibleRoutesDtos.size() - 1) {
-                            Utils.showProgress(false, mProgressBar, mProgressBGView);
-                        }
                     }
 
                     /**
@@ -320,7 +351,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                      */
                     @Override
                     public void onFailure(Throwable t) {
-
                         android.util.Log.e("", "FAILURE RESPONSE");
                         Utils.showProgress(false, mProgressBar, mProgressBGView);
                     }

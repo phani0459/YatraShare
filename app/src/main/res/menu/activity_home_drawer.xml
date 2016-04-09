@@ -5,23 +5,23 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/home"
-            android:title="Home"/>
+            android:title="Home" />
         <item
             android:id="@+id/nav_messages"
             android:icon="@drawable/messages"
-            android:title="Messages"/>
+            android:title="Messages" />
         <item
             android:id="@+id/nav_offeredrides"
             android:icon="@drawable/ofrd_rides"
-            android:title="Offered Rides"/>
+            android:title="Offered Rides" />
         <item
             android:id="@+id/nav_bukedrides"
             android:icon="@drawable/bukd_rides"
-            android:title="Booked Rides"/>
+            android:title="Booked Rides" />
         <item
             android:id="@+id/nav_reviews"
             android:icon="@drawable/reviews"
-            android:title="Ratings"/>
+            android:title="Ratings" />
 
     </group>
 
@@ -30,23 +30,23 @@
             <item
                 android:id="@+id/nav_invitefriends"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Invite Friends"/>
+                android:title="Invite Friends" />
             <item
                 android:id="@+id/nav_callus"
                 android:icon="@drawable/call_us"
-                android:title="Call us"/>
+                android:title="Call us" />
             <item
                 android:id="@+id/nav_more"
                 android:icon="@drawable/more"
-                android:title="More"/>
+                android:title="More" />
             <item
                 android:id="@+id/nav_pwd"
                 android:icon="@drawable/password"
-                android:title="Change Password"/>
+                android:title="Change Password" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/logout"
-                android:title="Logout"/>
+                android:title="Logout" />
         </menu>
     </item>
 

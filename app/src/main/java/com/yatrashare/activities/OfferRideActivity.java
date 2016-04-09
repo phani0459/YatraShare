@@ -410,6 +410,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         RideInfoDto.StopOvers stopOver = new RideInfoDto().new StopOvers();
                         stopOver.setStopOverLatitude(stopOverPlaces.get(i).getLatLng().latitude);
                         stopOver.setStopOverLongitude(stopOverPlaces.get(i).getLatLng().longitude);
+                        stopOver.setStopOverLocation(stopOverPlaces.get(i).getAddress() + "");
                         latLngs.add(stopOver);
                     }
                 }

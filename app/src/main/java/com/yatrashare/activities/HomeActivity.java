@@ -24,15 +24,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -135,7 +134,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View view = navigationView.getHeaderView(0);
 
-        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.navigation_header_container);
+        RelativeLayout linearLayout = (RelativeLayout) view.findViewById(R.id.navigation_header_container);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             /**
              * Called when a view has been clicked.
