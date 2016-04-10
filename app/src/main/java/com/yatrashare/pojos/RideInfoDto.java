@@ -7,23 +7,44 @@ public class RideInfoDto implements Serializable {
     String mRideDeparture;
     String mRideArrival;
     String mRideType;
-    String mLadiesOnly;
     String mTotalkilometers;
     ArrayList<String> mSelectedWeekdays;
     ArrayList<StopOvers> mStopOvers;
     ArrayList<PossibleRoutesDto> mMainPossibleRoutes;
     ArrayList<PossibleRoutesDto> mAllPossibleRoutes;
     String mTotalprice;
-    public String mVehicleType;
-    String mTimeFlexi;
-    String mDetour;
-    String mSeats;
-    String mOtherDetails;
     String mCompanyDetails;
-    String mUserVehicleModelId;
     String mDepartureTime;
     String mReturnTime;
-    String mMaxLuggageSize;
+    String mDepartureDate;
+
+    public String getUserUpdatedPrice() {
+        return userUpdatedPrice;
+    }
+
+    public void setUserUpdatedPrice(String userUpdatedPrice) {
+        this.userUpdatedPrice = userUpdatedPrice;
+    }
+
+    String userUpdatedPrice;
+
+    public String getmReturnDate() {
+        return mReturnDate;
+    }
+
+    public void setmReturnDate(String mReturnDate) {
+        this.mReturnDate = mReturnDate;
+    }
+
+    public String getmDepartureDate() {
+        return mDepartureDate;
+    }
+
+    public void setmDepartureDate(String mDepartureDate) {
+        this.mDepartureDate = mDepartureDate;
+    }
+
+    String mReturnDate;
 
     public String getmRideDeparture() {
         return mRideDeparture;
@@ -47,14 +68,6 @@ public class RideInfoDto implements Serializable {
 
     public void setmRideType(String mRideType) {
         this.mRideType = mRideType;
-    }
-
-    public String getmLadiesOnly() {
-        return mLadiesOnly;
-    }
-
-    public void setmLadiesOnly(String mLadiesOnly) {
-        this.mLadiesOnly = mLadiesOnly;
     }
 
     public String getmTotalkilometers() {
@@ -105,45 +118,6 @@ public class RideInfoDto implements Serializable {
         this.mTotalprice = mTotalprice;
     }
 
-    public String getmVehicleType() {
-        return mVehicleType;
-    }
-
-    public void setmVehicleType(String mVehicleType) {
-        this.mVehicleType = mVehicleType;
-    }
-
-    public String getmTimeFlexi() {
-        return mTimeFlexi;
-    }
-
-    public void setmTimeFlexi(String mTimeFlexi) {
-        this.mTimeFlexi = mTimeFlexi;
-    }
-
-    public String getmDetour() {
-        return mDetour;
-    }
-
-    public void setmDetour(String mDetour) {
-        this.mDetour = mDetour;
-    }
-
-    public String getmSeats() {
-        return mSeats;
-    }
-
-    public void setmSeats(String mSeats) {
-        this.mSeats = mSeats;
-    }
-
-    public String getmOtherDetails() {
-        return mOtherDetails;
-    }
-
-    public void setmOtherDetails(String mOtherDetails) {
-        this.mOtherDetails = mOtherDetails;
-    }
 
     public String getmCompanyDetails() {
         return mCompanyDetails;
@@ -151,14 +125,6 @@ public class RideInfoDto implements Serializable {
 
     public void setmCompanyDetails(String mCompanyDetails) {
         this.mCompanyDetails = mCompanyDetails;
-    }
-
-    public String getmUserVehicleModelId() {
-        return mUserVehicleModelId;
-    }
-
-    public void setmUserVehicleModelId(String mUserVehicleModelId) {
-        this.mUserVehicleModelId = mUserVehicleModelId;
     }
 
     public String getmDepartureTime() {
@@ -177,15 +143,6 @@ public class RideInfoDto implements Serializable {
         if (returnTime.contains("Time")) this.mReturnTime = "";
         else this.mReturnTime = returnTime;
     }
-
-    public String getmMaxLuggageSize() {
-        return mMaxLuggageSize;
-    }
-
-    public void setmMaxLuggageSize(String mMaxLuggageSize) {
-        this.mMaxLuggageSize = mMaxLuggageSize;
-    }
-
 
     public class StopOvers implements Serializable {
         public double getStopOverLatitude() {
@@ -221,24 +178,16 @@ public class RideInfoDto implements Serializable {
     public class PossibleRoutesDto implements Serializable {
         double departureLatitude;
         double departureLongitude;
-        String mainDeparturePlace;
-        String mainArrivalPlace;
 
-        public String getMainDeparturePlace() {
-            return mainDeparturePlace;
+        public boolean isMainRoute() {
+            return isMainRoute;
         }
 
-        public void setMainDeparturePlace(String mainDeparturePlace) {
-            this.mainDeparturePlace = mainDeparturePlace;
+        public void setIsMainRoute(boolean isMainRoute) {
+            this.isMainRoute = isMainRoute;
         }
 
-        public String getMainArrivalPlace() {
-            return mainArrivalPlace;
-        }
-
-        public void setMainArrivalPlace(String mainArrivalPlace) {
-            this.mainArrivalPlace = mainArrivalPlace;
-        }
+        boolean isMainRoute;
 
         public double getDepartureLatitude() {
             return departureLatitude;

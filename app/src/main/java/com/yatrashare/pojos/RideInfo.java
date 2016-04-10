@@ -65,16 +65,24 @@ public class RideInfo {
     @SerializedName("MaxLuggageSize")
     String mMaxLuggageSize;
 
+    @SerializedName("DepartureDate")
+    String mDepartureDate;
+
+    @SerializedName("ReturnDate")
+    String mReturnDate;
+
     public RideInfo() {
 
     }
 
-    public RideInfo(String mRideDeparture, String mRideArrival, String mTotalkilometers, String mTotalprice, String mTimeFlexi, String mDetour, String mSeats,
+    public RideInfo(String mDepartureDate,  String mReturnDate, String mRideDeparture, String mRideArrival, String mTotalkilometers, String mTotalprice, String mTimeFlexi, String mDetour, String mSeats,
                     String mOtherDetails, String mCompanyDetails,
                     String mUserVehicleModelId, String mDepartureTime,
                     String mReturnTime, String ladiesOnly, ArrayList<String> selectedWeekDays,
                     String rideType, String vehicleType, String mMaxLuggageSize,
                     ArrayList<PossibleRoutes> mMainPossibleRoutes, ArrayList<PossibleRoutes> mAllPossibleRoutes, ArrayList<StopOverPoints> mStopOvers) {
+        this.mDepartureDate = mDepartureDate;
+        this.mReturnDate = mReturnDate;
         this.mRideDeparture = mRideDeparture;
         this.mRideArrival = mRideArrival;
         this.mTotalkilometers = mTotalkilometers;

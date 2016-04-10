@@ -1,6 +1,5 @@
 package com.yatrashare.interfaces;
 
-import com.google.gson.JsonElement;
 import com.yatrashare.dtos.BookedRides;
 import com.yatrashare.dtos.GetUserBookings;
 import com.yatrashare.dtos.GoogleMapsDto;
@@ -17,7 +16,6 @@ import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.dtos.Vehicle;
 import com.yatrashare.pojos.FindRide;
-import com.yatrashare.pojos.OfferRide;
 import com.yatrashare.pojos.RegisterVehicle;
 import com.yatrashare.pojos.RideInfo;
 import com.yatrashare.pojos.UserFBLogin;
@@ -172,7 +170,7 @@ public interface YatraShareAPI {
     Call<Seats> getUserVehicleSeats(@Query("userGuid") String userGuide, @Query("UserVehicleId") String vehicleType);
 
     @POST("/api/Rides/PublishNewRide")
-    Call<UserDataDTO> offerRide(@Query("userGuid") String userGuide, @Body OfferRide rideInfo);
+    Call<UserDataDTO> offerRide(@Query("userGuid") String userGuide, @Body RideInfo rideInfo);
 
     @POST("/api/Vehicle/RegisterNewVehicle")
     Call<UserDataDTO> registerVehicle(@Query("userGuid") String userGuid, @Body RegisterVehicle registerVehicle);

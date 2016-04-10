@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
-import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.dtos.Vehicle;
@@ -205,14 +203,9 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
             return;
         }
         Utils.showProgress(true, registerProgressBar, registerBGView);
-        RegisterVehicle.VehicleInfo vehicleInfo = new RegisterVehicle().new VehicleInfo(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort);
-        RegisterVehicle registerVehicle = new RegisterVehicle(vehicleInfo);
+        RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort);
 
-        Gson gson = new Gson();
-        String s = gson.toJson(registerVehicle);
-        Log.e("asgasf", "ertrewtrew" + s);
-
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().registerVehicle(userGuide, registerVehicle);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().registerVehicle(userGuide, vehicleInfo);
         call.enqueue(new Callback<UserDataDTO>() {
             @Override
             public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
@@ -220,6 +213,7 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
                 if (response.body() != null && response.body().Data != null) {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         showSnackBar("Vehicle Registered");
+                        finish();
                     } else {
                         showSnackBar(response.body().Data);
                     }

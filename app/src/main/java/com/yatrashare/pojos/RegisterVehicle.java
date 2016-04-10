@@ -7,40 +7,28 @@ import com.google.gson.annotations.SerializedName;
  */
 public class RegisterVehicle {
 
-    @SerializedName("vehicleInfo")
-    VehicleInfo vehicleInfo;
+    @SerializedName("VehicleType")
+    String mVehicleType;
 
-    public RegisterVehicle() {
-    }
+    @SerializedName("Seats")
+    String mSeats;
 
-    public RegisterVehicle(VehicleInfo vehicleInfo) {
-        this.vehicleInfo = vehicleInfo;
-    }
+    @SerializedName("VehicleModelId")
+    String mVehicleModelId;
 
-    public class VehicleInfo {
-        @SerializedName("VehicleType")
-        String mVehicleType;
+    @SerializedName("Color")
+    String mColor;
 
-        @SerializedName("Seats")
-        String mSeats;
-
-        @SerializedName("VehicleModelId")
-        String mVehicleModelId;
-
-        @SerializedName("Color")
-        String mColor;
-
-        @SerializedName("Comfort")
-        String mComfort;
+    @SerializedName("Comfort")
+    String mComfort;
 
 
-        public VehicleInfo(String vehicleType, String seats, String vehicleModelId, String color, String comfort) {
-            this.mVehicleType = vehicleType;
-            this.mSeats = seats;
-            this.mVehicleModelId = vehicleModelId;
-            this.mColor = color;
-            this.mComfort = comfort;
-        }
+    public RegisterVehicle(String vehicleType, String seats, String vehicleModelId, String color, String comfort) {
+        this.mVehicleType = vehicleType;
+        this.mSeats = seats;
+        this.mVehicleModelId = vehicleModelId;
+        this.mColor = color;
+        this.mComfort = comfort;
     }
 
 }

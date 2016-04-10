@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,16 +25,13 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
-import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.RegisterVehicleActivity;
-import com.yatrashare.activities.RideFilterActivity;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.dtos.Vehicle;
 import com.yatrashare.interfaces.YatraShareAPI;
-import com.yatrashare.pojos.OfferRide;
 import com.yatrashare.pojos.RideInfo;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
@@ -166,15 +164,15 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             }
             if (TextUtils.isEmpty(selectedLuggageSize) || selectedLuggageSize.equalsIgnoreCase("Select Luggage size")) {
                 luggageSpinner.setSelection(1);
-                selectedLuggageSize = (String) luggageSpinner.getSelectedItem();
+                selectedLuggageSize = luggageSpinner.getSelectedItem().toString();
             }
             if (TextUtils.isEmpty(selectedTimeFlexi) || selectedTimeFlexi.equalsIgnoreCase("Time Flexibility")) {
                 timeFlexiSpinner.setSelection(1);
-                selectedTimeFlexi = (String) timeFlexiSpinner.getSelectedItem();
+                selectedTimeFlexi = "15Mins";
             }
             if (TextUtils.isEmpty(selectedDetour) || selectedDetour.equalsIgnoreCase("Select detour")) {
                 detourSpinner.setSelection(1);
-                selectedDetour = (String) detourSpinner.getSelectedItem();
+                selectedDetour = "NoDetour";
             }
 
             if (!agreeTermsCheckBox.isChecked()) {
@@ -236,8 +234,8 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         String mTimeframe = "";
 
         if (arrivalAddress != null && departureAddress != null) {
-            mDeparture = route.getMainDeparturePlace();
-            mArrival = route.getMainArrivalPlace();
+            mDeparture = rideInfoDto.getmRideDeparture();
+            mArrival = rideInfoDto.getmRideArrival();
 
             mDepartureCity = departureAddress.getLocality();
             mArrivalCity = arrivalAddress.getLocality();
@@ -246,12 +244,12 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             mArrivalState = arrivalAddress.getAdminArea();
 
             mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
-            mUserUpdatedPrice = "";
+            mUserUpdatedPrice = rideInfoDto.getUserUpdatedPrice();
             mreadOnly = "";
 
             mkilometers = distance;
             morder = "" + order;
-            mMainRoute = route.getMainDeparturePlace() + " to " + route.getMainArrivalPlace();
+            mMainRoute = route.isMainRoute() + "";
             mTimeframe = duration;
         }
         RideInfo.PossibleRoutes possibleRoute = new RideInfo().new PossibleRoutes(mDeparture, mArrival, mDepartureCity, mMainRoute,
@@ -321,18 +319,15 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         String mCompanyDetails = "";
         String mDepartureTime = rideInfoDto.getmDepartureTime();
         String mReturnTime = rideInfoDto.getmReturnTime();
+        String mDepartureDate = rideInfoDto.getmDepartureDate();
+        String mReturnDate = rideInfoDto.getmReturnDate();
 
-        RideInfo rideInfo = new RideInfo(mRideDeparture, mRideArrival, mTotalkilometers, mTotalprice, selectedTimeFlexi, selectedDetour, seatsSelected, mOtherDetails,
+        RideInfo rideInfo = new RideInfo(mDepartureDate, mReturnDate, mRideDeparture, mRideArrival, mTotalkilometers, mTotalprice, selectedTimeFlexi, selectedDetour, seatsSelected, mOtherDetails,
                 mCompanyDetails, selectedVehicleId, mDepartureTime, mReturnTime, mLadiesOnly, mSelectedWeekdays, mRideType, mVehicleType, selectedLuggageSize, mainPossibleRoutes, allPossibleRoutes, stopOverPoints);
 
-        OfferRide offerRide = new OfferRide(rideInfo);
-        Gson gson = new Gson();
-        String s = gson.toJson(offerRide);
-        Log.e("AFFS", "trtrtr" + s);
-
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, offerRide);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, rideInfo);
         call.enqueue(new Callback<UserDataDTO>() {
-            /**
+            /*
              * Successful HTTP response.
              *
              * @param response response from server
@@ -342,13 +337,14 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response.body() != null && response.body().Data != null) {
-                    if (response.body().Data.equalsIgnoreCase("Success")) {
-                        Utils.showToast(mContext, response.body().Data);
+                    if (response.body().Data.contains("-")) {
+                        Utils.showToast(mContext, "Successfully ride created");
+                        ((AppCompatActivity) mContext).finish();
                     }
                 }
             }
 
-            /**
+            /*
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
              * @param t throwable error
@@ -356,10 +352,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showToast(mContext, "Something went wrong, try again later!");
+                Utils.showToast(mContext, getString(R.string.tryagain));
             }
         });
-
     }
 
     public Address getAddress(double latitude, double longitude) {
@@ -442,6 +437,12 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             }
         }
         return null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getUserVehicleModels();
     }
 
     private void getVehicleSeats(String vehicleId) {
@@ -550,10 +551,38 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                 seatsSelected = (String) parent.getAdapter().getItem(position);
                 break;
             case R.id.timeFlexiSpinner:
-                selectedTimeFlexi = (String) parent.getAdapter().getItem(position);
+                switch (position) {
+                    case 0:
+                    case 1:
+                        selectedTimeFlexi = "15Mins";
+                        break;
+                    case 2:
+                        selectedTimeFlexi = "30Mins";
+                        break;
+                    case 3:
+                        selectedTimeFlexi = "1Hour";
+                        break;
+                    case 4:
+                        selectedTimeFlexi = "2Hours";
+                        break;
+                }
                 break;
             case R.id.detourSpinner:
-                selectedDetour = (String) parent.getAdapter().getItem(position);
+                switch (position) {
+                    case 0:
+                    case 1:
+                        selectedDetour = "NoDetour";
+                        break;
+                    case 2:
+                        selectedDetour = "15MinsDetour";
+                        break;
+                    case 3:
+                        selectedDetour = "30MinsDetou";
+                        break;
+                    case 4:
+                        selectedDetour = "AnyDetour";
+                        break;
+                }
                 break;
             case R.id.luggageSpinner:
                 selectedLuggageSize = (String) parent.getAdapter().getItem(position);
