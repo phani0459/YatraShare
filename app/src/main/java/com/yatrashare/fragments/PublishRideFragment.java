@@ -1,14 +1,12 @@
 package com.yatrashare.fragments;
 
 
-import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -28,6 +26,8 @@ import android.widget.Spinner;
 
 import com.google.gson.Gson;
 import com.yatrashare.R;
+import com.yatrashare.activities.RegisterVehicleActivity;
+import com.yatrashare.activities.RideFilterActivity;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.UserDataDTO;
@@ -39,12 +39,7 @@ import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -63,6 +58,7 @@ import retrofit.Retrofit;
 public class PublishRideFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = PublishRideFragment.class.getSimpleName();
+    private static final int REQUEST_CODE_REGISTER_VEHICLE = 28;
     @Bind(R.id.rbtn_vehicle_car)
     public RadioButton radioButtonCar;
     @Bind(R.id.rbtn_vehicle_bike)
@@ -118,6 +114,14 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         getUserVehicleModels();
 
         return inflatedLayout;
+    }
+
+    @OnClick(R.id.registerNewVehicle)
+    public void registerVehicle() {
+        Intent intent = new Intent(mContext, RegisterVehicleActivity.class);
+        intent.putExtra("Selected Vehicle", radioButtonCar.isChecked() ? "1" : "2");
+        intent.putExtra("User Guide", userGuid);
+        startActivityForResult(intent, REQUEST_CODE_REGISTER_VEHICLE);
     }
 
     @Override
@@ -304,7 +308,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private void prepareRide() {
         String mRideDeparture = rideInfoDto.getmRideDeparture();
         String mRideArrival = rideInfoDto.getmRideArrival();

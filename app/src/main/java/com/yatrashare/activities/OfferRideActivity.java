@@ -35,7 +35,6 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.fragments.PublishRideFragment;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Utils;
 
@@ -50,10 +49,6 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit.Call;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
 
 public class OfferRideActivity extends AppCompatActivity implements View.OnTouchListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
@@ -112,6 +107,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
     ArrayList<GoogleMapsDto.Routes> routes;
     private ArrayList<Place> stopOverPlaces;
+    private PublishRideFragment publishRideFragment;
 
     public synchronized void getDuration(final Place departurePlace, final Place arrivalPlace, final float distance, final boolean isLast) {
 
@@ -420,11 +416,11 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
                 Log.e("allPossibleRoutes" + allPossibleRoutes.size(), "mainPossibleRoutes" + mainPossibleRoutes.size());
 
-                PublishRideFragment publishRideFragment = new PublishRideFragment();
+                publishRideFragment = new PublishRideFragment();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("RIDE INFO", rideInfoDto);
                 publishRideFragment.setArguments(bundle);
-
+                currentScreen = 1;
                 getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
 
             } else {
@@ -572,6 +568,19 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         });
     }
 
+    int currentScreen = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (currentScreen == 1) {
+            currentScreen = 0;
+            if (publishRideFragment != null)
+                getSupportFragmentManager().beginTransaction().remove(publishRideFragment).commit();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -656,7 +665,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish();
+            if (currentScreen == 1) {
+                currentScreen = 0;
+                if (publishRideFragment != null)
+                    getSupportFragmentManager().beginTransaction().remove(publishRideFragment).commit();
+            } else {
+                finish();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

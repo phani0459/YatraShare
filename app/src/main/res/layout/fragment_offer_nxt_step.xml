@@ -63,12 +63,13 @@
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/selectModel_array"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="4dp" />
+                android:layout_marginTop="4dp"
+                android:entries="@array/selectModel_array" />
 
             <TextView
+                android:id="@+id/registerNewVehicle"
                 style="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,11 +82,11 @@
                 android:id="@+id/selectSeats"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="match_parent"
-                android:entries="@array/selectSeats_array"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"
+                android:entries="@array/selectSeats_array" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/rideDetailsDesc"

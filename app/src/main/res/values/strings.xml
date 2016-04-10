@@ -88,6 +88,11 @@
     <string name="provideRidedetails">Provide your Ride Details here</string>
     <string name="nextstep">Next Step</string>
     <string name="publishRide">Publish Ride</string>
+    <string name="color">Color</string>
+    <string name="brand">Brand</string>
+    <string name="model">Model</string>
+    <string name="seats">Seats</string>
+    <string name="comfort">Comfort</string>
 
     <string name="mon">Mon</string>
     <string name="tue">Tue</string>
@@ -110,6 +115,48 @@
 
     <string-array name="selectSeats_array">
         <item>Select Seats</item>
+    </string-array>
+
+    <string-array name="selectCarSeats_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array name="selectBikeSeats_array">
+        <item>Select Seats</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="selectBrand_array">
+        <item>Select Brand</item>
+    </string-array>
+
+    <string-array name="vehiclecolor_array">
+        <item>Black</item>
+        <item>Light Green</item>
+        <item>Green</item>
+        <item>Dark Green</item>
+        <item>Light Gray</item>
+        <item>Dark Gray</item>
+        <item>purple</item>
+        <item>Brown</item>
+        <item>Claret</item>
+        <item>Light Blue</item>
+        <item>Blue</item>
+        <item>Dark Blue</item>
+        <item>Mauve</item>
+        <item>Red</item>
+        <item>Pink</item>
+        <item>Orange</item>
+        <item>Yellow</item>
+        <item>White</item>
+        <item>Silver</item>
+        <item>Gold</item>
+        <item>Beige</item>
     </string-array>
 
     <string-array name="timeFlexibileType_array">

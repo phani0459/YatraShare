@@ -18,6 +18,7 @@ import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.dtos.Vehicle;
 import com.yatrashare.pojos.FindRide;
 import com.yatrashare.pojos.OfferRide;
+import com.yatrashare.pojos.RegisterVehicle;
 import com.yatrashare.pojos.RideInfo;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.pojos.UserFgtPassword;
@@ -173,5 +174,7 @@ public interface YatraShareAPI {
     @POST("/api/Rides/PublishNewRide")
     Call<UserDataDTO> offerRide(@Query("userGuid") String userGuide, @Body OfferRide rideInfo);
 
+    @POST("/api/Vehicle/RegisterNewVehicle")
+    Call<UserDataDTO> registerVehicle(@Query("userGuid") String userGuid, @Body RegisterVehicle registerVehicle);
 
 }

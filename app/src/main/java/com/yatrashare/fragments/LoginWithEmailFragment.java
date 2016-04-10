@@ -260,7 +260,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 dialog.setCancelable(true);
                 showFgtPwdProgress(false);
-                fgtPhoneLayout.setError("Something went wrong, try again later!");
+                fgtPhoneLayout.setError(getString(R.string.tryagain));
             }
         });
     }
