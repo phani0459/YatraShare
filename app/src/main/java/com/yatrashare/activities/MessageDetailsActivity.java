@@ -52,7 +52,6 @@ public class MessageDetailsActivity extends AppCompatActivity {
     private MessageDetails messagesDetailsList;
     private ChatDetailsAdapter adapter;
     private RideDetails.RideDetailData rideDetailData;
-    private String screenName;
     GetUserBookings.UserBookingData userBookingData;
     private String PossibleRideGuid;
 
@@ -71,7 +70,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        screenName = getIntent().getExtras().getString(Constants.ORIGIN_SCREEN_KEY, "");
+        String screenName = getIntent().getExtras().getString(Constants.ORIGIN_SCREEN_KEY, "");
 
         if (screenName.equalsIgnoreCase(Constants.BOOK_a_RIDE_SCREEN_NAME) || screenName.equalsIgnoreCase(Constants.RIDE_CONFIRM_SCREEN_NAME)) {
             rideDetailData = (RideDetails.RideDetailData) getIntent().getExtras().getSerializable("Message");
@@ -124,8 +123,8 @@ public class MessageDetailsActivity extends AppCompatActivity {
                     /**
                      * Successful HTTP response.
                      *
-                     * @param response
-                     * @param retrofit
+                     * @param response server response
+                     * @param retrofit adapter
                      */
                     @Override
                     public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -153,7 +152,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
                     /**
                      * Invoked when a network or unexpected exception occurred during the HTTP request.
                      *
-                     * @param t
+                     * @param t error
                      */
                     @Override
                     public void onFailure(Throwable t) {
@@ -187,8 +186,8 @@ public class MessageDetailsActivity extends AppCompatActivity {
                 /**
                  * Successful HTTP response.
                  *
-                 * @param response
-                 * @param retrofit
+                 * @param response server response
+                 * @param  retrofit adapter
                  */
                 @Override
                 public void onResponse(retrofit.Response<MessageDetails> response, Retrofit retrofit) {
@@ -203,7 +202,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
                 /**
                  * Invoked when a network or unexpected exception occurred during the HTTP request.
                  *
-                 * @param t
+                 * @param t error
                  */
                 @Override
                 public void onFailure(Throwable t) {

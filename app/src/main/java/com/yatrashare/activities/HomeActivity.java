@@ -108,7 +108,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Menu menu;
     private ProfileFragment profileFragment;
     private MessageListFragment messageListFragment;
-    private MessageDetailsActivity messageDetailFragment;
     private FindRideFragment searchRideFragment;
 
     @Override
@@ -600,9 +599,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             if (currentScreen == MESSAGES_SCREEN) {
                 if (messageListFragment != null) messageListFragment.refreshMessagesList();
             }
-            if (currentScreen == MESSAGE_DETAILS_SCREEN) {
-                if (messageDetailFragment != null) messageDetailFragment.refreshMessageDetails();
-            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -788,8 +784,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -809,7 +805,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {

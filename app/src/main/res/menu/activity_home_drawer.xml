@@ -24,7 +24,7 @@
             android:title="Ratings" />
 
     </group>
-
+    
     <item android:title="Communicate">
         <menu>
             <item
