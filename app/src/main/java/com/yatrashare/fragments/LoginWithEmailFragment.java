@@ -413,8 +413,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
@@ -433,7 +433,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
@@ -451,8 +451,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
@@ -478,7 +478,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {

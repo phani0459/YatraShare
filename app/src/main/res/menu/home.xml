@@ -9,7 +9,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_edit"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_action_edit_light"
         android:orderInCategory="100"
         android:title="@string/action_edit_profile"
         android:visible="false"

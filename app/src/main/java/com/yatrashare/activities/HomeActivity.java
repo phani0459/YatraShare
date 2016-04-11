@@ -182,10 +182,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (userName.isEmpty()) {
-            userNameTextView.setVisibility(View.GONE);
             userNameTextView.setText(getString(R.string.login_rationale));
         } else {
-            userNameTextView.setVisibility(View.VISIBLE);
             userNameTextView.setText(userName);
         }
 
@@ -697,7 +695,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         final Dialog dialog = new Dialog(this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
         dialog.setContentView(R.layout.dialog_change_pwd);
         dialog.setTitle("Change password");
-        ButterKnife.bind(dialog);
         final EditText newPwdEdit = (EditText) dialog.findViewById(R.id.newPassword);
         final EditText confirmPwdEdit = (EditText) dialog.findViewById(R.id.confirmPassword);
         final TextInputLayout newPwdLayout = (TextInputLayout) dialog.findViewById(R.id.newPasswordLayout);
@@ -728,6 +725,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     cancel = true;
                 } else if (TextUtils.isEmpty(confirmPwd)) {
                     confirmPwdLayout.setError(getString(R.string.confirm_pwd_error));
+                    cancel = true;
+                } else if (newPwd.length() < 6 || confirmPwd.length() < 6) {
+                    confirmPwdLayout.setError("Password should be minimum 6 letters");
                     cancel = true;
                 } else if (!newPwd.equals(confirmPwd)) {
                     confirmPwdLayout.setError(getString(R.string.pwd_do_not_match));

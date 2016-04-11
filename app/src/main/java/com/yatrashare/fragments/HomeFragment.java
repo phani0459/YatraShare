@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -64,6 +65,15 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     public ProgressBar mProgressView;
     private boolean cancel = true;
 
+
+    @OnClick(R.id.swapAreas)
+    public void swapLocations() {
+        String whereFrom = whereFromEditText.getText().toString();
+        whereFromEditText.setText(whereToEditText.getText().toString());
+        whereToEditText.setText(whereFrom);
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View inflatedLayout = inflater.inflate(R.layout.fragment_home, null, false);
@@ -107,10 +117,21 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             whereToEditText.setError(null);
         }
 
+        /**
+         * comfort
+         * current page
+         * start time
+         * end time
+         * ladies only
+         * ride type
+         * vehicle type
+         * page size
+         */
+
         if (!cancel) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
             FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, "ALLTYPES", "1", "1", "24", "All", "2", "2", "10");
+                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10");
 
             Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
             //asynchronous call

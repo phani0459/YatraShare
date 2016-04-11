@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="@string/login_rationale"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/userDraweeView"

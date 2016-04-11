@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +25,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -51,7 +51,7 @@ import retrofit.Retrofit;
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements View.OnClickListener{
+public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
     private SharedPreferences mSharedPreferences;
@@ -62,8 +62,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public ProgressBar mProgressView;
     @Bind(R.id.profileImage_drawee)
     public SimpleDraweeView mProfileImageDrawee;
-   /* @Bind(R.id.licenceStatus)
-    public ImageView mLicenceStatus;*/
+    /* @Bind(R.id.licenceStatus)
+     public ImageView mLicenceStatus;*/
     @Bind(R.id.mobileStatus)
     public ImageView mMobileStatus;
     @Bind(R.id.emailStatus)
@@ -126,7 +126,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         mPetsPreference.setOnClickListener(this);
         mFoodPreference.setOnClickListener(this);
 
-        ((HomeActivity)mContext).setTitle("My Account");
+        ((HomeActivity) mContext).setTitle("My Account");
 
         if (profile == null) {
             userProfileTask();
@@ -237,11 +237,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         return isCamera ? getCaptureImageOutputUri() : data.getData();
     }
 
-     public void editProfile() {
-         if (profile != null) {
-             ((HomeActivity) mContext).loadScreen(HomeActivity.EDIT_PROFILE_SCREEN, false, profile, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
-         }
-     }
+    public void editProfile() {
+        if (profile != null) {
+            ((HomeActivity) mContext).loadScreen(HomeActivity.EDIT_PROFILE_SCREEN, false, profile, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+        }
+    }
 
     public void updateUserPreferences() {
         if (profile != null && profile.Data != null) {
@@ -253,7 +253,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
                 mChatPreference.setImageResource(chatPref == 1 ? R.drawable.chat_allow : chatPref == 3 ? R.drawable.chat_not_allow : R.drawable.chat);
                 mMusicPreference.setImageResource(musicPref == 1 ? R.drawable.music_allow : musicPref == 3 ? R.drawable.music_not_allow : R.drawable.music_not_much);
-                mSmokePreference.setImageResource(smokePref == 1 ? R.drawable.smoke_allow : smokePref  == 3 ? R.drawable.smoke_not_allow : R.drawable.smoke_not_much);
+                mSmokePreference.setImageResource(smokePref == 1 ? R.drawable.smoke_allow : smokePref == 3 ? R.drawable.smoke_not_allow : R.drawable.smoke_not_much);
                 mFoodPreference.setImageResource(foodPref == 1 ? R.drawable.food_allow : foodPref == 3 ? R.drawable.food_not_allow : R.drawable.food_not_much);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -279,8 +279,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.PROFILE_SCREEN);
-        ((HomeActivity)mContext).prepareMenu();
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.PROFILE_SCREEN);
+        ((HomeActivity) mContext).prepareMenu();
         if (getArguments() != null) {
             profile = (Profile) getArguments().getSerializable("Profile");
             loadProfile();
@@ -321,25 +321,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
 
                 mEmailStatus.setImageResource(emailStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
                 String mobileHeading = mobileStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
-                                                                    "<font color=\"#D9534F\">Not Verified</font>";
+                        "<font color=\"#D9534F\">Not Verified</font>";
                 String mobileSuggetionText = mobileStatus.equals("2") ? "Click here if you want to change your number" :
                         "Your number is not verified \n Click here to verify";
                 mobileStatusHeading.setText(Html.fromHtml("Mobile Number: " + mobileHeading));
-                mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_edit, 0);
+                mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
                 mobileStatusText.setText(mobileSuggetionText);
                 String emailHeading = emailStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
                         "<font color=\"#D9534F\">Not Verified</font>";
                 String emailSuggetionText = emailStatus.equals("2") ? "Click here if you want to change your email" :
                         "Your Email is not verified \n Click here to verify";
                 emailStatusHeading.setText(Html.fromHtml("Email: " + emailHeading));
-                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_edit, 0);
+                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
                 emailStatusText.setText(emailSuggetionText);
                 String licenceHeading = licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Accepted</font>" :
                         "<font color=\"#D9534F\">Rejected</font>";
                 String licenceSuggetionText = licenceStatus.equals("2") ? "Your licence is approved" :
                         "Your Licence is rejected \n Click on Edit icon to provide Valid Licence";
                 licenceStatusHeading.setText(Html.fromHtml("Licence Status: " + licenceHeading));
-                licenceStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, android.R.drawable.ic_menu_edit, 0);
+                licenceStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
                 liceneceStatusText.setText(licenceSuggetionText);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -386,7 +386,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
     public void userProfileTask() {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-        if (!userGuide.isEmpty()) {
+        if (!TextUtils.isEmpty(userGuide) && userGuide.contains("\"")) {
             userGuide = userGuide.replace("\"", "");
         }
 
@@ -396,8 +396,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
@@ -412,7 +412,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
@@ -445,7 +445,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         dialog.setContentView(R.layout.dialog_update_prefs);
         dialog.setTitle("Change preferences");
 
-        final View progressView =  dialog.findViewById(R.id.updateProgressBGView);
+        final View progressView = dialog.findViewById(R.id.updateProgressBGView);
         final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.updatePref_progress);
 
         ImageView chatAllowImage = (ImageView) dialog.findViewById(R.id.chatAllowImage);
@@ -464,21 +464,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener{
         ImageView smokeNotAllowImage = (ImageView) dialog.findViewById(R.id.smokeNotAllowImage);
         ImageView smokeNotMuchImage = (ImageView) dialog.findViewById(R.id.smokeImage);
 
-        final View chatAllowRingView =  dialog.findViewById(R.id.chatAllowRingView);
-        final View chatNotAllowRingView =  dialog.findViewById(R.id.chatNotAllowRingView);
-        final View chatNotMuchRingView =  dialog.findViewById(R.id.chatRingView);
+        final View chatAllowRingView = dialog.findViewById(R.id.chatAllowRingView);
+        final View chatNotAllowRingView = dialog.findViewById(R.id.chatNotAllowRingView);
+        final View chatNotMuchRingView = dialog.findViewById(R.id.chatRingView);
 
-        final View musicAllowRingView =  dialog.findViewById(R.id.musicAllowRingView);
-        final View musicNotAllowRingView =  dialog.findViewById(R.id.musicNotAllowRingView);
-        final View musicNotMuchRingView =  dialog.findViewById(R.id.musicRingView);
+        final View musicAllowRingView = dialog.findViewById(R.id.musicAllowRingView);
+        final View musicNotAllowRingView = dialog.findViewById(R.id.musicNotAllowRingView);
+        final View musicNotMuchRingView = dialog.findViewById(R.id.musicRingView);
 
-        final View foodAllowRingView =  dialog.findViewById(R.id.foodAllowRingView);
-        final View foodNotAllowRingView =  dialog.findViewById(R.id.foodNotAllowRingView);
-        final View foodNotMuchRingView =  dialog.findViewById(R.id.foodRingView);
+        final View foodAllowRingView = dialog.findViewById(R.id.foodAllowRingView);
+        final View foodNotAllowRingView = dialog.findViewById(R.id.foodNotAllowRingView);
+        final View foodNotMuchRingView = dialog.findViewById(R.id.foodRingView);
 
-        final View smokeAllowRingView =  dialog.findViewById(R.id.smokeAllowRingView);
-        final View smokeNotAllowRingView =  dialog.findViewById(R.id.smokeNotAllowRingView);
-        final View smokeNotMuchRingView =  dialog.findViewById(R.id.smokeRingView);
+        final View smokeAllowRingView = dialog.findViewById(R.id.smokeAllowRingView);
+        final View smokeNotAllowRingView = dialog.findViewById(R.id.smokeNotAllowRingView);
+        final View smokeNotMuchRingView = dialog.findViewById(R.id.smokeRingView);
 
         final TextView chatToolTip = (TextView) dialog.findViewById(R.id.chatToolTip);
         final TextView musicToolTip = (TextView) dialog.findViewById(R.id.musicToolTip);

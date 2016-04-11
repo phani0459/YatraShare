@@ -178,8 +178,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         });
     }
 
-    public String rideType = "2";
-    public String vehicleType = "2";
+    public String rideType = "1";
+    public String vehicleType = "1";
     public String comfortLevel = "ALLTYPES";
     public String gender = "All";
     public String startTime = "1";

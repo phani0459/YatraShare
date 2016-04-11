@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorLayoutBG">
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG">
 
     <ScrollView
         android:id="@+id/signUpform"
@@ -34,7 +34,7 @@
                         android:layout_height="80dp"
                         android:foregroundGravity="center"
                         android:scaleType="centerCrop"
-                        fresco:roundAsCircle="true"/>
+                        fresco:roundAsCircle="true" />
 
                     <ImageView
                         android:id="@+id/profileImage"
@@ -42,7 +42,7 @@
                         android:layout_height="96dp"
                         android:foregroundGravity="center"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/add_user"/>
+                        android:src="@drawable/add_user" />
                 </RelativeLayout>
 
                 <TextView
@@ -52,7 +52,7 @@
                     android:gravity="center"
                     android:padding="4dp"
                     android:text="@string/add_user_rationale"
-                    android:textColor="#000000"/>
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -88,7 +88,7 @@
                             android:inputType="text"
                             android:maxLines="1"
                             android:padding="8dp"
-                            android:singleLine="true"/>
+                            android:singleLine="true" />
 
                     </android.support.design.widget.TextInputLayout>
 
@@ -108,7 +108,7 @@
                             android:inputType="text"
                             android:maxLines="1"
                             android:padding="8dp"
-                            android:singleLine="true"/>
+                            android:singleLine="true" />
 
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
@@ -123,13 +123,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="24dp"
                         android:text="@string/radio_male"
-                        android:textSize="16dp"/>
+                        android:textSize="16dp" />
 
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_female"
-                        android:textSize="16dp"/>
+                        android:textSize="16dp" />
                 </RadioGroup>
 
                 <android.support.design.widget.TextInputLayout
@@ -150,7 +150,7 @@
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -168,11 +168,12 @@
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/password"
                         android:drawablePadding="4dp"
+                        android:fontFamily="sans-serif"
                         android:hint="@string/prompt_password"
                         android:inputType="textPassword"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -197,7 +198,7 @@
                         android:inputType="number"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -209,7 +210,7 @@
                     android:layout_marginTop="6dp"
                     android:gravity="center"
                     android:text="@string/password_rationale"
-                    android:textColor="#40000000"/>
+                    android:textColor="#40000000" />
 
                 <Button
                     android:id="@+id/signUpButton"
@@ -219,7 +220,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/search_button_bg"
                     android:text="@string/sign_up_text"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     style="?android:textAppearanceSmall"
@@ -228,7 +229,7 @@
                     android:layout_marginBottom="2dp"
                     android:gravity="center"
                     android:text="@string/terms_and_conditions_rationale"
-                    android:textColor="#40000000"/>
+                    android:textColor="#40000000" />
 
             </LinearLayout>
         </LinearLayout>
@@ -240,7 +241,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/signUpProgress"
@@ -249,5 +250,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

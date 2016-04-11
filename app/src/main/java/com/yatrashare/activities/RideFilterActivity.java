@@ -103,8 +103,10 @@ public class RideFilterActivity extends AppCompatActivity {
 
         if (rideType.equalsIgnoreCase("2")) {
             dailyRideRadioButton.setChecked(true);
+            longRideRadioBtn.clearFocus();
         } else {
             longRideRadioBtn.setChecked(true);
+            dailyRideRadioButton.clearFocus();
         }
 
     }

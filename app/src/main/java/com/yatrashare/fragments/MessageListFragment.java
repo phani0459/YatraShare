@@ -12,7 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
@@ -45,6 +48,8 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     @Bind(R.id.messagesProgressBGView)
     public View mProgressBGView;
     private MessagesRecyclerViewAdapter adapter;
+    @Bind(R.id.emptyRidesLayout)
+    public ScrollView emptyRidesLayout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,6 +70,14 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
         View view = inflater.inflate(R.layout.fragment_messages_list, container, false);
         ButterKnife.bind(this, view);
         mContext = getActivity();
+
+        TextView emptyRidesHeading = (TextView) view.findViewById(R.id.emptyRidesHeading);
+        TextView emptyRidesSubHeading = (TextView) view.findViewById(R.id.emptyRidesSubHeading);
+        ImageView emptyRidesImage = (ImageView) view.findViewById(R.id.emptyRideImage);
+
+        emptyRidesHeading.setText("No Messages yet.");
+        emptyRidesSubHeading.setText("Once you get messages, you'll see them here.");
+        emptyRidesImage.setBackgroundResource(R.drawable.no_messages);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
@@ -98,9 +111,12 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             @Override
             public void onResponse(retrofit.Response<MessagesList> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response.body() != null) {
+                if (response.body() != null && response.body().Data != null && response.body().Data.size() > 0) {
+                    emptyRidesLayout.setVisibility(View.GONE);
                     MessagesList messagesList = response.body();
                     loadMessages(messagesList);
+                } else {
+                    emptyRidesLayout.setVisibility(View.VISIBLE);
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }

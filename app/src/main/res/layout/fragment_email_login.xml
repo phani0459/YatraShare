@@ -60,6 +60,7 @@
                 android:drawableLeft="@drawable/password"
                 android:drawablePadding="4dp"
                 android:hint="@string/prompt_password"
+                android:fontFamily="sans-serif"
                 android:imeActionId="@+id/login"
                 android:imeActionLabel="@string/action_sign_in_short"
                 android:imeOptions="actionUnspecified"
@@ -78,6 +79,7 @@
             android:layout_margin="8dp"
             android:background="@drawable/search_button_bg"
             android:text="@string/action_sign_in"
+            android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
         <TextView
