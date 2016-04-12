@@ -112,7 +112,7 @@ public class SignupFragment extends Fragment {
 
         Button mSignUpButton = (Button) inflatedLayout.findViewById(R.id.signUpButton);
 
-        ((HomeActivity)mContext).setTitle("Sign up");
+        ((HomeActivity) mContext).setTitle("Sign up");
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
@@ -140,7 +140,7 @@ public class SignupFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.SIGNUP_SCREEN);
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.SIGNUP_SCREEN);
     }
 
     @Override
@@ -200,7 +200,7 @@ public class SignupFragment extends Fragment {
             mSignUpEmailLayout.setErrorEnabled(false);
             mSignUpPasswordLayout.setError(getString(R.string.error_invalid_password));
             cancel = true;
-        } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
+        } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isPhoneValid(phoneNumber)) {
             mSignUpPasswordLayout.setErrorEnabled(false);
             mSignupPhoneLayout.setError(getString(R.string.error_invalid_phone));
             cancel = true;
@@ -221,27 +221,17 @@ public class SignupFragment extends Fragment {
             userSignupTask(email, password, phoneNumber, userFirstName);
         }
     }
+
     private boolean isEmailValid(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() > 6;
     }
 
     private boolean isUserNameValid(String userName) {
         return userName.length() > 4;
-    }
-
-    private boolean isPhoneValid(String phoneNumber) {
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            if (phoneNumber.length() == 10)
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -325,8 +315,8 @@ public class SignupFragment extends Fragment {
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server respoonse
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -340,10 +330,10 @@ public class SignupFragment extends Fragment {
                         mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().Data);
                         mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                         mSharedPrefEditor.commit();
-                        ((HomeActivity)mContext).showSnackBar(getString(R.string.success_login));
-                        ((HomeActivity)mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
+                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
                     } else {
-                        ((HomeActivity)mContext).showSnackBar(response.body().Data);
+                        ((HomeActivity) mContext).showSnackBar(response.body().Data);
                     }
                 }
             }
@@ -351,13 +341,13 @@ public class SignupFragment extends Fragment {
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity)mContext).showSnackBar(getString(R.string.tryagain));
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
             }
         });
 

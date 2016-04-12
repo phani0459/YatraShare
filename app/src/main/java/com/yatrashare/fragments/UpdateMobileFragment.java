@@ -35,7 +35,7 @@ public class UpdateMobileFragment extends Fragment {
 
     private static final String TAG = UpdateMobileFragment.class.getSimpleName();
     @Bind(R.id.edit_number_bt)
-    public Button editNoBt ;
+    public Button editNoBt;
     @Bind(R.id.verify_code_bt)
     public Button verifyBt;
     @Bind(R.id.resend_code_bt)
@@ -92,26 +92,15 @@ public class UpdateMobileFragment extends Fragment {
         phoneEdit.setEnabled(false);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        sendVerifyCode();
+        if (!getArguments().getBoolean("IS VERIFIED", false)) sendVerifyCode();
 
         return view;
-    }
-
-    private boolean isPhoneValid(String phoneNumber) {
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            if (phoneNumber.length() == 10)
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
     }
 
     @OnClick(R.id.save_bt)
     public void saveMobileNumber() {
         verificationCodeEdit.setEnabled(true);
-        if (isPhoneValid(phoneEdit.getText().toString())) {
+        if (Utils.isPhoneValid(phoneEdit.getText().toString())) {
             isPhoneSaved = true;
             phoneEdit.setEnabled(false);
             verifyBtnLayout.setVisibility(View.VISIBLE);
@@ -144,8 +133,8 @@ public class UpdateMobileFragment extends Fragment {
                 /**
                  * Successful HTTP response.
                  *
-                 * @param response
-                 * @param retrofit
+                 * @param response server response
+                 * @param retrofit adapter
                  */
                 @Override
                 public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -166,7 +155,7 @@ public class UpdateMobileFragment extends Fragment {
                 /**
                  * Invoked when a network or unexpected exception occurred during the HTTP request.
                  *
-                 * @param t
+                 * @param t error
                  */
                 @Override
                 public void onFailure(Throwable t) {
@@ -183,13 +172,13 @@ public class UpdateMobileFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.UPDATE_MOBILE_SCREEN);
-        ((HomeActivity)mContext).setTitle("Verify Mobile Number");
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.UPDATE_MOBILE_SCREEN);
+        ((HomeActivity) mContext).setTitle("Verify Mobile Number");
     }
 
     @OnClick(R.id.resend_code_bt)
     public void sendVerifyCode() {
-        if (isPhoneValid(phoneEdit.getText().toString())) {
+        if (Utils.isPhoneValid(phoneEdit.getText().toString())) {
             resendCodeBt.setText("Resend Code");
             Utils.showProgress(true, mProgressView, mProgressBGView);
 
@@ -232,7 +221,7 @@ public class UpdateMobileFragment extends Fragment {
     public void editMobileNumber() {
         resendCodeBt.setText("Send Code");
         verificationCodeEdit.setEnabled(false);
-        if(editNumberBtnsLayout.getVisibility() == View.GONE) {
+        if (editNumberBtnsLayout.getVisibility() == View.GONE) {
             phoneEdit.setEnabled(true);
             editNumberBtnsLayout.setVisibility(View.VISIBLE);
             verifyBtnLayout.setVisibility(View.GONE);

@@ -107,6 +107,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView liceneceStatusText;
     @Bind(R.id.profileRatingBar)
     public RatingBar ratingBar;
+    private boolean isMobileVerified;
 
     public ProfileFragment() {
     }
@@ -263,7 +264,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     @OnClick(R.id.mobileStatusHeading)
     public void changeMobileNumber() {
-        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, isMobileVerified, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
     }
 
     @Override
@@ -316,13 +317,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 String licenceStatus = profile.Data.LicenceStatus != null ? profile.Data.LicenceStatus : "0";
                 mMobileStatus.setImageResource(mobileStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
 
+                isMobileVerified = mobileStatus.equals("2") ? true : false;
+
                 mPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
                 mPrefEditor.commit();
 
                 mEmailStatus.setImageResource(emailStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
                 String mobileHeading = mobileStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
                         "<font color=\"#D9534F\">Not Verified</font>";
-                String mobileSuggetionText = mobileStatus.equals("2") ? "Click here if you want to change your number" :
+                String mobileSuggetionText = isMobileVerified ? "Click here if you want to change your number" :
                         "Your number is not verified \n Click here to verify";
                 mobileStatusHeading.setText(Html.fromHtml("Mobile Number: " + mobileHeading));
                 mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);

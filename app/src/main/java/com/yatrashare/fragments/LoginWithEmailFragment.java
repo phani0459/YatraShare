@@ -97,7 +97,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         ((HomeActivity) mContext).setTitle("Login with email");
         ButterKnife.bind(this, inflatedLayout);
 
-        TextView mForgotPwdTextView = (TextView) inflatedLayout.findViewById(R.id.fgtPwdText);
+        Button mForgotPwdTextView = (Button) inflatedLayout.findViewById(R.id.btn_fgtPwd);
         populateAutoComplete();
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {

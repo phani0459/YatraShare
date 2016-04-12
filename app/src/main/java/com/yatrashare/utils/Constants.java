@@ -99,6 +99,7 @@ public class Constants {
     public static final String PREF_USER_GUID = "UserGuid";
     public static final String PREF_USER_NAME = "Name";
     public static final String PREF_USER_FB_ID = "id";
+
     public static final String PREF_LOGGEDIN = "loggedIn";
     public static final String PREF_MOBILE_VERIFIED = "mobileVerificationStatus";
     public static final String PREF_USER_PROFILE_PIC = "profilePic";

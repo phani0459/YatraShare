@@ -1,11 +1,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                xmlns:mstb="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/colorLayoutBG"
-                tools:context="com.yatrashare.fragments.EditProfileFragment">
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:mstb="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG"
+    tools:context="com.yatrashare.fragments.EditProfileFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -25,29 +25,15 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:id="@+id/profileImageLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/editProfileImage_drawee"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
                     android:layout_margin="8dp"
-                    android:paddingTop="@dimen/nav_header_vertical_spacing">
-
-                    <com.facebook.drawee.view.SimpleDraweeView
-                        android:id="@+id/editProfileImage_drawee"
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        android:foregroundGravity="center"
-                        android:scaleType="centerCrop"
-                        fresco:roundAsCircle="true"/>
-
-                    <ImageView
-                        android:id="@+id/editProfileImage"
-                        android:layout_width="96dp"
-                        android:layout_height="96dp"
-                        android:foregroundGravity="center"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/com_facebook_profile_picture_blank_square"/>
-                </RelativeLayout>
+                    android:foregroundGravity="center"
+                    android:paddingTop="@dimen/nav_header_vertical_spacing"
+                    android:scaleType="centerCrop"
+                    fresco:roundAsCircle="true" />
 
                 <Button
                     android:id="@+id/updateProfilePic"
@@ -55,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:text="@string/updatePhoto"/>
+                    android:text="@string/updatePhoto" />
             </LinearLayout>
 
             <LinearLayout
@@ -84,7 +70,7 @@
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -104,7 +90,7 @@
                         android:inputType="text"
                         android:maxLines="1"
                         android:padding="8dp"
-                        android:singleLine="true"/>
+                        android:singleLine="true" />
 
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
@@ -124,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/aboutMe"
                     android:inputType="textMultiLine"
-                    android:singleLine="false"/>
+                    android:singleLine="false" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -143,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
-                    android:singleLine="false"/>
+                    android:singleLine="false" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -162,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_mobile"
                     android:inputType="phone"
-                    android:singleLine="false"/>
+                    android:singleLine="false" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -181,7 +167,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/dob"
                     android:inputType="phone"
-                    android:singleLine="true"/>
+                    android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -197,7 +183,7 @@
         android:layout_margin="4dp"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:text="@string/updateProfile"/>
+        android:text="@string/updateProfile" />
 
     <View
         android:id="@+id/updateProfileProgressBGView"
@@ -205,7 +191,7 @@
         android:layout_height="match_parent"
         android:background="#40000000"
         android:clickable="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/updateProfileProgress"
@@ -214,5 +200,5 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 </RelativeLayout>

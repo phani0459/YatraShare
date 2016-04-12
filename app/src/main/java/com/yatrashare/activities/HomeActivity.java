@@ -167,8 +167,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     public void loadHomePage(boolean init, String fragmentName) {
         String userProfilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
-        String userName = mSharedPreferences.getString(Constants.PREF_USER_NAME, "");
         String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
+        String userName = mSharedPreferences.getString(Constants.PREF_USER_NAME, "");
         boolean isUserLogin = mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false);
 
         MenuItem changePwdItem = navigationView.getMenu().getItem(5).getSubMenu().getItem(3);
@@ -381,6 +381,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     case UPDATE_MOBILE_SCREEN:
                         UpdateMobileFragment updateMobileFragment = new UpdateMobileFragment();
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
+                        bundle.putBoolean("IS VERIFIED", (Boolean) object);
                         updateMobileFragment.setArguments(bundle);
                         if (init) {
                             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)

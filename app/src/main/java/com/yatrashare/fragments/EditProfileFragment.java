@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
@@ -24,6 +25,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.Profile;
@@ -78,6 +81,8 @@ public class EditProfileFragment extends Fragment {
     private Profile profile;
     private String userGuid;
     private SimpleDateFormat dateFormatter;
+    @Bind(R.id.editProfileImage_drawee)
+    public SimpleDraweeView userDraweeImageView;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -116,6 +121,9 @@ public class EditProfileFragment extends Fragment {
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
         String email = mSharedPreferences.getString(Constants.PREF_USER_EMAIL, null);
+        String phone = mSharedPreferences.getString(Constants.PREF_USER_PHONE, null);
+        String userProfilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
+        String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
 
         if (profile != null && profile.Data != null) {
             String aboutMe = profile.Data.AboutMe;
@@ -124,10 +132,27 @@ public class EditProfileFragment extends Fragment {
             aboutMeEdit.setText(aboutMe);
             firstNameEdit.setText(userName);
 
-            if (email != null && !email.isEmpty()) {
-                emailEdit.setText(email);
-                emailEdit.setEnabled(false);
-            }
+            if (!TextUtils.isEmpty(profile.Data.FirstName)) firstNameEdit.setText(profile.Data.FirstName);
+            if (!TextUtils.isEmpty(profile.Data.LastName)) lastNameEdit.setText(profile.Data.LastName);
+        }
+
+        if (!TextUtils.isEmpty(email)) {
+            emailEdit.setText(email);
+            emailEdit.setEnabled(false);
+        }
+
+        if (!TextUtils.isEmpty(phone)) {
+            phoneNoEdit.setText(phone);
+        }
+
+        if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
+            userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
+        } else if (!userFBId.isEmpty()) {
+            Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
+            userDraweeImageView.setImageURI(uri);
+        } else if (!userProfilePic.isEmpty()) {
+            Uri uri = Uri.parse(userProfilePic);
+            userDraweeImageView.setImageURI(uri);
         }
 
         dobEdit.setInputType(InputType.TYPE_NULL);
@@ -188,7 +213,7 @@ public class EditProfileFragment extends Fragment {
         if (TextUtils.isEmpty(userFirstName) || !isUserNameValid(userFirstName)) {
             mUpdateUserNameLayout.setError(getString(R.string.error_invalid_username));
             cancel = true;
-        } else if (TextUtils.isEmpty(phoneNumber) || !isPhoneValid(phoneNumber)) {
+        } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isPhoneValid(phoneNumber)) {
             mUpdateUserNameLayout.setErrorEnabled(false);
             mUpdatePhoneLayout.setError(getString(R.string.error_invalid_phone));
             cancel = true;
@@ -197,8 +222,7 @@ public class EditProfileFragment extends Fragment {
         if (!cancel) {
             mUpdatePhoneLayout.setErrorEnabled(false);
             mUpdateUserNameLayout.setErrorEnabled(false);
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
+            updateProfile(userGuid, userFirstName, userLastName, email, TextUtils.isEmpty(dob) ? "MM/DD/YYYY" : dob, phoneNumber, aboutMe);
         }
 
     }
@@ -207,19 +231,12 @@ public class EditProfileFragment extends Fragment {
         return userName.length() > 4;
     }
 
-    private boolean isPhoneValid(String phoneNumber) {
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            if (phoneNumber.length() == 10)
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
-    }
-
     private void updateProfile(String userGuid, String userFirstName, String userLastName, String email, String dob, String phoneNumber, String aboutMe) {
+        Utils.showProgress(true, mProgressView, mProgressBGView);
         UserProfile userProfile = new UserProfile(email, userFirstName, userLastName, phoneNumber, dob, "", aboutMe);
+        Gson gson = new Gson();
+        String s = gson.toJson(userProfile);
+        Log.e("asgagds", "wetetrew" + s);
 
         Call<UserDataDTO> call = Utils.getYatraShareAPI().updateProfile(userGuid, userProfile);
         //asynchronous call
@@ -227,8 +244,8 @@ public class EditProfileFragment extends Fragment {
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -248,7 +265,7 @@ public class EditProfileFragment extends Fragment {
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {

@@ -69,8 +69,12 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     @OnClick(R.id.swapAreas)
     public void swapLocations() {
         String whereFrom = whereFromEditText.getText().toString();
-        whereFromEditText.setText(whereToEditText.getText().toString());
-        whereToEditText.setText(whereFrom);
+        String whereTo = whereToEditText.getText().toString();
+
+        if (!TextUtils.isEmpty(whereFrom) && !TextUtils.isEmpty(whereTo)) {
+            whereFromEditText.setText(whereTo);
+            whereToEditText.setText(whereFrom);
+        }
     }
 
 
