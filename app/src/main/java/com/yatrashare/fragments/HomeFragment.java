@@ -5,7 +5,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -16,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,7 +32,9 @@ import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.SearchRides;
+import com.yatrashare.dtos.SerializedPlace;
 import com.yatrashare.pojos.FindRide;
+import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.LogWrapper;
 import com.yatrashare.utils.Utils;
 import com.yatrashare.utils.UtilsLog;
@@ -64,6 +67,8 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     @Bind(R.id.rideProgress)
     public ProgressBar mProgressView;
     private boolean cancel = true;
+    private SharedPreferences mSharedPreferences;
+    private SerializedPlace whereFromPlace, wheretoPlace;
 
 
     @OnClick(R.id.swapAreas)
@@ -74,6 +79,12 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
         if (!TextUtils.isEmpty(whereFrom) && !TextUtils.isEmpty(whereTo)) {
             whereFromEditText.setText(whereTo);
             whereToEditText.setText(whereFrom);
+        }
+
+        if (whereFromPlace != null && wheretoPlace != null) {
+            SerializedPlace tempPlace = whereFromPlace;
+            whereFromPlace = wheretoPlace;
+            wheretoPlace = tempPlace;
         }
     }
 
@@ -97,6 +108,8 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
 
         LogWrapper logWrapper = new LogWrapper();
         UtilsLog.setLogNode(logWrapper);
+
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         whereFromEditText.setOnTouchListener(this);
         whereToEditText.setOnTouchListener(this);
@@ -169,7 +182,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 /**
                  * Invoked when a network or unexpected exception occurred during the HTTP request.
                  *
-                 * @param t
+                 * @param t error
                  */
                 @Override
                 public void onFailure(Throwable t) {
@@ -183,11 +196,15 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
 
     @OnClick(R.id.offerRide)
     public void offerRide() {
-        Intent intent = new Intent(mContext, OfferRideActivity.class);
-        intent.putExtra("DEPARTURE", whereFromEditText.getText().toString());
-        intent.putExtra("ARRIVAL", whereToEditText.getText().toString());
-        intent.putExtra("DATE", dateEditText.getText().toString());
-        startActivity(intent);
+        if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
+            Intent intent = new Intent(mContext, OfferRideActivity.class);
+            intent.putExtra("DEPARTURE", whereFromPlace);
+            intent.putExtra("ARRIVAL", wheretoPlace);
+            intent.putExtra("DATE", dateEditText.getText().toString());
+            startActivity(intent);
+        } else {
+            Utils.showLoginDialog(mContext, Constants.HOME_SCREEN_NAME);
+        }
     }
 
     @Override
@@ -201,6 +218,14 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 dateEditText.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
             }
         };
+    }
+
+    public SerializedPlace preparePlace(Place place) {
+        SerializedPlace serializedPlace = new SerializedPlace();
+        serializedPlace.latitude = place.getLatLng().latitude;
+        serializedPlace.longitude = place.getLatLng().longitude;
+        serializedPlace.address = (String) place.getAddress();
+        return serializedPlace;
     }
 
     public boolean whereFromhasFocus;
@@ -218,21 +243,36 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 Log.e(TAG, "Place Selected: " + place.getAddress());
 
                 // Format the place's details and display them in the TextView.
-                if (whereFromhasFocus) whereFromEditText.setText(place.getAddress());
-                else whereToEditText.setText(place.getAddress());
+                if (whereFromhasFocus) {
+                    whereFromPlace = preparePlace(place);
+                    whereFromEditText.setText(place.getAddress());
+                } else {
+                    wheretoPlace = preparePlace(place);
+                    whereToEditText.setText(place.getAddress());
+                }
 
                 whereFromEditText.setError(null);
                 whereToEditText.setError(null);
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(mContext, data);
                 Log.e(TAG, "Error: Status = " + status.toString());
-                if (whereFromhasFocus) whereFromEditText.setText("");
-                else whereToEditText.setText("");
+                if (whereFromhasFocus) {
+                    whereFromEditText.setText("");
+                    whereFromPlace = null;
+                } else {
+                    wheretoPlace = null;
+                    whereToEditText.setText("");
+                }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // Indicates that the activity closed before a selection was made. For example if
                 // the user pressed the back button.
-                if (whereFromhasFocus) whereFromEditText.setText("");
-                else whereToEditText.setText("");
+                if (whereFromhasFocus) {
+                    whereFromEditText.setText("");
+                    whereFromPlace = null;
+                } else {
+                    wheretoPlace = null;
+                    whereToEditText.setText("");
+                }
             }
         }
     }

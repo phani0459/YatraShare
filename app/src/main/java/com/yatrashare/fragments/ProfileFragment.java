@@ -1,24 +1,16 @@
 package com.yatrashare.fragments;
 
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,10 +27,6 @@ import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.UserPreferences;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,7 +75,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Bind(R.id.foodPreference)
     public ImageView mFoodPreference;
     private Profile profile;
-    private static int RESULT_LOAD_IMAGE = 1;
     private String userGuide;
     @Bind(R.id.userSince)
     public TextView userSinceText;
@@ -121,6 +108,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mPrefEditor = mSharedPreferences.edit();
 
+        userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+
+        if (!TextUtils.isEmpty(userGuide) && userGuide.contains("\"")) {
+            userGuide = userGuide.replace("\"", "");
+        }
+
         mChatPreference.setOnClickListener(this);
         mMusicPreference.setOnClickListener(this);
         mSmokePreference.setOnClickListener(this);
@@ -129,113 +122,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         ((HomeActivity) mContext).setTitle("My Account");
 
-        if (profile == null) {
+        profile = Utils.checkforProfile(mContext, userGuide);
+
+        if (profile != null) {
+            loadProfile();
+        } else {
             userProfileTask();
         }
 
-        mProfileImageDrawee.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    startActivityForResult(getPickImageChooserIntent(), RESULT_LOAD_IMAGE);
-                }
-                return true;
-            }
-        });
-
         return inflatedLayout;
-    }
-
-    /**
-     * Create a chooser intent to select the source to get image from.<br/>
-     * The source can be camera's (ACTION_IMAGE_CAPTURE) or gallery's (ACTION_GET_CONTENT).<br/>
-     * All possible sources are added to the intent chooser.
-     */
-    public Intent getPickImageChooserIntent() {
-
-        // Determine Uri of camera image to save.
-        Uri outputFileUri = getCaptureImageOutputUri();
-
-        List<Intent> allIntents = new ArrayList<Intent>();
-        PackageManager packageManager = mContext.getPackageManager();
-
-        // collect all camera intents
-        Intent captureIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        List<ResolveInfo> listCam = packageManager.queryIntentActivities(captureIntent, 0);
-        for (ResolveInfo res : listCam) {
-            Intent intent = new Intent(captureIntent);
-            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            intent.setPackage(res.activityInfo.packageName);
-            if (outputFileUri != null) {
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            }
-            allIntents.add(intent);
-        }
-
-        // collect all gallery intents
-        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        galleryIntent.setType("image/*");
-        List<ResolveInfo> listGallery = packageManager.queryIntentActivities(galleryIntent, 0);
-        for (ResolveInfo res : listGallery) {
-            Intent intent = new Intent(galleryIntent);
-            intent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
-            intent.setPackage(res.activityInfo.packageName);
-            allIntents.add(intent);
-        }
-
-        // the main intent is the last in the list (fucking android) so pickup the useless one
-        Intent mainIntent = allIntents.get(allIntents.size() - 1);
-        for (Intent intent : allIntents) {
-            if (intent.getComponent().getClassName().equals("com.android.documentsui.DocumentsActivity")) {
-                mainIntent = intent;
-                break;
-            }
-        }
-        allIntents.remove(mainIntent);
-
-        // Create a chooser from the main intent
-        Intent chooserIntent = Intent.createChooser(mainIntent, "Select source");
-
-        // Add all other intents
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, allIntents.toArray(new Parcelable[allIntents.size()]));
-
-        return chooserIntent;
-    }
-
-    /**
-     * Get URI to image received from capture by camera.
-     */
-    private Uri getCaptureImageOutputUri() {
-        Uri outputFileUri = null;
-        File getImage = mContext.getExternalCacheDir();
-        if (getImage != null) {
-            outputFileUri = Uri.fromFile(new File(getImage.getPath(), "pickImageResult.jpeg"));
-        }
-        return outputFileUri;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
-            Uri imageUri = getPickImageResultUri(data);
-            mProfileImageDrawee.setImageURI(imageUri);
-        }
-    }
-
-    /**
-     * Get the URI of the selected image from {@link #getPickImageChooserIntent()}.<br/>
-     * Will return the correct URI for camera and gallery image.
-     *
-     * @param data the returned data of the activity result
-     */
-    public Uri getPickImageResultUri(Intent data) {
-        boolean isCamera = true;
-        if (data != null) {
-            String action = data.getAction();
-            isCamera = action != null && action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
-        }
-        return isCamera ? getCaptureImageOutputUri() : data.getData();
     }
 
     public void editProfile() {
@@ -317,7 +212,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 String licenceStatus = profile.Data.LicenceStatus != null ? profile.Data.LicenceStatus : "0";
                 mMobileStatus.setImageResource(mobileStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
 
-                isMobileVerified = mobileStatus.equals("2") ? true : false;
+                isMobileVerified = mobileStatus.equals("2");
 
                 mPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
                 mPrefEditor.commit();
@@ -348,13 +243,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
 
+            String userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
+
             updateUserPreferences();
 
             if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
                 Uri uri = Uri.parse(profilePic);
                 mProfileImageDrawee.setImageURI(uri);
             } else {
-                mProfileImageDrawee.setImageURI(Constants.getDefaultPicURI());
+                if (userGender.equalsIgnoreCase("Female")) {
+                    mProfileImageDrawee.setImageURI(Constants.getDefaultFemaleURI());
+                } else {
+                    mProfileImageDrawee.setImageURI(Constants.getDefaultPicURI());
+                }
             }
 
             if (lastLoginTime != null && !lastLoginTime.isEmpty()) {
@@ -388,10 +289,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     public void userProfileTask() {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-        if (!TextUtils.isEmpty(userGuide) && userGuide.contains("\"")) {
-            userGuide = userGuide.replace("\"", "");
-        }
 
         Call<Profile> call = Utils.getYatraShareAPI().userPublicProfile(userGuide);
         //asynchronous call
@@ -407,6 +304,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                 if (response.body() != null) {
                     profile = response.body();
+                    Utils.saveProfile(mContext, profile, userGuide);
                     loadProfile();
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
@@ -617,8 +515,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     /**
                      * Successful HTTP response.
                      *
-                     * @param response
-                     * @param retrofit
+                     * @param response server response
+                     * @param retrofit adapter
                      */
                     @Override
                     public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -643,7 +541,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     /**
                      * Invoked when a network or unexpected exception occurred during the HTTP request.
                      *
-                     * @param t
+                     * @param t error
                      */
                     @Override
                     public void onFailure(Throwable t) {

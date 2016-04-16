@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
@@ -24,14 +23,16 @@ import android.widget.Toast;
 import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
-import com.yatrashare.dtos.GoogleMapsDto;
+import com.yatrashare.dtos.Profile;
 import com.yatrashare.interfaces.YatraShareAPI;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeUnit;
 
-import retrofit.Call;
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
@@ -46,6 +47,39 @@ public class Utils {
             if (inputMethodManager.isAcceptingText()) {
                 inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteProfile(String fileName) {
+        File file = new File(fileName + ".ser");
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    public static Profile checkforProfile(Context mContext, String fileName) {
+        Profile profile = null;
+        try {
+            FileInputStream fis = mContext.openFileInput(fileName + ".ser");
+            ObjectInputStream is = new ObjectInputStream(fis);
+            profile = (Profile) is.readObject();
+            is.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return profile;
+    }
+
+    public static void saveProfile(Context mContext, Profile profile, String fileName) {
+        try {
+            FileOutputStream fos = mContext.openFileOutput(fileName + ".ser", Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(profile);
+            os.close();
+            fos.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

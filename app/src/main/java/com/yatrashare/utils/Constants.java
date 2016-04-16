@@ -10,18 +10,18 @@ public class Constants {
     public static final String LOGIN_URL = "http://www.yatrashare.com/api/User/Login?";
     /**
      * {
-     "Email": "bharathpendru@gmail.com",
-     "Password": "abcdefgh"
-     }
+     * "Email": "bharathpendru@gmail.com",
+     * "Password": "abcdefgh"
+     * }
      */
     public static final String REGISTER_URL = "http://www.yatrashare.com/api/User/Register?";
     /**
-     {
-     "FirstName": "bharath",
-     "Email": "bharath@gmail.com",
-     "Password": "abcdefgh",
-     "PhoneNumber":"9533393567"
-     }
+     * {
+     * "FirstName": "bharath",
+     * "Email": "bharath@gmail.com",
+     * "Password": "abcdefgh",
+     * "PhoneNumber":"9533393567"
+     * }
      */
     public static final String PROFILE_URL = "http://www.yatrashare.com/api/Profile/GetProfileInfo?";
     /**
@@ -29,26 +29,26 @@ public class Constants {
      */
     public static final String FORGOTPWD_URL = "http://www.yatrashare.com/api/User/ForgotPassword?";
     /**
-     {
-     "Email": "bharathP369@gmail.com",
-     "PhoneNumber": "9533393567"
-     }
+     * {
+     * "Email": "bharathP369@gmail.com",
+     * "PhoneNumber": "9533393567"
+     * }
      */
 
     public static final String SEARCH_RIDE_URL = "http://www.yatrashare.com/api/Rides/SearchRides?";
     /**
-     *  {
-     "DeparturePoint":"Hyderabad",
-      "ArrivalPoint":"",
-      "DepartureDate":"",
-      "Comfort":"ALLTYPES",
-      "currentPage":"1",
-      "StartTime":"1",
-      "EndTime":"24",
-      "LadiesOnly":"All",
-      "RideType":"1",
-      "VehicleType":"1"
-      }
+     * {
+     * "DeparturePoint":"Hyderabad",
+     * "ArrivalPoint":"",
+     * "DepartureDate":"",
+     * "Comfort":"ALLTYPES",
+     * "currentPage":"1",
+     * "StartTime":"1",
+     * "EndTime":"24",
+     * "LadiesOnly":"All",
+     * "RideType":"1",
+     * "VehicleType":"1"
+     * }
      */
 
     public static final String BOOKED_RIDES_URL = "http://www.yatrashare.com/api/Rides/GetUserConnectedRides?";
@@ -58,15 +58,20 @@ public class Constants {
 
     public static final String LOGIN_WITH_FB = "http://www.yatrashare.com/api/User/LoginUsingFacebook?";
     /**
-     *  FaceBookid:
-        Name:
-        FriendsCount:
-        Email:
-        ProfilePicture:
-
+     * FaceBookid:
+     * Name:
+     * FriendsCount:
+     * Email:
+     * ProfilePicture:
      */
 
     public static final String defaultPicURL = "http://www.mediafire.com/convkey/5b62/1bi4vdi37z3wfvczg.jpg?size_id=3";
+    public static final String defaultFemaleURL = "http://www.mediafire.com/convkey/9110/ib8u5bpbdjr9frezg.jpg?size_id=3";
+
+    public static Uri getDefaultFemaleURI() {
+        Uri uri = Uri.parse(defaultFemaleURL);
+        return uri;
+    }
 
     public static Uri getDefaultPicURI() {
         Uri uri = Uri.parse(defaultPicURL);
@@ -99,6 +104,8 @@ public class Constants {
     public static final String PREF_USER_GUID = "UserGuid";
     public static final String PREF_USER_NAME = "Name";
     public static final String PREF_USER_FB_ID = "id";
+    public static final String PREF_USER_DOB = "dob";
+    public static final String PREF_USER_COUNTRY = "country";
 
     public static final String PREF_LOGGEDIN = "loggedIn";
     public static final String PREF_MOBILE_VERIFIED = "mobileVerificationStatus";

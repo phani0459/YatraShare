@@ -169,6 +169,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         String userProfilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
         String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
         String userName = mSharedPreferences.getString(Constants.PREF_USER_NAME, "");
+        String userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
         boolean isUserLogin = mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false);
 
         MenuItem changePwdItem = navigationView.getMenu().getItem(5).getSubMenu().getItem(3);
@@ -188,7 +189,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
-            userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
+            if (userGender.equalsIgnoreCase("Female")) {
+                userDraweeImageView.setImageURI(Constants.getDefaultFemaleURI());
+            } else {
+                userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
+            }
         } else if (!userFBId.isEmpty()) {
             Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
             userDraweeImageView.setImageURI(uri);
@@ -657,6 +662,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
+                                    Utils.deleteProfile(mSharedPreferences.getString(Constants.PREF_USER_GUID, ""));
                                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, "");
@@ -664,6 +670,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     mSharedPrefEditor.putString(Constants.PREF_USER_NAME, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_DOB, "");
                                     mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
                                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, false);
                                     mSharedPrefEditor.commit();
