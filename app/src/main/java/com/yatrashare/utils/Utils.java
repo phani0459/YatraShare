@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.interfaces.YatraShareAPI;
 
@@ -83,6 +84,32 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void saveCountryInfo(Context mContext, CountryData countryData, String fileName) {
+        try {
+            FileOutputStream fos = mContext.openFileOutput(countryData.CountryName + ".ser", Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(countryData);
+            os.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static CountryData getCountryInfo(Context mContext, String fileName) {
+        CountryData countryData = null;
+        try {
+            FileInputStream fis = mContext.openFileInput(fileName + ".ser");
+            ObjectInputStream is = new ObjectInputStream(fis);
+            countryData = (CountryData) is.readObject();
+            is.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return countryData;
     }
 
     public static Retrofit retrofit;

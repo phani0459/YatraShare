@@ -134,6 +134,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     public void editProfile() {
+        profile = Utils.checkforProfile(mContext, userGuide);
         if (profile != null) {
             ((HomeActivity) mContext).loadScreen(HomeActivity.EDIT_PROFILE_SCREEN, false, profile, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
         }

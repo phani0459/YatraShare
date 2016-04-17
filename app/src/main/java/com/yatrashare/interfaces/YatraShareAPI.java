@@ -1,6 +1,8 @@
 package com.yatrashare.interfaces;
 
 import com.yatrashare.dtos.BookedRides;
+import com.yatrashare.dtos.Countries;
+import com.yatrashare.dtos.CountryInfo;
 import com.yatrashare.dtos.GetUserBookings;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.MessageDetails;
@@ -93,6 +95,12 @@ public interface YatraShareAPI {
 
     @GET("/api/Profile/GetPublicProfileInfo")
     Call<Profile> userPublicProfile(@Query("publicUserGuid") String userGuide);
+
+    @GET("/api/User/GetCountries")
+    Call<Countries> GetCountries();
+
+    @GET("/api/User/GetCountyConfigInfo")
+    Call<CountryInfo> GetCountryInfo(@Query("countryCode") String countryCode);
 
     @GET("/api/Profile/GetProfileInfo")
     Call<Profile> userBasicProfile(@Query("userGuid") String userGuide);
