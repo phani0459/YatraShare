@@ -26,6 +26,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.utils.Constants;
@@ -176,7 +177,9 @@ public class LoginFragment extends Fragment {
 
     private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id);
+        CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+        String countryCode = countryData != null ? countryData.CountryCode : "";
+        UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode);
 
         Call<String> call = Utils.getYatraShareAPI().userFBLogin(userFBLogin);
         //asynchronous call

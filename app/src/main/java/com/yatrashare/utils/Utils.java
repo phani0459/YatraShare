@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.Animation;
@@ -53,10 +54,11 @@ public class Utils {
         }
     }
 
-    public static void deleteProfile(String fileName) {
-        File file = new File(fileName + ".ser");
+    public static void deleteFile(Context mContext, String fileName) {
+        File file = new File(mContext.getFilesDir(), fileName + ".ser");
         if (file.exists()) {
             file.delete();
+            Log.e("Profile", " Deleted");
         }
     }
 
@@ -68,6 +70,7 @@ public class Utils {
             profile = (Profile) is.readObject();
             is.close();
             fis.close();
+            Log.e("Profile", " Retrieved");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,6 +84,7 @@ public class Utils {
             os.writeObject(profile);
             os.close();
             fos.close();
+            Log.e("Profile", " Saved");
         } catch (Exception e) {
             e.printStackTrace();
         }

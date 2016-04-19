@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,6 +32,7 @@ import com.yatrashare.utils.Utils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Retrofit;
@@ -161,6 +163,49 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @OnClick(R.id.mobileStatusHeading)
     public void changeMobileNumber() {
         ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, isMobileVerified, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+    }
+
+    @OnTouch(R.id.emailStatusHeading)
+    public boolean verifyEmail(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (event.getRawX() >= (v.getRight() - ((TextView) v).getCompoundDrawables()[2].getBounds().width())) {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+
+                Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationEmail(userGuide);
+                //asynchronous call
+                call.enqueue(new Callback<UserDataDTO>() {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param response server response
+                     * @param retrofit adapter
+                     */
+                    @Override
+                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                        if (response.body() != null) {
+                            if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
+                                ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
+                                Utils.deleteFile(mContext, userGuide);
+                            }
+                        }
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
+
+                    /**
+                     * Invoked when a network or unexpected exception occurred during the HTTP request.
+                     *
+                     * @param t error
+                     */
+                    @Override
+                    public void onFailure(Throwable t) {
+                        android.util.Log.e(TAG, "FAILURE RESPONSE");
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
+                });
+            }
+        }
+        return false;
     }
 
     @Override

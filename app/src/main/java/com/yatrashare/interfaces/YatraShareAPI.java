@@ -81,6 +81,9 @@ public interface YatraShareAPI {
     @POST("/api/Rides/RejectSeatBooking")
     Call<UserDataDTO> rejectSeat(@Query("userGuid") String userGuid, @Query("rideBookingId") String rideBookingId);
 
+    @POST("/api/User/SendVerificationEmail")
+    Call<UserDataDTO> sendVerificationEmail(@Query("userGuid") String userGuid);
+
     @POST("/api/User/LoginUsingFacebook")
     Call<String> userFBLogin(@Body UserFBLogin userFBLogin);
 

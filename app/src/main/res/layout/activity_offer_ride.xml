@@ -140,20 +140,45 @@
                 android:text="@string/addStopOverPoints"
                 android:textColor="@color/colorAccent" />
 
-            <EditText
-                android:id="@+id/et_RidePrice"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="4dp"
-                android:background="@drawable/bg_input_group"
-                android:drawableLeft="@drawable/rupee"
-                android:drawablePadding="4dp"
-                android:inputType="numberDecimal"
-                android:padding="8dp"
-                android:singleLine="true"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/et_PriceSymbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@drawable/bg_input_group"
+                    android:ems="1"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:singleLine="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="32sp" />
+
+                <EditText
+                    android:id="@+id/et_RidePrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:background="@drawable/bg_input_group"
+                    android:inputType="numberDecimal"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="2dp"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Large"

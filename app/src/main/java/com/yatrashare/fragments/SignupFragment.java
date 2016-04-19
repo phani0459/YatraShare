@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,6 +33,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.UserSignUp;
 import com.yatrashare.utils.Constants;
@@ -85,6 +85,7 @@ public class SignupFragment extends Fragment {
     public TextInputLayout mSignupPhoneLayout;
     private SharedPreferences.Editor mSharedPrefEditor;
     private static int RESULT_LOAD_IMAGE = 1;
+    private SharedPreferences mSharedPreferences;
 
     public SignupFragment() {
     }
@@ -115,7 +116,7 @@ public class SignupFragment extends Fragment {
 
         ((HomeActivity) mContext).setTitle("Sign up");
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
@@ -303,12 +304,15 @@ public class SignupFragment extends Fragment {
         return outputFileUri;
     }
 
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
     public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserName) {
-        UserSignUp userSignUp = new UserSignUp(mEmail, mUserName, mPassword, mPhone);
+        CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+        String countryCode = countryData != null ? countryData.CountryCode : "";
+        UserSignUp userSignUp = new UserSignUp(mEmail, mUserName, mPassword, mPhone, countryCode);
 
         Call<UserDataDTO> call = Utils.getYatraShareAPI().userRegistration(userSignUp);
         //asynchronous call

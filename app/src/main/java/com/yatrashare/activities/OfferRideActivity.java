@@ -5,9 +5,12 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,9 +35,11 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.SerializedPlace;
 import com.yatrashare.fragments.PublishRideFragment;
 import com.yatrashare.pojos.RideInfoDto;
+import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
 import java.util.ArrayList;
@@ -100,9 +105,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     public View mProgressBGView;
     @Bind(R.id.offerRideProgressBar)
     public ProgressBar mProgressBar;
+    @Bind(R.id.et_PriceSymbol)
+    public EditText priceSymbolEditText;
+
 
     private ArrayList<Place> stopOverPlaces;
     private PublishRideFragment publishRideFragment;
+    private CountryData countryData;
 
     public void possibleRoutes() {
         allPossibleRoutes = new ArrayList<>();
@@ -225,11 +234,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     }
 
     public long getPrice(float km) {
+        double fareRate = 1.8;
+        if (countryData != null) fareRate = countryData.FarePerDistance;
         long price;
         if (km > 0 && km < 10) {
             price = 20;
         } else {
-            price = Math.round(km * 1.8 / 10) * 10;
+            price = Math.round(km * fareRate / 10) * 10;
         }
         return price;
     }
@@ -251,6 +262,11 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         minute = calendar.get(Calendar.MINUTE);
 
         ridePriceEditText.setText("0");
+
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        countryData = Utils.getCountryInfo(OfferRideActivity.this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+
+        priceSymbolEditText.setText(Html.fromHtml(countryData.CurrencySymbol));
 
         offerWhereFromEdit.setInputType(InputType.TYPE_NULL);
         offerWhereToEdit.setInputType(InputType.TYPE_NULL);

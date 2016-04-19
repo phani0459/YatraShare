@@ -11,7 +11,7 @@ public class CountryData implements Serializable {
     public String CountryCode;
     public String CurrencySymbol;
     public String CurrencyCode;
-    public String FarePerDistance;
+    public double FarePerDistance;
     public String DistanceMesure;
     public String MobileCode;
 }

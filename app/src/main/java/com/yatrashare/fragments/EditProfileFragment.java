@@ -19,7 +19,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,7 +28,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.Profile;
@@ -386,7 +384,7 @@ public class EditProfileFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE DATA", response.body().Data + "");
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     if (response.body().Data.equalsIgnoreCase("Success")) {
-                        Utils.deleteProfile(userGuid);
+                        Utils.deleteFile(mContext, userGuid);
                         ((HomeActivity) mContext).showSnackBar(getString(R.string.profile_updated_rationale));
                         ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                         mEditor.putString(Constants.PREF_USER_DOB, dob);

@@ -144,6 +144,7 @@ public class UpdateMobileFragment extends Fragment {
                             mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, true);
                             mEditor.commit();
                             ((HomeActivity) mContext).showSnackBar(getString(R.string.mobileUpdated));
+                            Utils.deleteFile(mContext, userGuid);
                             ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                         } else {
                             ((HomeActivity) mContext).showSnackBar(response.body().Data);

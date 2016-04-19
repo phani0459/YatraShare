@@ -662,7 +662,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, true)) {
-                                    Utils.deleteProfile(mSharedPreferences.getString(Constants.PREF_USER_GUID, ""));
+                                    Utils.deleteFile(HomeActivity.this, mSharedPreferences.getString(Constants.PREF_USER_GUID, ""));
                                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, "");
