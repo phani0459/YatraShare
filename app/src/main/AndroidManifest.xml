@@ -74,7 +74,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.RegisterVehicleActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activities.SelectCountryActivity" />
     </application>
 
 </manifest>

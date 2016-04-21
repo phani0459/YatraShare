@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Yatrashare</string>
+    <string name="uselocation">Use your Location</string>
+    <string name="givepermission">Give location access so we can choose the right country for your ride share.</string>
+    <string name="allow">Allow</string>
+    <string name="skip">Skip</string>
+    <string name="yourcountry">Your country</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

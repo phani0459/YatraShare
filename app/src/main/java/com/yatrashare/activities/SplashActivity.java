@@ -1,6 +1,7 @@
 package com.yatrashare.activities;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -13,9 +14,10 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -42,9 +44,6 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final long SPLASH_DISPLAY_LENGTH = 2000;
-    private Runnable runnable;
-    private Handler handler;
     @Bind(R.id.relativeSplash)
     RelativeLayout splashLayout;
     @Bind(R.id.splash_progress)
@@ -57,13 +56,44 @@ public class SplashActivity extends AppCompatActivity {
      * Id to identity ACCESS_LOCATION permission request.
      */
     private static final int REQUEST_LOAD_LOCATION = 0;
+    private SharedPreferences.Editor mEditor;
+    private CountryData countryData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        requestLocation();
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mEditor = mSharedPreferences.edit();
+
+        countryData = Utils.getCountryInfo(SplashActivity.this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+
+        if (countryData != null) {
+            startHandler();
+        } else {
+            loadGetLocationDialog();
+        }
+    }
+
+    private static final long SPLASH_DISPLAY_LENGTH = 2000;
+    private Runnable runnable;
+    private Handler handler;
+
+    public void startHandler() {
+        try {
+            runnable = new Runnable() {
+                @Override
+                public void run() {
+                /* Create an Intent that will start the Home Activity. */
+                    startHomePage();
+                }
+            };
+            handler = new Handler();
+            handler.postDelayed(runnable, SPLASH_DISPLAY_LENGTH);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -90,10 +120,34 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    private void loadGetLocationDialog() {
+        final Dialog dialog = new Dialog(this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_get_location);
+        Button allowButton = (Button) dialog.findViewById(R.id.btn_allow);
+        Button skipButton = (Button) dialog.findViewById(R.id.btn_skip);
+
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                getCountries(null, true);
+            }
+        });
+
+        allowButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                requestLocation();
+            }
+        });
+        dialog.show();
+    }
+
     public void getCurrentCountry() {
         GPSTracker gps = new GPSTracker(this);
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor mEditor = mSharedPreferences.edit();
 
         if (gps.canGetLocation()) {
             double latitude = gps.getLatitude();
@@ -108,28 +162,34 @@ public class SplashActivity extends AppCompatActivity {
                 mEditor.putString(Constants.PREF_USER_COUNTRY, address.getCountryName());
                 mEditor.apply();
 
-                CountryData countryData = Utils.getCountryInfo(SplashActivity.this, address.getCountryName());
-
                 if (countryData != null) {
                     startHomePage();
                 } else {
-                    getCountries(address.getCountryName());
+                    getCountries(address.getCountryName(), false);
                 }
             }
         }
     }
 
-    private void getCountries(final String countryName) {
+    private void getCountries(final String countryName, final boolean isSkip) {
         Utils.showProgress(true, splashProgress, progressBGView);
         Call<Countries> call = Utils.getYatraShareAPI().GetCountries();
         call.enqueue(new Callback<Countries>() {
             @Override
             public void onResponse(Response<Countries> response, Retrofit retrofit) {
                 if (response.body() != null && response.body().Data != null && response.body().Data.size() > 0) {
-                    for (int i = 0; i < response.body().Data.size(); i++) {
-                        if (response.body().Data.get(i).CountryName.equalsIgnoreCase(countryName)) {
-                            getCountryInfo(response.body().Data.get(i).CountryCode, countryName);
+                    if (!isSkip) {
+                        for (int i = 0; i < response.body().Data.size(); i++) {
+                            if (response.body().Data.get(i).CountryName.equalsIgnoreCase(countryName)) {
+                                getCountryInfo(response.body().Data.get(i).CountryCode, countryName);
+                            }
                         }
+                    } else {
+                        Utils.showProgress(false, splashProgress, progressBGView);
+                        Intent intent = new Intent(SplashActivity.this, SelectCountryActivity.class);
+                        intent.putExtra("Countries", response.body().Data);
+                        startActivity(intent);
+                        finish();
                     }
                 }
             }
@@ -147,6 +207,16 @@ public class SplashActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.jump_to_down, R.anim.jump_from_down);
         startActivity(mainIntent);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            handler.removeCallbacks(runnable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void getCountryInfo(final String countryCode, final String countryName) {
@@ -194,17 +264,6 @@ public class SplashActivity extends AppCompatActivity {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getCurrentCountry();
             }
-        }
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        try {
-            handler.removeCallbacks(runnable);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

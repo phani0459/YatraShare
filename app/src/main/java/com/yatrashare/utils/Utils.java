@@ -97,6 +97,7 @@ public class Utils {
             os.writeObject(countryData);
             os.close();
             fos.close();
+            Log.e("Country Data", " Saved");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,6 +111,7 @@ public class Utils {
             countryData = (CountryData) is.readObject();
             is.close();
             fis.close();
+            Log.e("Country Data", " Retrieved");
         } catch (Exception e) {
             e.printStackTrace();
         }

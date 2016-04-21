@@ -266,7 +266,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         countryData = Utils.getCountryInfo(OfferRideActivity.this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
 
-        priceSymbolEditText.setText(Html.fromHtml(countryData.CurrencySymbol));
+        if (countryData != null) priceSymbolEditText.setText(Html.fromHtml(countryData.CurrencySymbol));
 
         offerWhereFromEdit.setInputType(InputType.TYPE_NULL);
         offerWhereToEdit.setInputType(InputType.TYPE_NULL);
