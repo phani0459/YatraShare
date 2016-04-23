@@ -459,6 +459,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response.body() != null && response.body().Data != null) {
                     mSharedPrefEditor.putString(Constants.PREF_USER_NAME, response.body().Data.FirstName);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, response.body().Data.FirstName);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, response.body().Data.LastName);
                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, response.body().Data.Email);
                     mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, response.body().Data.PhoneNo);
                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, response.body().Data.Gender);

@@ -59,7 +59,6 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     @Bind(R.id.et_date)
     public EditText dateEditText;
     private int year, month, day;
-    private DatePickerDialog mDatePickerDialog;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private Context mContext;
     @Bind(R.id.findRideProgressBGView)
@@ -148,7 +147,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
         if (!cancel) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
             FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10");
+                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10", "0");
 
             Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
             //asynchronous call
@@ -197,6 +196,10 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     @OnClick(R.id.offerRide)
     public void offerRide() {
         if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
+            if (whereFromPlace != null && wheretoPlace != null && whereFromPlace.address.equalsIgnoreCase(wheretoPlace.address)) {
+                Utils.showToast(mContext, "Departure and Arrival should not be same");
+                return;
+            }
             Intent intent = new Intent(mContext, OfferRideActivity.class);
             intent.putExtra("DEPARTURE", whereFromPlace);
             intent.putExtra("ARRIVAL", wheretoPlace);
@@ -314,7 +317,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                     openAutocompleteActivity();
                     break;
                 case R.id.et_date:
-                    mDatePickerDialog = new DatePickerDialog(mContext, mDateSetListener, year, month, day);
+                    DatePickerDialog mDatePickerDialog = new DatePickerDialog(mContext, mDateSetListener, year, month, day);
                     mDatePickerDialog.show();
 
                     mDatePickerDialog.setOnCancelListener(new DatePickerDialog.OnCancelListener() {

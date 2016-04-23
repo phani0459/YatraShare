@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.CountryData;
@@ -229,7 +231,7 @@ public class SignupFragment extends Fragment {
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 6;
+        return password.length() > 5;
     }
 
     private boolean isUserNameValid(String userName) {
@@ -314,13 +316,17 @@ public class SignupFragment extends Fragment {
         String countryCode = countryData != null ? countryData.CountryCode : "";
         UserSignUp userSignUp = new UserSignUp(mEmail, mUserName, mPassword, mPhone, countryCode);
 
+        Gson gson = new Gson();
+        String s = gson.toJson(userSignUp);
+        Log.e(TAG, "userSignupTask: " + s);
+
         Call<UserDataDTO> call = Utils.getYatraShareAPI().userRegistration(userSignUp);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**
              * Successful HTTP response.
              *
-             * @param response server respoonse
+             * @param response server response
              * @param retrofit adapter
              */
             @Override
@@ -335,7 +341,7 @@ public class SignupFragment extends Fragment {
                         mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().Data);
                         mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                         mSharedPrefEditor.commit();
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
                         ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
                     } else {
                         ((HomeActivity) mContext).showSnackBar(response.body().Data);

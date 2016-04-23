@@ -150,6 +150,7 @@
                         android:drawablePadding="4dp"
                         android:hint="@string/prompt_email"
                         android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true" />
@@ -173,6 +174,7 @@
                         android:fontFamily="sans-serif"
                         android:hint="@string/prompt_password"
                         android:inputType="textPassword"
+                        android:imeOptions="actionNext"
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true" />
@@ -222,6 +224,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/search_button_bg"
                     android:text="@string/sign_up_text"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
                 <TextView

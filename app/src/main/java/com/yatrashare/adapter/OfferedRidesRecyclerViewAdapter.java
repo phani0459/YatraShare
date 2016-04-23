@@ -12,6 +12,7 @@ import com.yatrashare.R;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
 import com.yatrashare.fragments.TabsFragment;
+import com.yatrashare.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
 
             holder.remainingSeats.setText(subRideData.AvailableSeats + " Seat(s) left");
             holder.bookedSeats.setText("Booked Seats: " + subRideData.BookedSeats);
-            holder.seatPrice.setText("" + mContext.getResources().getString(R.string.Rs) + " " + subRideData.RoutePrice + " /Seat");
+            holder.seatPrice.setText("" + Utils.getCurrency(mContext) + " " + subRideData.RoutePrice + " /Seat");
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {

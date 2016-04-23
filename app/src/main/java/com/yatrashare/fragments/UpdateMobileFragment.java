@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -34,6 +35,8 @@ import retrofit.Retrofit;
 public class UpdateMobileFragment extends Fragment {
 
     private static final String TAG = UpdateMobileFragment.class.getSimpleName();
+    @Bind(R.id.et_country)
+    public EditText countryEditText;
     @Bind(R.id.edit_number_bt)
     public Button editNoBt;
     @Bind(R.id.verify_code_bt)
@@ -61,10 +64,8 @@ public class UpdateMobileFragment extends Fragment {
     @Bind(R.id.verifyProgressBGView)
     public View mProgressBGView;
 
-    private boolean isPhoneSaved;
     private Context mContext;
     private String userGuid;
-    private boolean isValidPhoneNUmber;
     private SharedPreferences.Editor mEditor;
 
 
@@ -85,12 +86,19 @@ public class UpdateMobileFragment extends Fragment {
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
 
+
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mEditor = mSharedPreferences.edit();
         String mobile = mSharedPreferences.getString(Constants.PREF_USER_PHONE, "");
         phoneEdit.setText(mobile);
         phoneEdit.setEnabled(false);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+
+        CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+
+        if (countryData != null) {
+            countryEditText.setText(countryData.MobileCode + "   " + countryData.CountryName);
+        }
 
         if (!getArguments().getBoolean("IS VERIFIED", false)) sendVerifyCode();
 
@@ -101,14 +109,12 @@ public class UpdateMobileFragment extends Fragment {
     public void saveMobileNumber() {
         verificationCodeEdit.setEnabled(true);
         if (Utils.isPhoneValid(phoneEdit.getText().toString())) {
-            isPhoneSaved = true;
             phoneEdit.setEnabled(false);
             verifyBtnLayout.setVisibility(View.VISIBLE);
             editNumberBtnsLayout.setVisibility(View.GONE);
             phoneNumberLayout.setError(null);
             phoneNumberLayout.setErrorEnabled(false);
         } else {
-            isPhoneSaved = false;
             phoneNumberLayout.setError("Enter valid phone number");
         }
     }

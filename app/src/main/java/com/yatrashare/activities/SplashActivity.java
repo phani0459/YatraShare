@@ -25,11 +25,14 @@ import com.yatrashare.R;
 import com.yatrashare.dtos.Countries;
 import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.CountryInfo;
+import com.yatrashare.dtos.GoogleAddressDto;
+import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.GPSTracker;
 import com.yatrashare.utils.Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,12 +40,13 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity implements Callback<GoogleAddressDto> {
 
     @Bind(R.id.relativeSplash)
     RelativeLayout splashLayout;
@@ -158,16 +162,77 @@ public class SplashActivity extends AppCompatActivity {
 
             if (latitude != 0.0 && longitude != 0.0) {
                 Address address = getAddress(latitude, longitude);
-                Log.e("Country: ", "" + address.getCountryName());
-                mEditor.putString(Constants.PREF_USER_COUNTRY, address.getCountryName());
-                mEditor.apply();
-
-                if (countryData != null) {
-                    startHomePage();
-                } else {
+                if (address != null) {
+                    Log.e("Country: ", "" + address.getCountryName());
+                    mEditor.putString(Constants.PREF_USER_COUNTRY, address.getCountryName());
+                    mEditor.apply();
                     getCountries(address.getCountryName(), false);
+                } else {
+                    getCountryFromApi(latitude, longitude);
                 }
+
             }
+        }
+    }
+
+    private void getCountryFromApi(double lat, double lng) {
+        try {
+            Utils.showProgress(true, splashProgress, progressBGView);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("http://maps.googleapis.com")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(Utils.getOkHttpClient())
+                    .build();
+            YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
+            Call<GoogleAddressDto> call = yatraShareAPI.getGoogleAddressAPI(lat + "," + lng);
+            call.enqueue(new Callback<GoogleAddressDto>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<GoogleAddressDto> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    if (response.body() != null && response.isSuccess()) {
+                        ArrayList<GoogleAddressDto.AddressResults> results = response.body().results;
+                        if (results != null && results.size() > 0 && results.get(0).address_components != null && results.get(0).address_components.size() > 0) {
+                            /**
+                             * administrative_area_level_1 = State
+                             * locality = City
+                             * country = Country
+                             */
+
+                            String countryName = "";
+                            for (int i = 0; i < results.get(0).address_components.size(); i++) {
+                                GoogleAddressDto.AddressComponents component = results.get(0).address_components.get(i);
+                                if (component.types != null && component.types.size() > 0 && component.types.contains("country")) {
+                                    countryName = component.long_name;
+                                }
+                            }
+
+                            Log.e("Country: ", "" + countryName);
+                            mEditor.putString(Constants.PREF_USER_COUNTRY, countryName);
+                            mEditor.apply();
+
+                            getCountries(countryName, false);
+                        }
+                    }
+                }
+
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e("", "FAILURE RESPONSE");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -265,5 +330,15 @@ public class SplashActivity extends AppCompatActivity {
                 getCurrentCountry();
             }
         }
+    }
+
+    @Override
+    public void onResponse(Response<GoogleAddressDto> response, Retrofit retrofit) {
+
+    }
+
+    @Override
+    public void onFailure(Throwable t) {
+
     }
 }

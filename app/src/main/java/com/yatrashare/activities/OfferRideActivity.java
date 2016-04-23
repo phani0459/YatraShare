@@ -341,6 +341,10 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
 
         if (!rideDeparture.isEmpty() && !rideArrival.isEmpty()) {
+            if (rideDeparture.equalsIgnoreCase(rideArrival)) {
+                Utils.showToast(this, "Departure and Arrival should not be same");
+                return;
+            }
             if (!rideDepartureDate.isEmpty() && !rideDepartureTime.isEmpty()) {
                 if (roundTripCheckBox.isChecked()) {
                     if (rideArrivalDate.isEmpty() || rideArrivalTime.isEmpty()) {

@@ -22,13 +22,17 @@ public class RegisterVehicle {
     @SerializedName("Comfort")
     String mComfort;
 
+    @SerializedName("RegdNo")
+    String mRegdNo;
 
-    public RegisterVehicle(String vehicleType, String seats, String vehicleModelId, String color, String comfort) {
+
+    public RegisterVehicle(String vehicleType, String seats, String vehicleModelId, String color, String comfort, String mRegdNo) {
         this.mVehicleType = vehicleType;
         this.mSeats = seats;
         this.mVehicleModelId = vehicleModelId;
         this.mColor = color;
         this.mComfort = comfort;
+        this.mRegdNo = mRegdNo;
     }
 
 }

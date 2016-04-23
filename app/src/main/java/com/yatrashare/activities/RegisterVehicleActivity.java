@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
@@ -49,6 +50,8 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
     private String userGuide;
     private Context mContext;
     private ArrayList<Vehicle.VehicleData> vehicleModelDatas;
+    @Bind(R.id.selectVehicleRegdNo)
+    public EditText regdNoEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,6 +197,7 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
 
     @OnClick(R.id.btn_registerNewVehicle)
     public void registerVehicle() {
+        String regdNo = regdNoEditText.getText().toString();
         if (TextUtils.isEmpty(vehicleBrand)) {
             Utils.showToast(mContext, "Select Vehicle Brand");
             return;
@@ -202,8 +206,19 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
             Utils.showToast(mContext, "Select Vehicle Model");
             return;
         }
+
+        if (TextUtils.isEmpty(regdNo)) {
+            Utils.showToast(mContext, "Enter Vehicle Registration Number");
+            return;
+        }
+
+        if (regdNo.length() < 6) {
+            Utils.showToast(mContext, "Enter Correct Vehicle Registration Number");
+            return;
+        }
+
         Utils.showProgress(true, registerProgressBar, registerBGView);
-        RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort);
+        RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort, regdNo);
 
         Call<UserDataDTO> call = Utils.getYatraShareAPI().registerVehicle(userGuide, vehicleInfo);
         call.enqueue(new Callback<UserDataDTO>() {
@@ -239,7 +254,8 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
                 break;
             case R.id.selectVehicleBrand:
                 vehicleBrand = parent.getAdapter().getItem(position).toString();
-                getVehicleModels();
+                if (!TextUtils.isEmpty(vehicleBrand) && !vehicleBrand.equalsIgnoreCase("Select Brand"))
+                    getVehicleModels();
                 break;
             case R.id.selectVehicleModel:
                 vehicleModel = parent.getAdapter().getItem(position).toString();

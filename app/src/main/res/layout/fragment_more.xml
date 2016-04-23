@@ -1,14 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/colorLayoutBG"
-              android:orientation="vertical"
-              android:weightSum="5">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorLayoutBG"
+    android:orientation="vertical"
+    android:weightSum="8">
 
 
     <TextView
         android:id="@+id/howItWorksText"
-        style="@android:style/TextAppearance.DeviceDefault.Large"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -17,18 +17,19 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
-        android:paddingLeft="4dp"
+        android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:text="@string/how_it_works"/>
+        android:text="@string/how_it_works"
+        android:textColor="@color/colorPrimary" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E1E1E1"/>
+        android:background="#E1E1E1" />
 
     <TextView
         android:id="@+id/faqsText"
-        style="@android:style/TextAppearance.DeviceDefault.Large"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -37,18 +38,19 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
-        android:paddingLeft="4dp"
+        android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:text="@string/faq"/>
+        android:text="@string/faq"
+        android:textColor="@color/colorPrimary" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E1E1E1"/>
+        android:background="#E1E1E1" />
 
     <TextView
         android:id="@+id/feedBackText"
-        style="@android:style/TextAppearance.DeviceDefault.Large"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -57,18 +59,19 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
-        android:paddingLeft="4dp"
+        android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:text="@string/feedback"/>
+        android:text="@string/feedback"
+        android:textColor="@color/colorPrimary" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E1E1E1"/>
+        android:background="#E1E1E1" />
 
     <TextView
         android:id="@+id/contactUsText"
-        style="@android:style/TextAppearance.DeviceDefault.Large"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -77,18 +80,19 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
-        android:paddingLeft="4dp"
+        android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:text="@string/Contact_us"/>
+        android:text="@string/Contact_us"
+        android:textColor="@color/colorPrimary" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#E1E1E1"/>
+        android:background="#E1E1E1" />
 
     <TextView
         android:id="@+id/termsText"
-        style="@android:style/TextAppearance.DeviceDefault.Large"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -97,7 +101,8 @@
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"
-        android:paddingLeft="4dp"
+        android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:text="@string/terms_n_conditions"/>
+        android:text="@string/terms_n_conditions"
+        android:textColor="@color/colorPrimary" />
 </LinearLayout>

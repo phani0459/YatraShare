@@ -41,11 +41,14 @@ public class FindRide {
     @SerializedName("PageSize")
     String mPageSize;
 
+    @SerializedName("VehicleRegdType")
+    String mVehicleRegdType;
+
     public FindRide(String departurePoint, String arrivalPoint,
                     String departureDate, String comfort,
                     String currentPage, String startTime,
                     String endTime, String ladiesOnly,
-                    String rideType, String vehicleType, String pageSize) {
+                    String rideType, String vehicleType, String pageSize, String vehicleRegdType) {
         this.mDeparturePoint = departurePoint;
         this.mArrivalPoint = arrivalPoint;
         this.mDepartureDate = departureDate;
@@ -57,5 +60,6 @@ public class FindRide {
         this.mRideType = rideType;
         this.mVehicleType = vehicleType;
         this.mPageSize = pageSize;
+        this.mVehicleRegdType = vehicleRegdType;
     }
 }

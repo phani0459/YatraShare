@@ -109,6 +109,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ProfileFragment profileFragment;
     private MessageListFragment messageListFragment;
     private FindRideFragment searchRideFragment;
+    private EditText confirmPwdEdit;
+    private EditText newPwdEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -469,10 +471,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void popBackFragment(String fragmentName) {
-        if (fragmentName != null) {
-            getSupportFragmentManager().popBackStackImmediate(fragmentName, 0);
-        } else {
-            getSupportFragmentManager().popBackStackImmediate();
+        try {
+            if (fragmentName != null) {
+                getSupportFragmentManager().popBackStackImmediate(fragmentName, 0);
+            } else {
+                getSupportFragmentManager().popBackStackImmediate();
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 
@@ -550,6 +556,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             menu.getItem(3).setVisible(true);
         } else {
             menu.getItem(3).setVisible(false);
+        }
+
+        if (getCurrentScreen() == HOME_SCREEN) {
+            menu.getItem(4).setVisible(true);
+        } else {
+            menu.getItem(4).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -646,6 +658,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.nav_invitefriends:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
                 break;
             case R.id.nav_callus:
                 break;
@@ -703,8 +720,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         final Dialog dialog = new Dialog(this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
         dialog.setContentView(R.layout.dialog_change_pwd);
         dialog.setTitle("Change password");
-        final EditText newPwdEdit = (EditText) dialog.findViewById(R.id.newPassword);
-        final EditText confirmPwdEdit = (EditText) dialog.findViewById(R.id.confirmPassword);
+        newPwdEdit = (EditText) dialog.findViewById(R.id.newPassword);
+        confirmPwdEdit = (EditText) dialog.findViewById(R.id.confirmPassword);
         final TextInputLayout newPwdLayout = (TextInputLayout) dialog.findViewById(R.id.newPasswordLayout);
         final TextInputLayout confirmPwdLayout = (TextInputLayout) dialog.findViewById(R.id.confirmPasswordLayout);
         submitPwdButton = (Button) dialog.findViewById(R.id.btnSubmit);
@@ -778,8 +795,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             mChangePwdProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         }
 
+
         submitPwdButton.setEnabled(!show);
         cancelButton.setEnabled(!show);
+        newPwdEdit.setEnabled(!show);
+        confirmPwdEdit.setEnabled(!show);
     }
 
     private void changePwdTask(final String newPassword, final Dialog dialog) {

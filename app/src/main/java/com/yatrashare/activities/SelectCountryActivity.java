@@ -96,7 +96,6 @@ public class SelectCountryActivity extends AppCompatActivity {
             public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {
                 Log.e("Response raw", "" + response.raw());
                 if (response.body() != null && response.body().Data != null) {
-                    Log.e("asfsf" + countryCode, "tr" + countryName);
                     Utils.saveCountryInfo(SelectCountryActivity.this, response.body().Data, countryName);
                     Utils.showProgress(false, splashProgress, progressBGView);
                     startHomePage();

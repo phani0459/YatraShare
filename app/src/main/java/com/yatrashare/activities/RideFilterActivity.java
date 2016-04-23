@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -21,17 +22,16 @@ import android.widget.Spinner;
 import com.appyvet.rangebar.RangeBar;
 import com.yatrashare.R;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class RideFilterActivity extends AppCompatActivity {
+public class RideFilterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = RideFilterActivity.class.getSimpleName();
     @Bind(R.id.rg_rideType)
     public RadioGroup rideTypeRadioGroup;
     @Bind(R.id.rg_genderType)
@@ -50,10 +50,15 @@ public class RideFilterActivity extends AppCompatActivity {
     public RadioButton ladiesOnlyRadioBtn;
     @Bind(R.id.rbtn_longRide)
     public RadioButton longRideRadioBtn;
+    @Bind(R.id.rbtn_vehicleRegdAll)
+    public RadioButton vehicleRegdAllRadioBtn;
+    @Bind(R.id.rbtn_vehicleRegdEven)
+    public RadioButton vehicleRegdEvenRadioBtn;
+    @Bind(R.id.rbtn_vehicleRegdOdd)
+    public RadioButton vehicleRegdOddRadioBtn;
     @Bind(R.id.timeRangeBar)
     public RangeBar rangeBar;
     private Context mContext;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,13 @@ public class RideFilterActivity extends AppCompatActivity {
         startTime = data.getString("START TIME", "1");
         endTime = data.getString("END TIME", "24");
 
+        /**
+         * Odd - 1
+         * Even - 2
+         * All - 0
+         */
+        vehicleRegdNo = data.getString("VEHICLE REGD", "0");
+
         mContext = this;
 
         try {
@@ -82,6 +94,15 @@ public class RideFilterActivity extends AppCompatActivity {
         if (vehicleType.equalsIgnoreCase("1")) {
             vehicleTypeSpinner.setSelection(1);
         }
+
+        if (vehicleRegdNo.equalsIgnoreCase("0")) {
+            vehicleRegdAllRadioBtn.setChecked(true);
+        } else if (vehicleRegdNo.equalsIgnoreCase("1")) {
+            vehicleRegdOddRadioBtn.setChecked(true);
+        } else {
+            vehicleRegdEvenRadioBtn.setChecked(true);
+        }
+
 
         if (comfortLevel.equalsIgnoreCase("LUXURY")) {
             vehicleComfortTypeSpinner.setSelection(1);
@@ -101,12 +122,13 @@ public class RideFilterActivity extends AppCompatActivity {
             genderAllRadioBtn.setChecked(true);
         }
 
+        rideTypeRadioGroup.clearCheck();
+        rideTypeRadioGroup.clearFocus();
+
         if (rideType.equalsIgnoreCase("2")) {
             dailyRideRadioButton.setChecked(true);
-            longRideRadioBtn.clearFocus();
         } else {
             longRideRadioBtn.setChecked(true);
-            dailyRideRadioButton.clearFocus();
         }
 
     }
@@ -117,7 +139,7 @@ public class RideFilterActivity extends AppCompatActivity {
     public String gender;
     public String date;
     public String startTime;
-    public String endTime;
+    public String endTime, vehicleRegdNo;
 
     @Override
     protected void onResume() {
@@ -196,7 +218,7 @@ public class RideFilterActivity extends AppCompatActivity {
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",  new DialogInterface.OnClickListener() {
+        datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dateEditText.setText("");
@@ -213,6 +235,10 @@ public class RideFilterActivity extends AppCompatActivity {
             }
         });
 
+        dailyRideRadioButton.setOnClickListener(this);
+        longRideRadioBtn.setOnClickListener(this);
+        genderAllRadioBtn.setOnClickListener(this);
+        ladiesOnlyRadioBtn.setOnClickListener(this);
     }
 
     public void prepareIntent() {
@@ -256,12 +282,40 @@ public class RideFilterActivity extends AppCompatActivity {
         int genderBtn = genderRadioGroup.getCheckedRadioButtonId();
         switch (genderBtn) {
             case R.id.rbtn_ladiesOnly:
-                Log.e("asgtewtewtewtewt", "rytruetutruetuetuet");
                 gender = "LadiesOnly";
                 break;
             default:
                 gender = "All";
                 break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        boolean checked = ((RadioButton) v).isChecked();
+        if (checked) {
+            switch (v.getId()) {
+                case R.id.rbtn_longRide:
+                    longRideRadioBtn.setChecked(true);
+                    dailyRideRadioButton.setChecked(false);
+                    dailyRideRadioButton.clearFocus();
+                    break;
+                case R.id.rbtn_dailyRide:
+                    dailyRideRadioButton.setChecked(true);
+                    longRideRadioBtn.setChecked(false);
+                    longRideRadioBtn.clearFocus();
+                    break;
+                case R.id.rbtn_All:
+                    genderAllRadioBtn.setChecked(true);
+                    ladiesOnlyRadioBtn.setChecked(false);
+                    ladiesOnlyRadioBtn.clearFocus();
+                    break;
+                case R.id.rbtn_ladiesOnly:
+                    genderAllRadioBtn.setChecked(false);
+                    ladiesOnlyRadioBtn.setChecked(true);
+                    genderAllRadioBtn.clearFocus();
+                    break;
+            }
         }
     }
 }

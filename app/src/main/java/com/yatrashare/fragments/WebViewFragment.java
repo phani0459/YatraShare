@@ -1,12 +1,12 @@
 package com.yatrashare.fragments;
 
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +43,7 @@ public class WebViewFragment extends Fragment {
         settings.setJavaScriptEnabled(true);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
 
-        final AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.appCompatDialog);
 
         final ProgressDialog progressBar = ProgressDialog.show(mContext, "", "Loading...");
 
@@ -64,13 +64,15 @@ public class WebViewFragment extends Fragment {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 UtilsLog.e(TAG, "Error: " + description);
                 Toast.makeText(mContext, "Oh no! " + description, Toast.LENGTH_SHORT).show();
-                alertDialog.setTitle("Error");
-                alertDialog.setMessage(description);
-                alertDialog.setButton("OK", new DialogInterface.OnClickListener() {
+                builder.setTitle("Error");
+                builder.setMessage(description);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        return;
+
                     }
                 });
+                AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             }
         });

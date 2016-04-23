@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.RegisterVehicleActivity;
 import com.yatrashare.dtos.GoogleMapsDto;
@@ -219,39 +220,39 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         Address arrivalAddress = getAddress(route.getArrivalLatitude(), route.getArrivalLongitude());
         Address departureAddress = getAddress(route.getDepartureLatitude(), route.getDepartureLongitude());
 
-        String mDeparture = "";
-        String mArrival = "";
+        String mDeparture;
+        String mArrival;
         String mDepartureCity = "";
         String mArrivalCity = "";
         String mDepartureState = "";
         String mArrivalState = "";
-        String mRoutePrice = "";
-        String mUserUpdatedPrice = "";
-        String mreadOnly = "";
-        String mkilometers = "";
-        String morder = "";
-        String mMainRoute = "";
-        String mTimeframe = "";
+        String mRoutePrice;
+        String mUserUpdatedPrice;
+        String mreadOnly;
+        String mkilometers;
+        String morder;
+        String mMainRoute;
+        String mTimeframe;
+
+        mDeparture = rideInfoDto.getmRideDeparture();
+        mArrival = rideInfoDto.getmRideArrival();
 
         if (arrivalAddress != null && departureAddress != null) {
-            mDeparture = rideInfoDto.getmRideDeparture();
-            mArrival = rideInfoDto.getmRideArrival();
-
             mDepartureCity = departureAddress.getLocality();
             mArrivalCity = arrivalAddress.getLocality();
 
             mDepartureState = departureAddress.getAdminArea();
             mArrivalState = arrivalAddress.getAdminArea();
-
-            mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
-            mUserUpdatedPrice = rideInfoDto.getUserUpdatedPrice();
-            mreadOnly = "";
-
-            mkilometers = distance;
-            morder = "" + order;
-            mMainRoute = route.isMainRoute() + "";
-            mTimeframe = duration;
         }
+
+        mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
+        mUserUpdatedPrice = rideInfoDto.getUserUpdatedPrice();
+        mreadOnly = "";
+
+        mkilometers = distance;
+        morder = "" + order;
+        mMainRoute = route.isMainRoute() + "";
+        mTimeframe = duration;
         RideInfo.PossibleRoutes possibleRoute = new RideInfo().new PossibleRoutes(mDeparture, mArrival, mDepartureCity, mMainRoute,
                 mTimeframe, mArrivalCity, mDepartureState, mArrivalState, mRoutePrice, mUserUpdatedPrice, mreadOnly, mkilometers, morder);
 
@@ -277,22 +278,25 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         if (rideInfoDto.getmStopOvers() != null && rideInfoDto.getmStopOvers().size() > 0) {
             for (int i = 0; i < rideInfoDto.getmStopOvers().size(); i++) {
                 String mstopover_location = "";
-                String mStopOverState;
+                String mStopOverState = "";
                 String mOrder;
                 String mLatitude;
                 String mLongitude;
                 String mstopoverAddressDetails;
-                String mStopOverCity;
+                String mStopOverCity = "";
                 Address address = getAddress(rideInfoDto.getmStopOvers().get(i).getStopOverLatitude(), rideInfoDto.getmStopOvers().get(i).getStopOverLongitude());
 
                 mLatitude = rideInfoDto.getmStopOvers().get(i).getStopOverLatitude() + "";
                 mLongitude = rideInfoDto.getmStopOvers().get(i).getStopOverLongitude() + "";
                 mstopoverAddressDetails = rideInfoDto.getmStopOvers().get(i).getStopOverLocation();
                 mOrder = (i + 1) + "";
-                mStopOverCity = address.getLocality();
-                mStopOverState = address.getAdminArea();
-                if (address.getMaxAddressLineIndex() >= 2) {
-                    mstopover_location = address.getAddressLine(0) + address.getAddressLine(1);
+
+                if (address != null) {
+                    mStopOverCity = address.getLocality();
+                    mStopOverState = address.getAdminArea();
+                    if (address.getMaxAddressLineIndex() >= 2) {
+                        mstopover_location = address.getAddressLine(0) + address.getAddressLine(1);
+                    }
                 }
 
                 RideInfo.StopOverPoints stopOverPoint = new RideInfo().new StopOverPoints(mstopover_location, mStopOverState, mOrder, mLatitude, mLongitude, mstopoverAddressDetails, mStopOverCity);
@@ -325,6 +329,10 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         RideInfo rideInfo = new RideInfo(mDepartureDate, mReturnDate, mRideDeparture, mRideArrival, mTotalkilometers, mTotalprice, selectedTimeFlexi, selectedDetour, seatsSelected, mOtherDetails,
                 mCompanyDetails, selectedVehicleId, mDepartureTime, mReturnTime, mLadiesOnly, mSelectedWeekdays, mRideType, mVehicleType, selectedLuggageSize, mainPossibleRoutes, allPossibleRoutes, stopOverPoints);
 
+        Gson gson = new Gson();
+        String ride = gson.toJson(rideInfo);
+        Log.e(TAG, "prepareRide: " + ride);
+
         Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, rideInfo);
         call.enqueue(new Callback<UserDataDTO>() {
             /*
@@ -340,6 +348,8 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                     if (response.body().Data.contains("-")) {
                         Utils.showToast(mContext, "Successfully ride created");
                         ((AppCompatActivity) mContext).finish();
+                    } else {
+                        Utils.showToast(mContext, getString(R.string.tryagain));
                     }
                 }
             }
@@ -368,6 +378,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         if (addresses != null && addresses.size() > 0) {
             return addresses.get(0);
         } else {
+            Log.e(TAG, "getAddress: ");
             return null;
         }
     }

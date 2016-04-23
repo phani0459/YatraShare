@@ -4,6 +4,7 @@ import com.yatrashare.dtos.BookedRides;
 import com.yatrashare.dtos.Countries;
 import com.yatrashare.dtos.CountryInfo;
 import com.yatrashare.dtos.GetUserBookings;
+import com.yatrashare.dtos.GoogleAddressDto;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
@@ -153,8 +154,17 @@ public interface YatraShareAPI {
     @GET("/api/Rides/GetRideDetails")
     Call<RideDetails> getRideDetails(@Query("possibleRideGuid") String possibleRideGuid);
 
+
     @GET("/maps/api/directions/json?sensor=false")
     Call<GoogleMapsDto> getGoogleMapsAPI(@Query("origin") String origin, @Query("destination") String destination);
+
+    /**
+     * http://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng=17.4598863,78.3728007
+     * @param latlng latittude and longitude
+     * @return
+     */
+    @GET("/maps/api/geocode/json?sensor=false")
+    Call<GoogleAddressDto> getGoogleAddressAPI(@Query("latlng") String latlng);
 
     @POST("/api/Messages/GetUserMessagesConversation")
     Call<MessageDetails> getMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);

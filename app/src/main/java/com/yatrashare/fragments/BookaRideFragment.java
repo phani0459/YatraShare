@@ -154,7 +154,7 @@ public class BookaRideFragment extends Fragment {
                 rideFrom.setText(rideData.DeparturePoint != null ? rideData.DeparturePoint : "");
                 rideTo.setText(rideData.ArrivalPoint != null ? rideData.ArrivalPoint : "");
                 seatsAvailable.setText(rideData.RemainingSeats + " Seat(s) left");
-                pricePerSeat.setText("" + mContext.getResources().getString(R.string.Rs) + " " + rideData.RoutePrice + " /Seat");
+                pricePerSeat.setText("" + Utils.getCurrency(mContext) + " " + rideData.RoutePrice + " /Seat");
                 usersPreferences.setText("Preferences");
 
                 int chatPref = rideData.Chat;

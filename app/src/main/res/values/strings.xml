@@ -40,8 +40,11 @@
 
     <!-- Strings related to Ride Filter-->
     <string name="rideTypeHeading">Ride  Type</string>
+    <string name="oddeven">Car/Bike Type</string>
     <string name="longRide">Long Ride</string>
     <string name="dailyRide">Daily Ride</string>
+    <string name="odd">Odd</string>
+    <string name="even">Even</string>
     <string name="vehicleTypeHeading">Vehicle Type</string>
     <string name="timeRangeHeading">Time</string>
     <string name="timeRangeSubHeading">Departure Time 1 hr- 24 hrs</string>
@@ -96,6 +99,7 @@
     <string name="color">Color</string>
     <string name="brand">Brand</string>
     <string name="model">Model</string>
+    <string name="registrationNo">Regd No.</string>
     <string name="seats">Seats</string>
     <string name="comfort">Comfort</string>
 
@@ -202,7 +206,6 @@
     <string name="ride_submit">Submit</string>
     <string name="ride_find">Find a Ride</string>
     <string name="ride_date">Date(optional)</string>
-    <string name="Rs">\u20B9</string>
     <string name="createEmailAlert">Create an Email Alert</string>
 
     <string name="provide_rating">Publish</string>
@@ -233,6 +236,7 @@
     <string name="userid_field_required">Email/Mobile is required</string>
     <string name="error_field_required">Email is required</string>
     <string name="success_login">Login Successfully</string>
+    <string name="success_signup">Signup Successful</string>
     <string name="resetpwd_ratioanle">An Email is sent to registered Mail, to reset Password.</string>
     <string name="emailalertCreated_rationale">We will send an email, Once the ride is available.</string>
     <string name="userguide_ratioanle">There is a problem with login. Please Logout and Login Again.</string>
@@ -247,7 +251,7 @@
     <string name="terms_and_conditions_rationale">You\'ll be agreeing to our Terms and Conditions.</string>
     <string name="password_rationale">Your password must contain a combination of letters and numbers.</string>
     <string name="add_user_rationale">Add a nice picture to your profile. Users with pictures get more rides!</string>
-    <string name="facebook_app_id">255632758120708</string>
+    <string name="facebook_app_id">1505625496433838</string>
 
     <string name="ofrd_rides_login_prompt">Please Login to see rides you\'ve offered</string>
     <string name="bukd_rides_login_prompt">Please Login to see rides you\'ve booked</string>

@@ -47,6 +47,7 @@
                     android:drawableLeft="@drawable/email"
                     android:drawablePadding="4dp"
                     android:hint="@string/prompt_userId"
+                    android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:padding="8dp"

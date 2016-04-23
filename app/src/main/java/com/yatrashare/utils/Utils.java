@@ -4,12 +4,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -271,6 +273,13 @@ public class Utils {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public static Spanned getCurrency(Context mContext) {
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        CountryData countryData = getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+        if (countryData != null) return Html.fromHtml(countryData.CurrencySymbol);
+        return Html.fromHtml("&#8377;");
     }
 
     public static void showMobileVerifyDialog(final Context mContext, final String msg, final String originScree) {

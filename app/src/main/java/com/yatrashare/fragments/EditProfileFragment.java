@@ -238,6 +238,8 @@ public class EditProfileFragment extends Fragment {
         String userProfilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
         String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
         String userDob = mSharedPreferences.getString(Constants.PREF_USER_DOB, "");
+        String firstName = mSharedPreferences.getString(Constants.PREF_USER_FIRST_NAME, "");
+        String lastName = mSharedPreferences.getString(Constants.PREF_USER_LAST_NAME, "");
         userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
 
         if (profile != null && profile.Data != null) {
@@ -245,12 +247,18 @@ public class EditProfileFragment extends Fragment {
             String userName = profile.Data.UserName;
 
             aboutMeEdit.setText(aboutMe);
-            firstNameEdit.setText(userName);
 
-            if (!TextUtils.isEmpty(profile.Data.FirstName))
-                firstNameEdit.setText(profile.Data.FirstName);
-            if (!TextUtils.isEmpty(profile.Data.LastName))
-                lastNameEdit.setText(profile.Data.LastName);
+            if (!TextUtils.isEmpty(profile.Data.UserName)) {
+                firstNameEdit.setText(userName);
+            }
+
+            if (!TextUtils.isEmpty(firstName)) {
+                firstNameEdit.setText(firstName);
+            }
+            if (!TextUtils.isEmpty(lastName)) {
+                lastNameEdit.setText(lastName);
+            }
+
         }
 
         if (!TextUtils.isEmpty(email)) {

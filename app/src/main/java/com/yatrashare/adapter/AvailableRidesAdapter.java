@@ -14,6 +14,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.utils.Constants;
+import com.yatrashare.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -65,7 +66,7 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<AvailableRidesAd
         String string = dataSearchArray.get(position).RideDate;
 
         holder.rideDayText.setText(dataSearchArray.get(position).RideDate);
-        holder.rideFareText.setText("" + mContext.getResources().getString(R.string.Rs) + " " + dataSearchArray.get(position).RoutePrice + " /Seat");
+        holder.rideFareText.setText("" + Utils.getCurrency(mContext) + " " + dataSearchArray.get(position).RoutePrice + " /Seat");
         holder.rideFromText.setText(dataSearchArray.get(position).DeparturePoint);
         holder.rideToText.setText(dataSearchArray.get(position).ArrivalPoint);
         holder.rideVehicleText.setText(dataSearchArray.get(position).VehicleModel);

@@ -41,9 +41,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/dailyRide"
-                android:textIsSelectable="true" />
+                android:text="@string/dailyRide" />
         </RadioGroup>
 
         <View
@@ -155,6 +153,53 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:padding="8dp"
+            android:text="@string/oddeven"
+            android:textColor="@color/colorPrimary" />
+
+        <RadioGroup
+            android:id="@+id/rg_vehicleRegdType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <RadioButton
+                android:id="@+id/rbtn_vehicleRegdAll"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:text="@string/AllGenders" />
+
+            <RadioButton
+                android:id="@+id/rbtn_vehicleRegdEven"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/even" />
+
+            <RadioButton
+                android:id="@+id/rbtn_vehicleRegdOdd"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/odd" />
+        </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
             android:text="@string/vehiclecomfortLevelHeading"
             android:textColor="@color/colorPrimary" />
 
@@ -205,9 +250,7 @@
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/AllGenders"
-                android:textIsSelectable="true" />
+                android:text="@string/AllGenders" />
         </RadioGroup>
 
     </LinearLayout>

@@ -3,7 +3,6 @@ package com.yatrashare.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -129,7 +128,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     public void searchRides() {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         FindRide findRide = new FindRide(whereFrom, whereTo,
-                date, comfortLevel, "1", startTime, endTime, gender, rideType, vehicleType, "10");
+                date, comfortLevel, "1", startTime, endTime, gender, rideType, vehicleType, "10", vehicleRegdType);
 
         Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
         //asynchronous call
@@ -184,6 +183,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     public String gender = "All";
     public String startTime = "1";
     public String endTime = "24";
+    public String vehicleRegdType = "0";
 
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
     Calendar newCalendar = Calendar.getInstance();
@@ -364,6 +364,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             date = data.getStringExtra("DATE");
             startTime = data.getStringExtra("START TIME");
             endTime = data.getStringExtra("END TIME");
+            vehicleRegdType = data.getStringExtra("VEHICLE REGD");
             searchRides();
         }
     }
