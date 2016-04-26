@@ -102,7 +102,6 @@ public class Constants {
     public static final String PREF_USER_PHONE = "PhoneNo";
     public static final String PREF_USER_GENDER = "gender";
     public static final String PREF_USER_GUID = "UserGuid";
-    public static final String PREF_USER_NAME = "Name";
     public static final String PREF_USER_FIRST_NAME = "First Name";
     public static final String PREF_USER_LAST_NAME = "Last Name";
     public static final String PREF_USER_FB_ID = "id";

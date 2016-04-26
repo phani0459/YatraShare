@@ -79,7 +79,7 @@ public class LoginFragment extends Fragment {
         mFBLoginButton.setFragment(this);
         mCallbackManager = CallbackManager.Factory.create();
 
-        ((HomeActivity)mContext).setTitle("Login");
+        ((HomeActivity) mContext).setTitle("Login");
 
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
@@ -107,7 +107,7 @@ public class LoginFragment extends Fragment {
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.SIGNUP_SCREEN, false, null,getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                ((HomeActivity) mContext).loadScreen(HomeActivity.SIGNUP_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
             }
         });
 
@@ -118,7 +118,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity)mContext).setCurrentScreen(HomeActivity.LOGIN_SCREEN);
+        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.LOGIN_SCREEN);
         mFBLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -187,8 +187,8 @@ public class LoginFragment extends Fragment {
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
@@ -196,26 +196,26 @@ public class LoginFragment extends Fragment {
                 if (response != null && response.body() != null && response.body() != null) {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, email);
-                    mSharedPrefEditor.putString(Constants.PREF_USER_NAME, name);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, name);
                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, id);
                     mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().toString());
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity)mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                 }
             }
 
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity)mContext).showSnackBar(getString(R.string.tryagain));
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
                 LoginManager.getInstance().logOut();
             }
         });

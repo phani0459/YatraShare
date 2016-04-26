@@ -121,6 +121,7 @@
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/rbtn_male"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="24dp"
@@ -128,6 +129,7 @@
                         android:textSize="16dp" />
 
                     <RadioButton
+                        android:id="@+id/rbtn_female"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/radio_female"
@@ -149,8 +151,8 @@
                         android:drawableLeft="@drawable/email"
                         android:drawablePadding="4dp"
                         android:hint="@string/prompt_email"
-                        android:inputType="textEmailAddress"
                         android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true" />
@@ -173,8 +175,8 @@
                         android:drawablePadding="4dp"
                         android:fontFamily="sans-serif"
                         android:hint="@string/prompt_password"
-                        android:inputType="textPassword"
                         android:imeOptions="actionNext"
+                        android:inputType="textPassword"
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true" />

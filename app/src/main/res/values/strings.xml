@@ -228,9 +228,11 @@
 
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_user">UserId is invalid</string>
-    <string name="error_invalid_username">Invalid User Name</string>
+    <string name="error_invalid_username">First Name is required</string>
     <string name="error_invalid_phone">Invalid Phone number</string>
-    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_required_phone">Phone number is required</string>
+    <string name="error_required_password">password is required</string>
+    <string name="error_invalid_password">password is too short</string>
     <string name="error_invalid_login">Email or password entered is incorrect</string>
     <string name="tryagain">Something went wrong. please try again!</string>
     <string name="userid_field_required">Email/Mobile is required</string>

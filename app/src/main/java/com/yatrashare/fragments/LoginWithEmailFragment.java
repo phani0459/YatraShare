@@ -86,6 +86,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     public ProgressBar mFgtPwdProgressBar;
     @Bind(R.id.loginProgressBGView)
     public View mProgressBGView;
+    private EditText fgtEmailIdEdit;
+    private EditText fgtPhoneEdit;
 
     @Nullable
     @Override
@@ -141,8 +143,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         final Dialog dialog = new Dialog(mContext, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);
         dialog.setContentView(R.layout.dialog_forgotpwd);
         dialog.setTitle("Reset password");
-        final EditText fgtEmailIdEdit = (EditText) dialog.findViewById(R.id.fgt_emailId);
-        final EditText fgtPhoneEdit = (EditText) dialog.findViewById(R.id.fgt_phone);
+        fgtEmailIdEdit = (EditText) dialog.findViewById(R.id.fgt_emailId);
+        fgtPhoneEdit = (EditText) dialog.findViewById(R.id.fgt_phone);
         final TextInputLayout fgtEmailLayout = (TextInputLayout) dialog.findViewById(R.id.fgt_emailIdLayout);
         final TextInputLayout fgtPhoneLayout = (TextInputLayout) dialog.findViewById(R.id.fgt_phoneLayout);
         resetPwdButton = (Button) dialog.findViewById(R.id.btnReset);
@@ -220,6 +222,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
 
         resetPwdButton.setEnabled(!show);
         cancelButton.setEnabled(!show);
+        fgtEmailIdEdit.setEnabled(!show);
+        fgtPhoneEdit.setEnabled(!show);
     }
 
     private void userFgtPwdTask(final String mEmail, final String mPhoneNumber, final Dialog dialog) {
@@ -458,7 +462,6 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response.body() != null && response.body().Data != null) {
-                    mSharedPrefEditor.putString(Constants.PREF_USER_NAME, response.body().Data.FirstName);
                     mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, response.body().Data.FirstName);
                     mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, response.body().Data.LastName);
                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, response.body().Data.Email);

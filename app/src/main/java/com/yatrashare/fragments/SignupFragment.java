@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,6 +89,10 @@ public class SignupFragment extends Fragment {
     private SharedPreferences.Editor mSharedPrefEditor;
     private static int RESULT_LOAD_IMAGE = 1;
     private SharedPreferences mSharedPreferences;
+    @Bind(R.id.rbtn_male)
+    public RadioButton maleRadioButton;
+    @Bind(R.id.rbtn_female)
+    public RadioButton femaleRadioButton;
 
     public SignupFragment() {
     }
@@ -186,44 +191,61 @@ public class SignupFragment extends Fragment {
         String email = mSignUpEmail.getText().toString();
         String password = mSignUpPassword.getText().toString();
         String phoneNumber = mSignUpPhone.getText().toString();
-
-        boolean cancel = false;
+        String gender = "";
 
         // Check for a validity of fields.
-        if (TextUtils.isEmpty(userFirstName) || !isUserNameValid(userFirstName)) {
+        if (TextUtils.isEmpty(userFirstName)) {
             mSignUpUserNameLayout.setError(getString(R.string.error_invalid_username));
-            cancel = true;
-        } else if (TextUtils.isEmpty(email)) {
+            return;
+        }
+        if (TextUtils.isEmpty(email)) {
             mSignUpUserNameLayout.setErrorEnabled(false);
             mSignUpEmailLayout.setError(getString(R.string.error_field_required));
-            cancel = true;
-        } else if (!isEmailValid(email)) {
+            return;
+        }
+        if (!isEmailValid(email)) {
             mSignUpEmailLayout.setError(getString(R.string.error_invalid_email));
-            cancel = true;
-        } else if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            mSignUpEmailLayout.setErrorEnabled(false);
+            mSignUpPasswordLayout.setError(getString(R.string.error_required_password));
+            return;
+        }
+        if (!isPasswordValid(password)) {
             mSignUpEmailLayout.setErrorEnabled(false);
             mSignUpPasswordLayout.setError(getString(R.string.error_invalid_password));
-            cancel = true;
-        } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isPhoneValid(phoneNumber)) {
+            return;
+        }
+        if (TextUtils.isEmpty(phoneNumber)) {
+            mSignUpPasswordLayout.setErrorEnabled(false);
+            mSignupPhoneLayout.setError(getString(R.string.error_required_phone));
+            return;
+        }
+
+        if (!Utils.isPhoneValid(phoneNumber)) {
             mSignUpPasswordLayout.setErrorEnabled(false);
             mSignupPhoneLayout.setError(getString(R.string.error_invalid_phone));
-            cancel = true;
+            return;
         }
 
-        if (TextUtils.isEmpty(userLastName) || !isUserNameValid(userLastName)) {
-            userFirstName = userFirstName + userLastName;
+        if (maleRadioButton.isChecked()) {
+            gender = "Male";
+        } else if (femaleRadioButton.isChecked()) {
+            gender = "Female";
+        } else {
+            Utils.showToast(mContext, "Select Gender");
+            return;
         }
 
-        if (!cancel) {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            mSignUpUserNameLayout.setErrorEnabled(false);
-            mSignUpEmailLayout.setErrorEnabled(false);
-            mSignUpPasswordLayout.setErrorEnabled(false);
-            mSignupPhoneLayout.setErrorEnabled(false);
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            userSignupTask(email, password, phoneNumber, userFirstName);
-        }
+        // Show a progress spinner, and kick off a background task to
+        // perform the user login attempt.
+        mSignUpUserNameLayout.setErrorEnabled(false);
+        mSignUpEmailLayout.setErrorEnabled(false);
+        mSignUpPasswordLayout.setErrorEnabled(false);
+        mSignupPhoneLayout.setErrorEnabled(false);
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+        userSignupTask(email, password, phoneNumber, userFirstName, gender, userLastName);
     }
 
     private boolean isEmailValid(String email) {
@@ -232,10 +254,6 @@ public class SignupFragment extends Fragment {
 
     private boolean isPasswordValid(String password) {
         return password.length() > 5;
-    }
-
-    private boolean isUserNameValid(String userName) {
-        return userName.length() > 4;
     }
 
     /**
@@ -311,19 +329,15 @@ public class SignupFragment extends Fragment {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserName) {
+    public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserFirstName, String gender, final String userLastName) {
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         String countryCode = countryData != null ? countryData.CountryCode : "";
-        UserSignUp userSignUp = new UserSignUp(mEmail, mUserName, mPassword, mPhone, countryCode);
-
-        Gson gson = new Gson();
-        String s = gson.toJson(userSignUp);
-        Log.e(TAG, "userSignupTask: " + s);
+        UserSignUp userSignUp = new UserSignUp(mEmail, mUserFirstName, mPassword, mPhone, countryCode, gender, userLastName);
 
         Call<UserDataDTO> call = Utils.getYatraShareAPI().userRegistration(userSignUp);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
-            /**
+            /*
              * Successful HTTP response.
              *
              * @param response server response
@@ -337,7 +351,8 @@ public class SignupFragment extends Fragment {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     if (response.body().Data.contains("-")) {
                         mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, mEmail);
-                        mSharedPrefEditor.putString(Constants.PREF_USER_NAME, mUserName);
+                        mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, mUserFirstName);
+                        mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, userLastName);
                         mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().Data);
                         mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                         mSharedPrefEditor.commit();
@@ -349,7 +364,7 @@ public class SignupFragment extends Fragment {
                 }
             }
 
-            /**
+            /*
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
              * @param t error

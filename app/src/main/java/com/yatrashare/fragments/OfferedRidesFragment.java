@@ -202,8 +202,8 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -220,7 +220,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {

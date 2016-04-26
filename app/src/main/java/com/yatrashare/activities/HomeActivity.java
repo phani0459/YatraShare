@@ -170,7 +170,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     public void loadHomePage(boolean init, String fragmentName) {
         String userProfilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
         String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
-        String userName = mSharedPreferences.getString(Constants.PREF_USER_NAME, "");
+        String userName = mSharedPreferences.getString(Constants.PREF_USER_FIRST_NAME, "");
         String userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
         boolean isUserLogin = mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false);
 
@@ -684,7 +684,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_GUID, "");
-                                    mSharedPrefEditor.putString(Constants.PREF_USER_NAME, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_DOB, "");

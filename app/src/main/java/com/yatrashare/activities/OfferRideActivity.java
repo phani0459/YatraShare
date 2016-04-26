@@ -42,8 +42,11 @@ import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -341,69 +344,84 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             rideArrivalTime = "";
         }
 
-        if (!rideDeparture.isEmpty() && !rideArrival.isEmpty()) {
-            if (rideDeparture.equalsIgnoreCase(rideArrival)) {
-                Utils.showToast(this, "Departure and Arrival should not be same");
-                return;
-            }
-            if (!rideDepartureDate.isEmpty() && !rideDepartureTime.isEmpty()) {
-                if (roundTripCheckBox.isChecked()) {
-                    if (rideArrivalDate.isEmpty() || rideArrivalTime.isEmpty()) {
-                        Utils.showToast(this, "Enter Return Date and Time");
-                        return;
-                    }
-
-                    if (rideDepartureDate.equalsIgnoreCase(rideArrivalDate) && rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
-                        Utils.showToast(this, "Return Time and departure time cannot be same");
-                        return;
-                    }
-                }
-                rideInfoDto.setmReturnDate(rideArrivalDate);
-                rideInfoDto.setmDepartureDate(rideDepartureDate);
-                rideInfoDto.setmTotalprice(totalPrice + "");
-                rideInfoDto.setmTotalprice(totalPrice + "");
-                rideInfoDto.setmTotalkilometers(totalKM + "");
-                rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
-                rideInfoDto.setmReturnTime(rideArrivalTime);
-                rideInfoDto.setmDepartureTime(rideDepartureTime);
-                rideInfoDto.setmRideArrival(rideArrival);
-                rideInfoDto.setmRideDeparture(rideDeparture);
-                rideInfoDto.setUserUpdatedPrice(ridePriceEditText.getText().toString());
-                rideInfoDto.setmSelectedWeekdays(longRideRB.isChecked() ? null : weekDays);
-
-                possibleRoutes();
-
-                rideInfoDto.setmAllPossibleRoutes(allPossibleRoutes);
-                rideInfoDto.setmMainPossibleRoutes(mainPossibleRoutes);
-
-                ArrayList<RideInfoDto.StopOvers> latLngs = new ArrayList<>();
-                if (stopOverPlaces != null && stopOverPlaces.size() > 0) {
-                    for (int i = 0; i < stopOverPlaces.size(); i++) {
-                        RideInfoDto.StopOvers stopOver = new RideInfoDto().new StopOvers();
-                        stopOver.setStopOverLatitude(stopOverPlaces.get(i).getLatLng().latitude);
-                        stopOver.setStopOverLongitude(stopOverPlaces.get(i).getLatLng().longitude);
-                        stopOver.setStopOverLocation(stopOverPlaces.get(i).getAddress() + "");
-                        latLngs.add(stopOver);
-                    }
-                }
-                rideInfoDto.setmStopOvers(latLngs);
-
-                Log.e("allPossibleRoutes" + allPossibleRoutes.size(), "mainPossibleRoutes" + mainPossibleRoutes.size());
-
-                publishRideFragment = new PublishRideFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("RIDE INFO", rideInfoDto);
-                publishRideFragment.setArguments(bundle);
-                currentScreen = 1;
-                getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
-
-            } else {
-                Utils.showToast(this, "Enter Departure Date and Time");
-            }
-        } else {
-            Utils.showToast(this, "Enter Departure and Arrival");
+        if (TextUtils.isEmpty(rideDeparture)) {
+            Utils.showToast(this, "Enter Departure");
+            return;
         }
 
+        if (TextUtils.isEmpty(rideArrival)) {
+            Utils.showToast(this, "Enter Arrival");
+            return;
+        }
+
+        if (rideDeparture.equalsIgnoreCase(rideArrival)) {
+            Utils.showToast(this, "Departure and Arrival should not be same");
+            return;
+        }
+
+        if (TextUtils.isEmpty(rideDepartureDate)) {
+            Utils.showToast(this, "Enter Departure Date");
+            return;
+        }
+
+        if (TextUtils.isEmpty(rideDepartureTime)) {
+            Utils.showToast(this, "Enter Departure Time");
+            return;
+        }
+
+        if (roundTripCheckBox.isChecked()) {
+            if (TextUtils.isEmpty(rideArrivalDate)) {
+                Utils.showToast(this, "Enter Return Date");
+                return;
+            }
+            if (TextUtils.isEmpty(rideArrivalTime)) {
+                Utils.showToast(this, "Enter Return DaTimete");
+                return;
+            }
+
+            if (rideDepartureDate.equalsIgnoreCase(rideArrivalDate) && rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
+                Utils.showToast(this, "Return Time and departure time cannot be same");
+                return;
+            }
+        }
+        rideInfoDto.setmReturnDate(rideArrivalDate);
+        rideInfoDto.setmDepartureDate(rideDepartureDate);
+        rideInfoDto.setmTotalprice(totalPrice + "");
+        rideInfoDto.setmTotalprice(totalPrice + "");
+        rideInfoDto.setmTotalkilometers(totalKM + "");
+        rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
+        rideInfoDto.setmReturnTime(rideArrivalTime);
+        rideInfoDto.setmDepartureTime(rideDepartureTime);
+        rideInfoDto.setmRideArrival(rideArrival);
+        rideInfoDto.setmRideDeparture(rideDeparture);
+        rideInfoDto.setUserUpdatedPrice(ridePriceEditText.getText().toString());
+        rideInfoDto.setmSelectedWeekdays(longRideRB.isChecked() ? null : weekDays);
+
+        possibleRoutes();
+
+        rideInfoDto.setmAllPossibleRoutes(allPossibleRoutes);
+        rideInfoDto.setmMainPossibleRoutes(mainPossibleRoutes);
+
+        ArrayList<RideInfoDto.StopOvers> latLngs = new ArrayList<>();
+        if (stopOverPlaces != null && stopOverPlaces.size() > 0) {
+            for (int i = 0; i < stopOverPlaces.size(); i++) {
+                RideInfoDto.StopOvers stopOver = new RideInfoDto().new StopOvers();
+                stopOver.setStopOverLatitude(stopOverPlaces.get(i).getLatLng().latitude);
+                stopOver.setStopOverLongitude(stopOverPlaces.get(i).getLatLng().longitude);
+                stopOver.setStopOverLocation(stopOverPlaces.get(i).getAddress() + "");
+                latLngs.add(stopOver);
+            }
+        }
+        rideInfoDto.setmStopOvers(latLngs);
+
+        Log.e("allPossibleRoutes" + allPossibleRoutes.size(), "mainPossibleRoutes" + mainPossibleRoutes.size());
+
+        publishRideFragment = new PublishRideFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("RIDE INFO", rideInfoDto);
+        publishRideFragment.setArguments(bundle);
+        currentScreen = 1;
+        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
     }
 
     private void openAutocompleteActivity(int editTextId) {
@@ -577,10 +595,10 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 switch (clickedButton) {
                     case R.id.bt_departuredate:
-                        departureDateBtn.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                        departureDateBtn.setText("" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + +year);
                         break;
                     case R.id.bt_arrivaldate:
-                        arrivalDateBtn.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                        arrivalDateBtn.setText("" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
                         break;
                 }
             }
@@ -707,6 +725,22 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             case R.id.bt_departuredate:
             case R.id.bt_arrivaldate:
                 DatePickerDialog mDatePickerDialog = new DatePickerDialog(this, mDateSetListener, year, month, day);
+                if (v.getId() == R.id.bt_departuredate) {
+                    mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                } else {
+                    String departureDate = departureDateBtn.getText().toString();
+                    if (!TextUtils.isEmpty(departureDate)) {
+                        Date date = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                        try {
+                            date = format.parse(departureDate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        mDatePickerDialog.getDatePicker().setMinDate(date.getTime());
+                    }
+                }
+                mDatePickerDialog.setTitle("");
                 mDatePickerDialog.show();
 
                 mDatePickerDialog.setOnCancelListener(new DatePickerDialog.OnCancelListener() {
