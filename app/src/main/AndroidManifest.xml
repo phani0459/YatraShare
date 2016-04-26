@@ -77,6 +77,11 @@
             android:screenOrientation="portrait" />
         <activity android:name=".activities.SelectCountryActivity" />
 
+        <provider
+            android:name="com.yatrashare.utils.PlacesSuggestionProvider"
+            android:authorities="com.yatrashare.places.search_suggestion_provider"
+            android:syncable="false" />
+
     </application>
 
 </manifest>

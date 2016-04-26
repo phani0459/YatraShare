@@ -263,8 +263,7 @@
     <string name="Contact_us">Contact us</string>
     <string name="terms_n_conditions">Terms &amp; Conditions</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_title">Search</string>
 
     <string name="title_activity_book_ride">BookRideActivity</string>
 

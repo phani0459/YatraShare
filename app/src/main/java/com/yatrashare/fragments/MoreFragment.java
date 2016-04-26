@@ -3,6 +3,7 @@ package com.yatrashare.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -68,21 +69,24 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
 
             /* Send it off to the Activity-Chooser */
             mContext.startActivity(Intent.createChooser(emailIntent, "Send feed Back"));
+        } else {
+            switch (v.getId()) {
+                case R.id.howItWorksText:
+                    url = "http://www.yatrashare.com/public/Howitworks";
+                    break;
+                case R.id.faqsText:
+                    url = "http://www.yatrashare.com/Public/Faq";
+                    break;
+                case R.id.contactUsText:
+                    url = "http://www.yatrashare.com/public/contactus";
+                    break;
+                case R.id.termsText:
+                    url = "http://www.yatrashare.com/public/TermsConditions";
+                    break;
+            }
+//            ((HomeActivity)mContext).loadScreen(HomeActivity.WEB_SCREEN, false, url, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
         }
-        switch (v.getId()) {
-            case R.id.howItWorksText:
-                url = "http://www.yatrashare.com/public/Howitworks";
-                break;
-            case R.id.faqsText:
-                url = "http://www.yatrashare.com/Public/Faq";
-                break;
-            case R.id.contactUsText:
-                url = "http://www.yatrashare.com/public/contactus";
-                break;
-            case R.id.termsText:
-                url = "http://www.yatrashare.com/public/TermsConditions";
-                break;
-        }
-        ((HomeActivity)mContext).loadScreen(HomeActivity.WEB_SCREEN, false, url, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
     }
 }

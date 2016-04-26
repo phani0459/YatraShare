@@ -266,7 +266,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         countryData = Utils.getCountryInfo(OfferRideActivity.this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
 
-        if (countryData != null) priceSymbolEditText.setText(Html.fromHtml(countryData.CurrencySymbol));
+        if (countryData != null)
+            priceSymbolEditText.setText(Html.fromHtml(countryData.CurrencySymbol));
 
         offerWhereFromEdit.setInputType(InputType.TYPE_NULL);
         offerWhereToEdit.setInputType(InputType.TYPE_NULL);
@@ -496,10 +497,24 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
     HashMap<Integer, Place> stopOverPlacesHashMap = new HashMap<>();
 
+    public int checkIds(int id) {
+        ArrayList<Integer> ints = new ArrayList<>();
+
+        for (int i = 0; i < stopOversLayout.getChildCount(); i++) {
+            ints.add(stopOversLayout.getChildAt(i).getId());
+        }
+
+        if (ints.contains(id)) {
+            return checkIds(id + 1);
+        }
+
+        return id;
+    }
+
     @OnClick(R.id.tv_addStopOverPoints)
     public void addStopOverEditText() {
         final EditText editText = new EditText(this);
-        final int editId = stopOversLayout.getChildCount() + 1;
+        final int editId = checkIds(stopOversLayout.getChildCount() + 1);
         editText.setId(editId);
         editText.setHint(getString(R.string.ride_stopovers));
         editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_ride_middle, 0, R.drawable.close, 0);
@@ -518,15 +533,19 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
-                        if (stopOverPlacesHashMap.containsKey(editText.getId())) {
-                            stopOverPlacesHashMap.remove(editText.getId());
+                    try {
+                        if (event.getRawX() >= (editText.getRight() - editText.getCompoundDrawables()[2].getBounds().width())) {
+                            if (stopOverPlacesHashMap.containsKey(editText.getId())) {
+                                stopOverPlacesHashMap.remove(editText.getId());
+                            }
+                            stopOversLayout.removeView(editText);
+                            updatePrice();
+                            return true;
+                        } else {
+                            openAutocompleteActivity(editId);
                         }
-                        stopOversLayout.removeView(editText);
-                        updatePrice();
-                        return true;
-                    } else {
-                        openAutocompleteActivity(editId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
                 return false;
@@ -550,6 +569,9 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     @Override
     protected void onResume() {
         super.onResume();
+        stopOverEdit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_ride_middle, 0, R.drawable.close, 0);
+        stopOverEdit.setCompoundDrawablePadding(4);
+
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -654,15 +676,19 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     openAutocompleteActivity(R.id.et_ofr_where_to);
                     break;
                 case R.id.et_stopover_point:
-                    if (event.getRawX() >= (stopOverEdit.getRight() - stopOverEdit.getCompoundDrawables()[2].getBounds().width())) {
-                        if (stopOverPlacesHashMap.containsKey(stopOverEdit.getId())) {
-                            stopOverPlacesHashMap.remove(stopOverEdit.getId());
+                    try {
+                        if (event.getRawX() >= (stopOverEdit.getRight() - stopOverEdit.getCompoundDrawables()[2].getBounds().width())) {
+                            if (stopOverPlacesHashMap.containsKey(stopOverEdit.getId())) {
+                                stopOverPlacesHashMap.remove(stopOverEdit.getId());
+                            }
+                            stopOverEdit.setText("");
+                            updatePrice();
+                            return true;
+                        } else {
+                            openAutocompleteActivity(R.id.et_stopover_point);
                         }
-                        stopOverEdit.setText("");
-                        updatePrice();
-                        return true;
-                    } else {
-                        openAutocompleteActivity(R.id.et_stopover_point);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                     break;
             }
