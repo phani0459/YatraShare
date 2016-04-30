@@ -375,7 +375,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 return;
             }
             if (TextUtils.isEmpty(rideArrivalTime)) {
-                Utils.showToast(this, "Enter Return DaTimete");
+                Utils.showToast(this, "Enter Return Time");
                 return;
             }
 
@@ -383,6 +383,22 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 Utils.showToast(this, "Return Time and departure time cannot be same");
                 return;
             }
+
+            Date departureDate = new Date();
+            Date arrivalDate = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+            try {
+                departureDate = format.parse(rideDepartureDate);
+                arrivalDate = format.parse(rideArrivalDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            if (departureDate.after(arrivalDate)) {
+                Utils.showToast(this, "Return Date cannot be before Departure Date");
+                return;
+            }
+
         }
         rideInfoDto.setmReturnDate(rideArrivalDate);
         rideInfoDto.setmDepartureDate(rideDepartureDate);
@@ -726,7 +742,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             case R.id.bt_arrivaldate:
                 DatePickerDialog mDatePickerDialog = new DatePickerDialog(this, mDateSetListener, year, month, day);
                 if (v.getId() == R.id.bt_departuredate) {
-                    mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                    mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 } else {
                     String departureDate = departureDateBtn.getText().toString();
                     if (!TextUtils.isEmpty(departureDate)) {

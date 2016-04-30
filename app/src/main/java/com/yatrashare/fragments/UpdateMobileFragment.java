@@ -86,13 +86,14 @@ public class UpdateMobileFragment extends Fragment {
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
 
-
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         mEditor = mSharedPreferences.edit();
         String mobile = mSharedPreferences.getString(Constants.PREF_USER_PHONE, "");
         phoneEdit.setText(mobile);
         phoneEdit.setEnabled(false);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+
+        phoneEdit.setFilters(Utils.getInputFilter(Utils.getMobileMaxChars(mContext)));
 
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
 
@@ -108,7 +109,7 @@ public class UpdateMobileFragment extends Fragment {
     @OnClick(R.id.save_bt)
     public void saveMobileNumber() {
         verificationCodeEdit.setEnabled(true);
-        if (Utils.isPhoneValid(phoneEdit.getText().toString())) {
+        if (Utils.isPhoneValid(mContext, phoneEdit.getText().toString())) {
             phoneEdit.setEnabled(false);
             verifyBtnLayout.setVisibility(View.VISIBLE);
             editNumberBtnsLayout.setVisibility(View.GONE);
@@ -185,7 +186,7 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.resend_code_bt)
     public void sendVerifyCode() {
-        if (Utils.isPhoneValid(phoneEdit.getText().toString())) {
+        if (Utils.isPhoneValid(mContext, phoneEdit.getText().toString())) {
             resendCodeBt.setText("Resend Code");
             Utils.showProgress(true, mProgressView, mProgressBGView);
 
@@ -195,8 +196,8 @@ public class UpdateMobileFragment extends Fragment {
                 /**
                  * Successful HTTP response.
                  *
-                 * @param response
-                 * @param retrofit
+                 * @param response server response
+                 * @param retrofit adapter
                  */
                 @Override
                 public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -212,7 +213,7 @@ public class UpdateMobileFragment extends Fragment {
                 /**
                  * Invoked when a network or unexpected exception occurred during the HTTP request.
                  *
-                 * @param t
+                 * @param t error
                  */
                 @Override
                 public void onFailure(Throwable t) {

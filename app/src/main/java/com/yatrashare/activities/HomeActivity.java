@@ -723,6 +723,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         dialog.setTitle("Change password");
         newPwdEdit = (EditText) dialog.findViewById(R.id.newPassword);
         confirmPwdEdit = (EditText) dialog.findViewById(R.id.confirmPassword);
+
+        newPwdEdit.setFilters(Utils.getInputFilter(Utils.PWD_MAX_CHARS));
+        confirmPwdEdit.setFilters(Utils.getInputFilter(Utils.PWD_MAX_CHARS));
+
         final TextInputLayout newPwdLayout = (TextInputLayout) dialog.findViewById(R.id.newPasswordLayout);
         final TextInputLayout confirmPwdLayout = (TextInputLayout) dialog.findViewById(R.id.confirmPasswordLayout);
         submitPwdButton = (Button) dialog.findViewById(R.id.btnSubmit);

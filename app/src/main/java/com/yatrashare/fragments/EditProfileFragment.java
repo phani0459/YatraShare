@@ -102,6 +102,7 @@ public class EditProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         ButterKnife.bind(this, view);
+        mContext = getActivity();
 
         userDraweeImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -112,6 +113,8 @@ public class EditProfileFragment extends Fragment {
                 return true;
             }
         });
+
+        phoneNoEdit.setFilters(Utils.getInputFilter(Utils.getMobileMaxChars(mContext)));
 
         return view;
     }
@@ -343,33 +346,28 @@ public class EditProfileFragment extends Fragment {
         String phoneNumber = phoneNoEdit.getText().toString();
         String aboutMe = aboutMeEdit.getText().toString();
 
-        boolean cancel = false;
-
-        if (TextUtils.isEmpty(userFirstName) || !isUserNameValid(userFirstName)) {
+        if (TextUtils.isEmpty(userFirstName)) {
             mUpdateUserNameLayout.setError(getString(R.string.error_invalid_username));
-            cancel = true;
-        } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isPhoneValid(phoneNumber)) {
-            mUpdateUserNameLayout.setErrorEnabled(false);
+            return;
+        }
+        mUpdateUserNameLayout.setErrorEnabled(false);
+        if (TextUtils.isEmpty(phoneNumber)) {
+            mUpdatePhoneLayout.setError(getString(R.string.error_required_phone));
+            return;
+        }
+
+        if (!Utils.isPhoneValid(mContext, phoneNumber)) {
             mUpdatePhoneLayout.setError(getString(R.string.error_invalid_phone));
-            cancel = true;
-        } else if (TextUtils.isEmpty(dob)) {
-            mUpdateUserNameLayout.setErrorEnabled(false);
-            mUpdatePhoneLayout.setErrorEnabled(false);
+            return;
+        }
+        mUpdatePhoneLayout.setErrorEnabled(false);
+        if (TextUtils.isEmpty(dob)) {
             dobTextInputLayout.setError("Enter Date of Birth");
-            cancel = true;
+            return;
         }
+        dobTextInputLayout.setErrorEnabled(false);
 
-        if (!cancel) {
-            mUpdatePhoneLayout.setErrorEnabled(false);
-            mUpdateUserNameLayout.setErrorEnabled(false);
-            dobTextInputLayout.setErrorEnabled(false);
-            updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
-        }
-
-    }
-
-    private boolean isUserNameValid(String userName) {
-        return userName.length() > 4;
+        updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
     }
 
     private void updateProfile(final String userGuid, String userFirstName, String userLastName, String email, final String dob, final String phoneNumber, String aboutMe) {
@@ -394,10 +392,10 @@ public class EditProfileFragment extends Fragment {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         Utils.deleteFile(mContext, userGuid);
                         ((HomeActivity) mContext).showSnackBar(getString(R.string.profile_updated_rationale));
-                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                         mEditor.putString(Constants.PREF_USER_DOB, dob);
                         mEditor.putString(Constants.PREF_USER_PHONE, phoneNumber);
                         mEditor.apply();
+                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                     } else {
                         ((HomeActivity) mContext).showSnackBar(response.body().Data);
                     }

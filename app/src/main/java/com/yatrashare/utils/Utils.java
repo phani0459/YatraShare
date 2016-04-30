@@ -11,7 +11,9 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -193,17 +195,39 @@ public class Utils {
         v.startAnimation(a);
     }
 
+    public static int PWD_MAX_CHARS = 20;
+    public static int EMAIL_MAX_CHARS = 50;
+
+    public static InputFilter[] getInputFilter(int maxChars) {
+        InputFilter[] filter = new InputFilter[]{new InputFilter.LengthFilter(maxChars)};
+        return filter;
+    }
+
     public static boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    public static SharedPreferences getSharedPrefs(Context mContext) {
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return mSharedPreferences;
+    }
 
-    public static boolean isPhoneValid(String phoneNumber) {
-        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-            return phoneNumber.length() == 10;
-        } else {
-            return false;
+    public static int getMobileMaxChars(Context mContext) {
+        int maxChars = 10;
+        CountryData countryData = getCountryInfo(mContext, getSharedPrefs(mContext).getString(Constants.PREF_USER_COUNTRY, ""));
+        if (countryData != null) {
+            if (!countryData.CountryName.equalsIgnoreCase("INDIA")) {
+                maxChars = 15;
+            }
         }
+        return maxChars;
+    }
+
+    public static boolean isPhoneValid(Context mContext, String phoneNumber) {
+        if (!TextUtils.isEmpty(phoneNumber)) {
+            return phoneNumber.length() < 10;
+        }
+        return true;
     }
 
     public static OkHttpClient getOkHttpClient() {

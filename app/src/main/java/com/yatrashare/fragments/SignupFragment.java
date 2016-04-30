@@ -16,7 +16,6 @@ import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -33,7 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.CountryData;
@@ -81,7 +79,9 @@ public class SignupFragment extends Fragment {
     @Bind(R.id.signupPasswordLayout)
     public TextInputLayout mSignUpPasswordLayout;
     @Bind(R.id.signupFirstNameLayout)
-    public TextInputLayout mSignUpUserNameLayout;
+    public TextInputLayout mSignUpFirstNameLayout;
+    @Bind(R.id.signupLastNameLayout)
+    public TextInputLayout mSignUpLastNameLayout;
     @Bind(R.id.signupProgressBGView)
     public View mProgressBGView;
     @Bind(R.id.signupPhoneLayout)
@@ -107,6 +107,9 @@ public class SignupFragment extends Fragment {
 
         mProfileImage.setVisibility(View.VISIBLE);
         mProfileImageDrawee.setVisibility(View.GONE);
+        mSignUpPassword.setFilters(Utils.getInputFilter(Utils.PWD_MAX_CHARS));
+        mSignUpEmail.setFilters(Utils.getInputFilter(Utils.EMAIL_MAX_CHARS));
+        mSignUpPhone.setFilters(Utils.getInputFilter(Utils.getMobileMaxChars(mContext)));
 
         mSignUpPhone.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -195,39 +198,44 @@ public class SignupFragment extends Fragment {
 
         // Check for a validity of fields.
         if (TextUtils.isEmpty(userFirstName)) {
-            mSignUpUserNameLayout.setError(getString(R.string.error_invalid_username));
+            mSignUpFirstNameLayout.setError(getString(R.string.error_invalid_username));
             return;
         }
+        mSignUpFirstNameLayout.setErrorEnabled(false);
+        if (TextUtils.isEmpty(userLastName)) {
+            mSignUpLastNameLayout.setError(getString(R.string.error_invalid_lastname));
+            return;
+        }
+        mSignUpLastNameLayout.setErrorEnabled(false);
         if (TextUtils.isEmpty(email)) {
-            mSignUpUserNameLayout.setErrorEnabled(false);
             mSignUpEmailLayout.setError(getString(R.string.error_field_required));
             return;
         }
-        if (!isEmailValid(email)) {
+        if (!Utils.isEmailValid(email)) {
             mSignUpEmailLayout.setError(getString(R.string.error_invalid_email));
             return;
         }
+        mSignUpEmailLayout.setErrorEnabled(false);
         if (TextUtils.isEmpty(password)) {
-            mSignUpEmailLayout.setErrorEnabled(false);
             mSignUpPasswordLayout.setError(getString(R.string.error_required_password));
             return;
         }
+        mSignUpEmailLayout.setErrorEnabled(false);
         if (!isPasswordValid(password)) {
-            mSignUpEmailLayout.setErrorEnabled(false);
             mSignUpPasswordLayout.setError(getString(R.string.error_invalid_password));
             return;
         }
+        mSignUpPasswordLayout.setErrorEnabled(false);
         if (TextUtils.isEmpty(phoneNumber)) {
-            mSignUpPasswordLayout.setErrorEnabled(false);
             mSignupPhoneLayout.setError(getString(R.string.error_required_phone));
             return;
         }
-
-        if (!Utils.isPhoneValid(phoneNumber)) {
-            mSignUpPasswordLayout.setErrorEnabled(false);
+        mSignUpPasswordLayout.setErrorEnabled(false);
+        if (!Utils.isPhoneValid(mContext, phoneNumber)) {
             mSignupPhoneLayout.setError(getString(R.string.error_invalid_phone));
             return;
         }
+        mSignupPhoneLayout.setErrorEnabled(false);
 
         if (maleRadioButton.isChecked()) {
             gender = "Male";
@@ -240,16 +248,8 @@ public class SignupFragment extends Fragment {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        mSignUpUserNameLayout.setErrorEnabled(false);
-        mSignUpEmailLayout.setErrorEnabled(false);
-        mSignUpPasswordLayout.setErrorEnabled(false);
-        mSignupPhoneLayout.setErrorEnabled(false);
         Utils.showProgress(true, mProgressView, mProgressBGView);
         userSignupTask(email, password, phoneNumber, userFirstName, gender, userLastName);
-    }
-
-    private boolean isEmailValid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean isPasswordValid(String password) {

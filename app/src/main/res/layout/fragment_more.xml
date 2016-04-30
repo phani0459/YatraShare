@@ -13,7 +13,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:background="@drawable/selector"
-        android:drawableLeft="@drawable/how_it_wrks"
+        android:drawableLeft="@drawable/howitworks"
         android:drawablePadding="8dp"
         android:gravity="center_vertical"
         android:paddingBottom="16dp"

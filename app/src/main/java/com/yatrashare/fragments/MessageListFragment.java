@@ -99,14 +99,14 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
 
     public void getMessages() {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        Call<MessagesList> call = Utils.getYatraShareAPI().userInboxMessages(userGuid, "1", "5");
+        Call<MessagesList> call = Utils.getYatraShareAPI().userInboxMessages(userGuid, "1", "20");
         //asynchronous call
         call.enqueue(new Callback<MessagesList>() {
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<MessagesList> response, Retrofit retrofit) {
@@ -124,7 +124,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
@@ -149,8 +149,8 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -168,7 +168,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {

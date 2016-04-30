@@ -81,6 +81,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     private Button yesButton;
     private Button noButton;
     private ProgressBar mCreateAlertProgressBar;
+    private SharedPreferences mSharedPreferences;
 
     public FindRideFragment() {
         // Required empty public constructor
@@ -95,6 +96,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         View inflatedLayout = inflater.inflate(R.layout.fragment_find_rides, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, inflatedLayout);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         String mTitle = (String) getArguments().getSerializable("TITLE");
 
@@ -136,8 +138,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server response
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<SearchRides> response, Retrofit retrofit) {
@@ -166,7 +168,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
@@ -199,12 +201,20 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         yesButton = (Button) dialog.findViewById(R.id.btnReset);
         noButton = (Button) dialog.findViewById(R.id.btnCancel);
 
+        mEmailIdEdit.setFilters(Utils.getInputFilter(Utils.EMAIL_MAX_CHARS));
+
+        if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
+            mEmailIdEdit.setText(mSharedPreferences.getString(Constants.PREF_USER_EMAIL, ""));
+        }
+
         mDateEdit.setInputType(InputType.TYPE_NULL);
 
         yesButton.setText("Create");
         noButton.setText(getString(android.R.string.cancel));
         mDateEdit.setHint("");
         mDateEdit.setHint("MM/DD/YYYY");
+
+        mDateEdit.setText(foundRides != null ? foundRides.selectedDate != null ? foundRides.selectedDate : "" : "");
 
         mCreateAlertProgressBar = (ProgressBar) dialog.findViewById(R.id.fgtPwdProgress);
 
@@ -219,6 +229,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
         datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -306,7 +317,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     }
 
     public void createanEmailAlert(String email, String alertDate, final Dialog dialog) {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         Call<UserDataDTO> call = Utils.getYatraShareAPI().createEmailAlert(userGuid, email, alertDate, whereFrom, whereTo, rideType, vehicleType);

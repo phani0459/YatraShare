@@ -113,6 +113,9 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             }
         });
 
+        mPasswordView.setFilters(Utils.getInputFilter(Utils.PWD_MAX_CHARS));
+        mEmailView.setFilters(Utils.getInputFilter(Utils.EMAIL_MAX_CHARS));
+
         Button mEmailSignInButton = (Button) inflatedLayout.findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -151,6 +154,15 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         cancelButton = (Button) dialog.findViewById(R.id.btnCancel);
         mFgtPwdProgressBar = (ProgressBar) dialog.findViewById(R.id.fgtPwdProgress);
 
+        fgtPhoneLayout.setVisibility(View.GONE);
+
+        String userId = mEmailView.getText().toString();
+
+        if (!TextUtils.isEmpty(userId)) {
+            fgtEmailIdEdit.setText(userId);
+        }
+
+        fgtEmailLayout.setHint(getString(R.string.prompt_userId));
         fgtPhoneEdit.setHint(getString(R.string.prompt_mobile));
 
         cancelButton.setOnClickListener(new OnClickListener() {
@@ -164,33 +176,36 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
 
             @Override
             public void onClick(View v) {
+                Utils.hideSoftKeyboard(fgtPhoneEdit);
+
                 String email = fgtEmailIdEdit.getText().toString();
                 String phoneNumber = fgtPhoneEdit.getText().toString();
 
-                boolean cancel = false;
-
                 // Check for a valid email address and Phone Number.
                 if (TextUtils.isEmpty(email)) {
-                    fgtEmailLayout.setError(getString(R.string.error_field_required));
-                    cancel = true;
-                } else if (!Utils.isEmailValid(email)) {
-                    fgtEmailLayout.setError(getString(R.string.error_invalid_email));
-                    cancel = true;
-                } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isPhoneValid(phoneNumber)) {
-                    fgtPhoneLayout.setError(getString(R.string.error_invalid_phone));
-                    cancel = true;
+                    fgtEmailLayout.setError(getString(R.string.userid_field_required));
+                    return;
                 }
 
-                if (!cancel) {
-                    // Show a progress bar, and kick off a background task to
-                    // perform the user forgot password attempt.
-                    Utils.hideSoftKeyboard(fgtPhoneEdit);
-                    fgtEmailLayout.setErrorEnabled(false);
-                    fgtPhoneLayout.setErrorEnabled(false);
-                    showFgtPwdProgress(true);
-                    userFgtPwdTask(email, phoneNumber, dialog);
-                    dialog.setCancelable(false);
+                if (TextUtils.isDigitsOnly(email)) {
+                    if (!Utils.isPhoneValid(mContext, email)) {
+                        fgtEmailLayout.setError(getString(R.string.error_invalid_phone));
+                        return;
+                    }
                 }
+
+                if (!Utils.isEmailValid(email)) {
+                    fgtEmailLayout.setError(getString(R.string.error_invalid_email));
+                    return;
+                }
+
+                // Show a progress bar, and kick off a background task to
+                // perform the user forgot password attempt.
+                fgtEmailLayout.setErrorEnabled(false);
+                fgtPhoneLayout.setErrorEnabled(false);
+                showFgtPwdProgress(true);
+                userFgtPwdTask(email, phoneNumber, dialog);
+                dialog.setCancelable(false);
             }
         });
 
@@ -324,33 +339,36 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         String password = mPasswordView.getText().toString();
         Utils.hideSoftKeyboard(mPasswordView);
 
-        boolean cancel = false;
-
         // Check for a valid email address and password.
         if (TextUtils.isEmpty(userId)) {
             mEmailLayout.setError(getString(R.string.userid_field_required));
-            cancel = true;
-        } else if (!Utils.isEmailValid(userId) && !Utils.isPhoneValid(userId)) {
-            mEmailLayout.setError(getString(R.string.error_invalid_user));
-            cancel = true;
-        } else if (TextUtils.isEmpty(password) || !isPasswordValid(password)) {
-            mEmailLayout.setErrorEnabled(false);
-            mPasswordLayout.setError(getString(R.string.error_invalid_password));
-            cancel = true;
+            return;
         }
 
-        if (!cancel) {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            mEmailLayout.setErrorEnabled(false);
-            mPasswordLayout.setErrorEnabled(false);
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            userLoginTask(userId, password);
+        if (TextUtils.isDigitsOnly(userId)) {
+            if (!Utils.isPhoneValid(mContext, userId)) {
+                mEmailLayout.setError(getString(R.string.error_invalid_phone));
+                return;
+            }
         }
-    }
 
-    private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        if (!Utils.isEmailValid(userId)) {
+            mEmailLayout.setError(getString(R.string.error_invalid_email));
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            mEmailLayout.setErrorEnabled(false);
+            mPasswordLayout.setError(getString(R.string.error_required_password));
+            return;
+        }
+
+        // Show a progress spinner, and kick off a background task to
+        // perform the user login attempt.
+        mEmailLayout.setErrorEnabled(false);
+        mPasswordLayout.setErrorEnabled(false);
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+        userLoginTask(userId, password);
     }
 
     @Override
@@ -472,7 +490,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
 
                     String mobileStatus = response.body().Data.VerificationStatus.MobileNumberStatus != null ? response.body().Data.VerificationStatus.MobileNumberStatus : "0";
 
-                    mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2") ? true : false);
+                    mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));

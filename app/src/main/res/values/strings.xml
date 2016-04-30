@@ -71,7 +71,7 @@
 
     <!-- Strings related to login -->
     <string name="prompt_userfirstname">FirstName*</string>
-    <string name="prompt_userlastname">Last Name</string>
+    <string name="prompt_userlastname">Last Name*</string>
     <string name="radio_male">Male</string>
     <string name="radio_female">Female</string>
     <string name="prompt_username">User Name*</string>
@@ -226,9 +226,10 @@
     <string name="seatsDialogHeading">How many Seats?</string>
     <string name="seatsDialogsubTitle">No. Of Seats</string>
 
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">Email Id is invalid</string>
     <string name="error_invalid_user">UserId is invalid</string>
     <string name="error_invalid_username">First Name is required</string>
+    <string name="error_invalid_lastname">Last Name is required</string>
     <string name="error_invalid_phone">Invalid Phone number</string>
     <string name="error_required_phone">Phone number is required</string>
     <string name="error_required_password">password is required</string>
