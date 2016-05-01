@@ -225,9 +225,9 @@ public class Utils {
 
     public static boolean isPhoneValid(Context mContext, String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return phoneNumber.length() < 10;
+           return phoneNumber.length() >= 10;
         }
-        return true;
+        return false;
     }
 
     public static OkHttpClient getOkHttpClient() {

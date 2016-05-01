@@ -293,7 +293,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
             updateUserPreferences();
 
-            if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
+            if (TextUtils.isEmpty(profilePic) || profilePic.startsWith("/")) {
+                profilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
+            }
+
+            if (!TextUtils.isEmpty(profilePic) && !profilePic.startsWith("/")) {
                 Uri uri = Uri.parse(profilePic);
                 mProfileImageDrawee.setImageURI(uri);
             } else {

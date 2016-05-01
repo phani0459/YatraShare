@@ -370,33 +370,44 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
 
         if (roundTripCheckBox.isChecked()) {
-            if (TextUtils.isEmpty(rideArrivalDate)) {
-                Utils.showToast(this, "Enter Return Date");
-                return;
+            if (longRideRB.isChecked()) {
+                if (TextUtils.isEmpty(rideArrivalDate)) {
+                    Utils.showToast(this, "Enter Return Date");
+                    return;
+                }
+
+                if (rideDepartureDate.equalsIgnoreCase(rideArrivalDate) && rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
+                    Utils.showToast(this, "Return Time and departure time cannot be same");
+                    return;
+                }
+
+                Date departureDate = new Date();
+                Date arrivalDate = new Date();
+                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                try {
+                    departureDate = format.parse(rideDepartureDate);
+                    arrivalDate = format.parse(rideArrivalDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (departureDate.after(arrivalDate)) {
+                    Utils.showToast(this, "Return Date cannot be before Departure Date");
+                    return;
+                }
+
             }
+
             if (TextUtils.isEmpty(rideArrivalTime)) {
                 Utils.showToast(this, "Enter Return Time");
                 return;
             }
 
-            if (rideDepartureDate.equalsIgnoreCase(rideArrivalDate) && rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
-                Utils.showToast(this, "Return Time and departure time cannot be same");
-                return;
-            }
-
-            Date departureDate = new Date();
-            Date arrivalDate = new Date();
-            SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-            try {
-                departureDate = format.parse(rideDepartureDate);
-                arrivalDate = format.parse(rideArrivalDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            if (departureDate.after(arrivalDate)) {
-                Utils.showToast(this, "Return Date cannot be before Departure Date");
-                return;
+            if (dailyRideRB.isChecked()) {
+                if (rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
+                    Utils.showToast(this, "Return Time and departure time cannot be same");
+                    return;
+                }
             }
 
         }

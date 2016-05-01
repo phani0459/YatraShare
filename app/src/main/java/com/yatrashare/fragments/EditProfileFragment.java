@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -28,6 +29,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.RequestBody;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.Profile;
@@ -37,6 +41,7 @@ import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
 import java.io.File;
+import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +55,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
@@ -90,6 +96,7 @@ public class EditProfileFragment extends Fragment {
     private SharedPreferences.Editor mEditor;
     private String userGender;
     private boolean isImageLoaded;
+    private Uri selectedImageUri;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -108,6 +115,7 @@ public class EditProfileFragment extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    selectedImageUri = null;
                     startActivityForResult(getPickImageChooserIntent(), RESULT_LOAD_IMAGE);
                 }
                 return true;
@@ -175,6 +183,63 @@ public class EditProfileFragment extends Fragment {
         return chooserIntent;
     }
 
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = mContext.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String filePath = cursor.getString(column_index);
+        cursor.close();
+        return filePath;
+    }
+
+    @OnClick(R.id.updateProfilePic)
+    public void updateProfilePic() {
+        if (selectedImageUri != null) {
+            File file = null;
+            try {
+                URI uri = new URI(selectedImageUri.toString());
+                file = new File(uri);
+            } catch (Exception e) {
+                e.printStackTrace();
+                file = null;
+            }
+            try {
+                if (file == null) {
+                    file = new File(getPath(selectedImageUri));
+                }
+
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("ProfilePic", file.getName(), requestFile).build();
+
+                Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadProfilePic(userGuid, body);
+                call.enqueue(new Callback<UserDataDTO>() {
+                    @Override
+                    public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                        if (response.body() != null && response.isSuccess()) {
+                            mEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
+                            mEditor.commit();
+                            ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
+                        }
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        t.printStackTrace();
+                        android.util.Log.e(TAG, "FAILURE RESPONSE");
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * Get URI to image received from capture by camera.
      */
@@ -191,9 +256,9 @@ public class EditProfileFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
-            Uri imageUri = getPickImageResultUri(data);
+            selectedImageUri = getPickImageResultUri(data);
             isImageLoaded = true;
-            userDraweeImageView.setImageURI(imageUri);
+            userDraweeImageView.setImageURI(selectedImageUri);
         } else {
             isImageLoaded = false;
         }

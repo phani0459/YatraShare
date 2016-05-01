@@ -329,7 +329,7 @@ public class SignupFragment extends Fragment {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserFirstName, String gender, final String userLastName) {
+    public void userSignupTask(final String mEmail, final String mPassword, final String mPhone, final String mUserFirstName, final String gender, final String userLastName) {
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         String countryCode = countryData != null ? countryData.CountryCode : "";
         UserSignUp userSignUp = new UserSignUp(mEmail, mUserFirstName, mPassword, mPhone, countryCode, gender, userLastName);
@@ -353,6 +353,8 @@ public class SignupFragment extends Fragment {
                         mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, mEmail);
                         mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, mUserFirstName);
                         mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, userLastName);
+                        mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, mPhone);
+                        mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, gender);
                         mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().Data);
                         mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                         mSharedPrefEditor.commit();

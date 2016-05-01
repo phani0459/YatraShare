@@ -1,5 +1,6 @@
 package com.yatrashare.interfaces;
 
+import com.squareup.okhttp.RequestBody;
 import com.yatrashare.dtos.BookedRides;
 import com.yatrashare.dtos.Countries;
 import com.yatrashare.dtos.CountryInfo;
@@ -34,6 +35,7 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
+import retrofit2.http.Multipart;
 
 public interface YatraShareAPI {
 
@@ -59,6 +61,10 @@ public interface YatraShareAPI {
 
     @POST("/api/User/Login")
     Call<String> userLogin(@Body UserLogin userLogin);
+
+    @Multipart
+    @POST("/api/Profile/UploadProfilePic")
+    Call<UserDataDTO> uploadProfilePic(@Query("userGuid") String userGuide, @Body RequestBody file);
 
     @POST("/api/Rides/BookYourSeat")
     Call<UserDataDTO> bookRide(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid, @Query("passengers") String passengers);
@@ -160,6 +166,7 @@ public interface YatraShareAPI {
 
     /**
      * http://maps.googleapis.com/maps/api/geocode/json?sensor=false&latlng=17.4598863,78.3728007
+     *
      * @param latlng latittude and longitude
      * @return
      */
