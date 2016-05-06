@@ -85,24 +85,26 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
     }
 
     public void getOfferedSubRides() {
-        android.util.Log.e("getOfferedRides", userGuide);
-        if (!TextUtils.isEmpty(userGuide)) {
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<OfferedSubRides> call = null;
-            switch (mTitle) {
-                case TabsFragment.UPCOMING_OFFERED_RIDES:
-                    call = Utils.getYatraShareAPI().upComingSubRides(userGuide, offeredRideData.RideGuid);
-                    break;
-                case TabsFragment.PAST_OFFERED_RIDES:
-                    call = Utils.getYatraShareAPI().pastSubRides(userGuide, offeredRideData.RideGuid);
-                    break;
+        if (Utils.isInternetAvailable(this)) {
+            android.util.Log.e("getOfferedRides", userGuide);
+            if (!TextUtils.isEmpty(userGuide)) {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                Call<OfferedSubRides> call = null;
+                switch (mTitle) {
+                    case TabsFragment.UPCOMING_OFFERED_RIDES:
+                        call = Utils.getYatraShareAPI().upComingSubRides(userGuide, offeredRideData.RideGuid);
+                        break;
+                    case TabsFragment.PAST_OFFERED_RIDES:
+                        call = Utils.getYatraShareAPI().pastSubRides(userGuide, offeredRideData.RideGuid);
+                        break;
+                }
+                //asynchronous call
+                if (call != null) {
+                    call.enqueue(this);
+                }
+            } else {
+                Snackbar.make(recyclerView, getString(R.string.userguide_ratioanle), Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
-            //asynchronous call
-            if (call != null) {
-                call.enqueue(this);
-            }
-        } else {
-            Snackbar.make(recyclerView, getString(R.string.userguide_ratioanle), Snackbar.LENGTH_LONG).setAction("Action", null).show();
         }
     }
 

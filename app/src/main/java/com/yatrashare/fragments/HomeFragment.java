@@ -118,74 +118,76 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     @OnClick(R.id.searchRide)
     public void searchRide() {
         Utils.hideSoftKeyboard(whereToEditText);
-        final String whereFrom = whereFromEditText.getText().toString();
-        final String whereTo = whereToEditText.getText().toString();
-        final String date = dateEditText.getText().toString();
+        if (Utils.isInternetAvailable(mContext)) {
+            final String whereFrom = whereFromEditText.getText().toString();
+            final String whereTo = whereToEditText.getText().toString();
+            final String date = dateEditText.getText().toString();
 
-        if (TextUtils.isEmpty(whereFrom) && TextUtils.isEmpty(whereTo)) {
-            whereFromEditText.setError("Enter Departure");
-            whereToEditText.setError("Enter Arrival");
-            return;
-        }
+            if (TextUtils.isEmpty(whereFrom) && TextUtils.isEmpty(whereTo)) {
+                whereFromEditText.setError("Enter Departure");
+                whereToEditText.setError("Enter Arrival");
+                return;
+            }
 
-        whereFromEditText.setError(null);
-        whereToEditText.setError(null);
+            whereFromEditText.setError(null);
+            whereToEditText.setError(null);
 
-        /**
-         * comfort
-         * current page
-         * start time
-         * end time
-         * ladies only
-         * ride type
-         * vehicle type
-         * page size
-         */
-        Utils.showProgress(true, mProgressView, mProgressBGView);
-        FindRide findRide = new FindRide(whereFrom, whereTo,
-                date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10", "0");
-
-        Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
-        //asynchronous call
-        call.enqueue(new Callback<SearchRides>() {
             /**
-             * Successful HTTP response.
-             *
-             * @param response response from server
-             * @param retrofit adapter
+             * comfort
+             * current page
+             * start time
+             * end time
+             * ladies only
+             * ride type
+             * vehicle type
+             * page size
              */
-            @Override
-            public void onResponse(retrofit.Response<SearchRides> response, Retrofit retrofit) {
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response.body() != null) {
-                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
-                    SearchRides searchRides = response.body();
-                    if (searchRides != null) {
-                        FoundRides foundRides = new FoundRides();
-                        foundRides.searchRides = searchRides;
-                        foundRides.destinationPlace = whereFrom;
-                        foundRides.arriavalPlace = whereTo;
-                        foundRides.selectedDate = date;
-                        ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, foundRides, null);
-                    } else {
-                        ((HomeActivity) mContext).showSnackBar("No rides available at this time, Try again!");
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            FindRide findRide = new FindRide(whereFrom, whereTo,
+                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10", "0");
+
+            Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
+            //asynchronous call
+            call.enqueue(new Callback<SearchRides>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<SearchRides> response, Retrofit retrofit) {
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response.body() != null) {
+                        android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
+                        SearchRides searchRides = response.body();
+                        if (searchRides != null) {
+                            FoundRides foundRides = new FoundRides();
+                            foundRides.searchRides = searchRides;
+                            foundRides.destinationPlace = whereFrom;
+                            foundRides.arriavalPlace = whereTo;
+                            foundRides.selectedDate = date;
+                            ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, foundRides, null);
+                        } else {
+                            ((HomeActivity) mContext).showSnackBar("No rides available at this time, Try again!");
+                        }
                     }
                 }
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
     @OnClick(R.id.offerRide)
@@ -264,13 +266,6 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 // Indicates that the activity closed before a selection was made. For example if
                 // the user pressed the back button.
-                if (whereFromhasFocus) {
-                    whereFromEditText.setText("");
-                    whereFromPlace = null;
-                } else {
-                    wheretoPlace = null;
-                    whereToEditText.setText("");
-                }
             }
         }
     }

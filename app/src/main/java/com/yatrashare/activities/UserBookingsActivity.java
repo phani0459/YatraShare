@@ -86,13 +86,15 @@ public class UserBookingsActivity extends AppCompatActivity implements UserBooki
     }
 
     private void getUserBookings() {
-        if (!TextUtils.isEmpty(userGuide)) {
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<GetUserBookings> call = Utils.getYatraShareAPI().getUserBookings(userGuide, selectedSubRideData.PossibleRideGuid);
-            //asynchronous call
-            call.enqueue(this);
-        } else {
-            showSnackBar(getString(R.string.userguide_ratioanle));
+        if (Utils.isInternetAvailable(mContext)) {
+            if (!TextUtils.isEmpty(userGuide)) {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                Call<GetUserBookings> call = Utils.getYatraShareAPI().getUserBookings(userGuide, selectedSubRideData.PossibleRideGuid);
+                //asynchronous call
+                call.enqueue(this);
+            } else {
+                showSnackBar(getString(R.string.userguide_ratioanle));
+            }
         }
     }
 
@@ -131,46 +133,48 @@ public class UserBookingsActivity extends AppCompatActivity implements UserBooki
             intent.putExtra("PossibleRideGuid", selectedSubRideData.PossibleRideGuid);
             startActivity(intent);
         } else {
-            Call<UserDataDTO> call = null;
-            switch (clickedItem) {
-                case R.id.approveSeat:
-                    call = Utils.getYatraShareAPI().approveSeat(userGuide, data.RideBookingId + "");
-                    break;
-                case R.id.rejectSeat:
-                    call = Utils.getYatraShareAPI().rejectSeat(userGuide, data.RideBookingId + "");
-                    break;
-            }
-            if (call != null) {
-                Utils.showProgress(true, mProgressView, mProgressBGView);
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response
-                     * @param retrofit
-                     */
-                    @Override
-                    public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data != null) {
-                            if (response.body().Data.equalsIgnoreCase("Success")) {
-                                Snackbar.make(recyclerView, response.body().Data, Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                                getUserBookings();
+            if (Utils.isInternetAvailable(mContext)) {
+                Call<UserDataDTO> call = null;
+                switch (clickedItem) {
+                    case R.id.approveSeat:
+                        call = Utils.getYatraShareAPI().approveSeat(userGuide, data.RideBookingId + "");
+                        break;
+                    case R.id.rejectSeat:
+                        call = Utils.getYatraShareAPI().rejectSeat(userGuide, data.RideBookingId + "");
+                        break;
+                }
+                if (call != null) {
+                    Utils.showProgress(true, mProgressView, mProgressBGView);
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        /**
+                         * Successful HTTP response.
+                         *
+                         * @param response server response
+                         * @param retrofit adapter
+                         */
+                        @Override
+                        public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                            if (response.body() != null && response.body().Data != null) {
+                                if (response.body().Data.equalsIgnoreCase("Success")) {
+                                    Snackbar.make(recyclerView, response.body().Data, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                                    getUserBookings();
+                                }
                             }
                         }
-                    }
 
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
-                });
+                        /**
+                         * Invoked when a network or unexpected exception occurred during the HTTP request.
+                         *
+                         * @param t error
+                         */
+                        @Override
+                        public void onFailure(Throwable t) {
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                        }
+                    });
+                }
             }
         }
     }

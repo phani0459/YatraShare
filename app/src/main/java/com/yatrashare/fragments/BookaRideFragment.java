@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -182,7 +183,8 @@ public class BookaRideFragment extends Fragment {
                     if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
                         showSeatsDialog(userGuid, rideData.PossibleRideGuid, "1");
                     } else {
-                        Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
+//                        Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
+                        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
                     }
                 }
             }
@@ -199,7 +201,7 @@ public class BookaRideFragment extends Fragment {
             }
         });
 
-        getRideDetails();
+        if (Utils.isInternetAvailable(mContext)) getRideDetails();
 
         return inflatedLayout;
     }
@@ -333,7 +335,7 @@ public class BookaRideFragment extends Fragment {
         int remainingSeatsInt = 0;
         ArrayList<String> strings = new ArrayList<>();
 
-        if (remainingSeats != null && !remainingSeats.isEmpty()) {
+        if (!TextUtils.isEmpty(remainingSeats)) {
             try {
                 remainingSeatsInt = Integer.parseInt(remainingSeats);
             } catch (NumberFormatException e) {
@@ -362,8 +364,10 @@ public class BookaRideFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
-                Utils.showProgress(true, mProgressView, mProgressBGView);
-                bookRide(userGuid, possibleRideGuid, noOfSeatsSpinner.getSelectedItem().toString());
+                if (Utils.isInternetAvailable(mContext)) {
+                    Utils.showProgress(true, mProgressView, mProgressBGView);
+                    bookRide(userGuid, possibleRideGuid, noOfSeatsSpinner.getSelectedItem().toString());
+                }
             }
         });
 
@@ -398,7 +402,7 @@ public class BookaRideFragment extends Fragment {
                 if (response != null && response.body() != null && response.isSuccess()) {
                     if (response.body().Data.equalsIgnoreCase("1")) {
                         ((HomeActivity) mContext).showSnackBar("Successfully booked your seat");
-                        ((HomeActivity)mContext).loadScreen(HomeActivity.RIDE_CONFIRM_SCREEN, false, rideDetails.Data, Constants.HOME_SCREEN_NAME);
+                        ((HomeActivity) mContext).loadScreen(HomeActivity.RIDE_CONFIRM_SCREEN, false, rideDetails.Data, Constants.HOME_SCREEN_NAME);
                     }
                 } else {
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));

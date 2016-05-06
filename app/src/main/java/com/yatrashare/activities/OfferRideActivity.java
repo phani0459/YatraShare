@@ -689,7 +689,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         } else if (resultCode == Activity.RESULT_CANCELED) {
             // Indicates that the activity closed before a selection was made. For example if
             // the user pressed the back button.
-            setEditValues(null);
         }
     }
 

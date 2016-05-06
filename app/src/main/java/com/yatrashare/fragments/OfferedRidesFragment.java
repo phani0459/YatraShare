@@ -91,23 +91,25 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
 
     public void getOfferedRides() {
         android.util.Log.e("getOfferedRides", userGuide);
-        if (!TextUtils.isEmpty(userGuide)) {
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<OfferedRides> call = null;
-            switch (mTitle) {
-                case TabsFragment.UPCOMING_OFFERED_RIDES:
-                    call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, "1", "10");
-                    break;
-                case TabsFragment.PAST_OFFERED_RIDES:
-                    call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, "1", "10");
-                    break;
+        if (Utils.isInternetAvailable(mContext)) {
+            if (!TextUtils.isEmpty(userGuide)) {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                Call<OfferedRides> call = null;
+                switch (mTitle) {
+                    case TabsFragment.UPCOMING_OFFERED_RIDES:
+                        call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, "1", "10");
+                        break;
+                    case TabsFragment.PAST_OFFERED_RIDES:
+                        call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, "1", "10");
+                        break;
+                }
+                //asynchronous call
+                if (call != null) {
+                    call.enqueue(this);
+                }
+            } else {
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
             }
-            //asynchronous call
-            if (call != null) {
-                call.enqueue(this);
-            }
-        } else {
-            ((HomeActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
         }
     }
 
@@ -191,7 +193,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
             intent.putExtra("UserGuide", userGuide);
             startActivity(intent);
         } else if (clickedItem == 2) {
-            deleteRide(offeredRide, position);
+            if (Utils.isInternetAvailable(mContext)) deleteRide(offeredRide, position);
         }
     }
 

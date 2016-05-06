@@ -75,53 +75,55 @@ public class RatingsFragment extends Fragment {
     }
 
     public void getRatings(String userGuide, final int title) {
-        Utils.showProgress(true, mProgressView, mProgressBGView);
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
 
-        Call<Rating> call = null;
-        if (title == TabsFragment.RECEIVED_RATINGS) {
-            call = Utils.getYatraShareAPI().userReceivedRatings(userGuide);
-        } else {
-            call = Utils.getYatraShareAPI().userGivenRatings(userGuide);
-        }
+            Call<Rating> call = null;
+            if (title == TabsFragment.RECEIVED_RATINGS) {
+                call = Utils.getYatraShareAPI().userReceivedRatings(userGuide);
+            } else {
+                call = Utils.getYatraShareAPI().userGivenRatings(userGuide);
+            }
 
-        //asynchronous call
-        if (call != null) {
-            call.enqueue(new Callback<Rating>() {
-                /**
-                 * Successful HTTP response.
-                 *
-                 * @param response
-                 * @param retrofit
-                 */
-                @Override
-                public void onResponse(retrofit.Response<Rating> response, Retrofit retrofit) {
-                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                    if (response != null && response.body() != null && response.body().Data != null) {
-                        if (response.body().Data.size() > 0) {
-                            emptyRidesLayout.setVisibility(View.GONE);
-                            RatingsRecyclerViewAdapter adapter = new RatingsRecyclerViewAdapter(response.body().Data, title);
-                            recyclerView.setAdapter(adapter);
+            //asynchronous call
+            if (call != null) {
+                call.enqueue(new Callback<Rating>() {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param response
+                     * @param retrofit
+                     */
+                    @Override
+                    public void onResponse(retrofit.Response<Rating> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                        if (response != null && response.body() != null && response.body().Data != null) {
+                            if (response.body().Data.size() > 0) {
+                                emptyRidesLayout.setVisibility(View.GONE);
+                                RatingsRecyclerViewAdapter adapter = new RatingsRecyclerViewAdapter(response.body().Data, title);
+                                recyclerView.setAdapter(adapter);
+                            } else {
+                                emptyRidesLayout.setVisibility(View.VISIBLE);
+                            }
                         } else {
                             emptyRidesLayout.setVisibility(View.VISIBLE);
                         }
-                    } else {
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
+
+                    /**
+                     * Invoked when a network or unexpected exception occurred during the HTTP request.
+                     *
+                     * @param t
+                     */
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                        android.util.Log.e(TAG, "FAILURE RESPONSE");
                         emptyRidesLayout.setVisibility(View.VISIBLE);
                     }
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                }
-
-                /**
-                 * Invoked when a network or unexpected exception occurred during the HTTP request.
-                 *
-                 * @param t
-                 */
-                @Override
-                public void onFailure(Throwable t) {
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                    android.util.Log.e(TAG, "FAILURE RESPONSE");
-                    emptyRidesLayout.setVisibility(View.VISIBLE);
-                }
-            });
+                });
+            }
         }
     }
 

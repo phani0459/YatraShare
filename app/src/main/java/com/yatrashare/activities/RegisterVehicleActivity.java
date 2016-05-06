@@ -89,87 +89,91 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
     }
 
     public void getVehicleModels() {
-        Utils.showProgress(true, registerProgressBar, registerBGView);
-        Call<Vehicle> call = Utils.getYatraShareAPI().getVehicleModels(userGuide, vehicleType, vehicleBrand);
-        call.enqueue(new Callback<Vehicle>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response response from server
-             * @param retrofit adapter
-             */
-            @Override
-            public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                ArrayList<String> vehicleModels = new ArrayList<String>();
-                if (response.body() != null && response.isSuccess()) {
-                    vehicleModelDatas = response.body().Data;
-                    if (vehicleModelDatas != null && vehicleModelDatas.size() > 0) {
-                        for (int i = 0; i < vehicleModelDatas.size(); i++) {
-                            if (!TextUtils.isEmpty(vehicleModelDatas.get(i).ModelName)) {
-                                vehicleModels.add(vehicleModelDatas.get(i).ModelName);
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, registerProgressBar, registerBGView);
+            Call<Vehicle> call = Utils.getYatraShareAPI().getVehicleModels(userGuide, vehicleType, vehicleBrand);
+            call.enqueue(new Callback<Vehicle>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    ArrayList<String> vehicleModels = new ArrayList<String>();
+                    if (response.body() != null && response.isSuccess()) {
+                        vehicleModelDatas = response.body().Data;
+                        if (vehicleModelDatas != null && vehicleModelDatas.size() > 0) {
+                            for (int i = 0; i < vehicleModelDatas.size(); i++) {
+                                if (!TextUtils.isEmpty(vehicleModelDatas.get(i).ModelName)) {
+                                    vehicleModels.add(vehicleModelDatas.get(i).ModelName);
+                                }
                             }
+                            vehicleModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
                         }
-                        vehicleModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
                     }
+                    Utils.showProgress(false, registerProgressBar, registerBGView);
                 }
-                Utils.showProgress(false, registerProgressBar, registerBGView);
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t throwable Error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, registerProgressBar, registerBGView);
-                showSnackBar(getString(R.string.tryagain));
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable Error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, registerProgressBar, registerBGView);
+                    showSnackBar(getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
     public void getVehicleBrands() {
-        Utils.showProgress(true, registerProgressBar, registerBGView);
-        Call<Vehicle> call = Utils.getYatraShareAPI().getVehicleBrands(userGuide, vehicleType);
-        call.enqueue(new Callback<Vehicle>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response response from server
-             * @param retrofit adapter
-             */
-            @Override
-            public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                ArrayList<String> vehicleBrands = new ArrayList<String>();
-                if (response.body() != null && response.isSuccess()) {
-                    ArrayList<Vehicle.VehicleData> vehicleDatas = response.body().Data;
-                    if (vehicleDatas != null && vehicleDatas.size() > 0) {
-                        for (int i = 0; i < vehicleDatas.size(); i++) {
-                            if (!TextUtils.isEmpty(vehicleDatas.get(i).BrandName)) {
-                                vehicleBrands.add(vehicleDatas.get(i).BrandName);
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, registerProgressBar, registerBGView);
+            Call<Vehicle> call = Utils.getYatraShareAPI().getVehicleBrands(userGuide, vehicleType);
+            call.enqueue(new Callback<Vehicle>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    ArrayList<String> vehicleBrands = new ArrayList<String>();
+                    if (response.body() != null && response.isSuccess()) {
+                        ArrayList<Vehicle.VehicleData> vehicleDatas = response.body().Data;
+                        if (vehicleDatas != null && vehicleDatas.size() > 0) {
+                            for (int i = 0; i < vehicleDatas.size(); i++) {
+                                if (!TextUtils.isEmpty(vehicleDatas.get(i).BrandName)) {
+                                    vehicleBrands.add(vehicleDatas.get(i).BrandName);
+                                }
                             }
+                            vehicleBrandSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleBrands));
                         }
-                        vehicleBrandSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleBrands));
                     }
+                    Utils.showProgress(false, registerProgressBar, registerBGView);
                 }
-                Utils.showProgress(false, registerProgressBar, registerBGView);
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t throwable Error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, registerProgressBar, registerBGView);
-                showSnackBar(getString(R.string.tryagain));
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable Error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, registerProgressBar, registerBGView);
+                    showSnackBar(getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
     public void showSnackBar(String msg) {
@@ -197,51 +201,53 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
 
     @OnClick(R.id.btn_registerNewVehicle)
     public void registerVehicle() {
-        String regdNo = regdNoEditText.getText().toString();
-        if (TextUtils.isEmpty(vehicleBrand)) {
-            Utils.showToast(mContext, "Select Vehicle Brand");
-            return;
-        }
-        if (TextUtils.isEmpty(vehicleModel)) {
-            Utils.showToast(mContext, "Select Vehicle Model");
-            return;
-        }
+        if (Utils.isInternetAvailable(mContext)) {
+            String regdNo = regdNoEditText.getText().toString();
+            if (TextUtils.isEmpty(vehicleBrand)) {
+                Utils.showToast(mContext, "Select Vehicle Brand");
+                return;
+            }
+            if (TextUtils.isEmpty(vehicleModel)) {
+                Utils.showToast(mContext, "Select Vehicle Model");
+                return;
+            }
 
-        if (TextUtils.isEmpty(regdNo)) {
-            Utils.showToast(mContext, "Enter Vehicle Registration Number");
-            return;
-        }
+            if (TextUtils.isEmpty(regdNo)) {
+                Utils.showToast(mContext, "Enter Vehicle Registration Number");
+                return;
+            }
 
-        if (regdNo.length() < 6) {
-            Utils.showToast(mContext, "Enter Correct Vehicle Registration Number");
-            return;
-        }
+            if (regdNo.length() < 6) {
+                Utils.showToast(mContext, "Enter Correct Vehicle Registration Number");
+                return;
+            }
 
-        Utils.showProgress(true, registerProgressBar, registerBGView);
-        RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort, regdNo);
+            Utils.showProgress(true, registerProgressBar, registerBGView);
+            RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort, regdNo);
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().registerVehicle(userGuide, vehicleInfo);
-        call.enqueue(new Callback<UserDataDTO>() {
-            @Override
-            public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response.body() != null && response.body().Data != null) {
-                    if (response.body().Data.equalsIgnoreCase("Success")) {
-                        showSnackBar("Vehicle Registered");
-                        finish();
-                    } else {
-                        showSnackBar(response.body().Data);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI().registerVehicle(userGuide, vehicleInfo);
+            call.enqueue(new Callback<UserDataDTO>() {
+                @Override
+                public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response.body() != null && response.body().Data != null) {
+                        if (response.body().Data.equalsIgnoreCase("Success")) {
+                            showSnackBar("Vehicle Registered");
+                            finish();
+                        } else {
+                            showSnackBar(response.body().Data);
+                        }
                     }
+                    Utils.showProgress(false, registerProgressBar, registerBGView);
                 }
-                Utils.showProgress(false, registerProgressBar, registerBGView);
-            }
 
-            @Override
-            public void onFailure(Throwable t) {
-                showSnackBar(getString(R.string.tryagain));
-                Utils.showProgress(false, registerProgressBar, registerBGView);
-            }
-        });
+                @Override
+                public void onFailure(Throwable t) {
+                    showSnackBar(getString(R.string.tryagain));
+                    Utils.showProgress(false, registerProgressBar, registerBGView);
+                }
+            });
+        }
     }
 
     String vehicleColor, vehicleBrand, vehicleModel, vehicleSeats, vehicleComfort;

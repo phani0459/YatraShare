@@ -74,7 +74,13 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         setEmptyRidesTexts();
-        getBookedRides();
+
+        if (Utils.isInternetAvailable(mContext)) {
+            getBookedRides();
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            emptyRidesLayout.setVisibility(View.VISIBLE);
+        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
@@ -209,65 +215,67 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
     @Override
     public void onItemClick(final int clickedItem, final int position) {
         if (clickedItem != BookedRidesRecyclerViewAdapter.viewRide) {
-            Call<UserDataDTO> call = null;
-            final BookedRides.BookedData data = adapter.getItem(position);
-            switch (clickedItem) {
-                case BookedRidesRecyclerViewAdapter.cancelRide:
-                case BookedRidesRecyclerViewAdapter.deleteRide:
-                    call = areYouSureDialog(clickedItem, "" + data.RideBookingId);
-                    break;
-                case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
-                    call = Utils.getYatraShareAPI().sendJourneyDetails(userGuide, "" + data.RideBookingId);
-                    break;
-            }
+            if (Utils.isInternetAvailable(mContext)) {
+                Call<UserDataDTO> call = null;
+                final BookedRides.BookedData data = adapter.getItem(position);
+                switch (clickedItem) {
+                    case BookedRidesRecyclerViewAdapter.cancelRide:
+                    case BookedRidesRecyclerViewAdapter.deleteRide:
+                        call = areYouSureDialog(clickedItem, "" + data.RideBookingId);
+                        break;
+                    case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
+                        call = Utils.getYatraShareAPI().sendJourneyDetails(userGuide, "" + data.RideBookingId);
+                        break;
+                }
 
-            Utils.showProgress(true, mProgressView, mProgressBGView);
+                Utils.showProgress(true, mProgressView, mProgressBGView);
 
-            //asynchronous call
-            if (call != null) {
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response response from server
-                     * @param retrofit adapter
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data != null) {
-                            if (response.body().Data.equalsIgnoreCase("Success")) {
-                                switch (clickedItem) {
-                                    case BookedRidesRecyclerViewAdapter.cancelRide:
-                                        ((HomeActivity) mContext).showSnackBar("Ride Cancelled");
-                                        break;
-                                    case BookedRidesRecyclerViewAdapter.deleteRide:
-                                        ((HomeActivity) mContext).showSnackBar("Ride Deleted successfully");
-                                        adapter.remove(position);
-                                        break;
-                                    case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
-                                        ((HomeActivity) mContext).showSnackBar("Message Successfully sent");
-                                        break;
+                //asynchronous call
+                if (call != null) {
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        /**
+                         * Successful HTTP response.
+                         *
+                         * @param response response from server
+                         * @param retrofit adapter
+                         */
+                        @Override
+                        public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                            if (response.body() != null && response.body().Data != null) {
+                                if (response.body().Data.equalsIgnoreCase("Success")) {
+                                    switch (clickedItem) {
+                                        case BookedRidesRecyclerViewAdapter.cancelRide:
+                                            ((HomeActivity) mContext).showSnackBar("Ride Cancelled");
+                                            break;
+                                        case BookedRidesRecyclerViewAdapter.deleteRide:
+                                            ((HomeActivity) mContext).showSnackBar("Ride Deleted successfully");
+                                            adapter.remove(position);
+                                            break;
+                                        case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
+                                            ((HomeActivity) mContext).showSnackBar("Message Successfully sent");
+                                            break;
+                                    }
+                                } else {
+                                    ((HomeActivity) mContext).showSnackBar(response.body().Data);
                                 }
-                            } else {
-                                ((HomeActivity) mContext).showSnackBar(response.body().Data);
                             }
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
                         }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
 
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t exception
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                    }
-                });
+                        /**
+                         * Invoked when a network or unexpected exception occurred during the HTTP request.
+                         *
+                         * @param t exception
+                         */
+                        @Override
+                        public void onFailure(Throwable t) {
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                            ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                        }
+                    });
+                }
             }
         } else {
             Utils.showToast(mContext, "etewtewtewt");

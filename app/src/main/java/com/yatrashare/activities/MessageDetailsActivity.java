@@ -101,69 +101,71 @@ public class MessageDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnSend)
     public void sendMessage() {
-        final String msg = inputMsgEdit.getText().toString();
-        Utils.hideSoftKeyboard(inputMsgEdit);
-        if (!msg.isEmpty()) {
-            Call<UserDataDTO> call = null;
-            if (messagesDetailsList != null && messagesDetailsList.Data != null && messagesDetailsList.Data.size() > 0) {
-                call = Utils.getYatraShareAPI().SendReplyMessage(userGuid, messagesDetailsList.Data.get(0).MessageGuid, msg);
-            } else if (rideDetailData != null && rideDetailData.PossibleRideGuid != null && rideDetailData.UserGuid != null) {
-                call = Utils.getYatraShareAPI().sendMessage(userGuid, rideDetailData.UserGuid, rideDetailData.PossibleRideGuid, msg);
-            } else if (userBookingData != null) {
-                call = Utils.getYatraShareAPI().sendMessage(userGuid, userBookingData.BookedUserGuid, PossibleRideGuid, msg);
-            }
-            if (call != null) {
-                MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
-                messageDetailData.Message = msg;
-                messageDetailData.TypeOfMessage = "Sent";
-                messageDetailData.Name = "Me";
-                messageDetailData.MessageSentTime = "Sending..";
-                adapter.addMessage(messageDetailData);
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response server response
-                     * @param retrofit adapter
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data != null) {
-                            if (response.body().Data.equalsIgnoreCase("") || response.body().Data.equalsIgnoreCase("Success")) {
-                                inputMsgEdit.setText("");
-                                adapter.removeLast();
-                                MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
-                                messageDetailData.Message = msg;
-                                messageDetailData.TypeOfMessage = "Sent";
-                                messageDetailData.Name = "Me";
-                                messageDetailData.MessageSentTime = "Now";
-                                adapter.addMessage(messageDetailData);
+        if (Utils.isInternetAvailable(this)) {
+            final String msg = inputMsgEdit.getText().toString();
+            Utils.hideSoftKeyboard(inputMsgEdit);
+            if (!msg.isEmpty()) {
+                Call<UserDataDTO> call = null;
+                if (messagesDetailsList != null && messagesDetailsList.Data != null && messagesDetailsList.Data.size() > 0) {
+                    call = Utils.getYatraShareAPI().SendReplyMessage(userGuid, messagesDetailsList.Data.get(0).MessageGuid, msg);
+                } else if (rideDetailData != null && rideDetailData.PossibleRideGuid != null && rideDetailData.UserGuid != null) {
+                    call = Utils.getYatraShareAPI().sendMessage(userGuid, rideDetailData.UserGuid, rideDetailData.PossibleRideGuid, msg);
+                } else if (userBookingData != null) {
+                    call = Utils.getYatraShareAPI().sendMessage(userGuid, userBookingData.BookedUserGuid, PossibleRideGuid, msg);
+                }
+                if (call != null) {
+                    MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
+                    messageDetailData.Message = msg;
+                    messageDetailData.TypeOfMessage = "Sent";
+                    messageDetailData.Name = "Me";
+                    messageDetailData.MessageSentTime = "Sending..";
+                    adapter.addMessage(messageDetailData);
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        /**
+                         * Successful HTTP response.
+                         *
+                         * @param response server response
+                         * @param retrofit adapter
+                         */
+                        @Override
+                        public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                            if (response.body() != null && response.body().Data != null) {
+                                if (response.body().Data.equalsIgnoreCase("") || response.body().Data.equalsIgnoreCase("Success")) {
+                                    inputMsgEdit.setText("");
+                                    adapter.removeLast();
+                                    MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
+                                    messageDetailData.Message = msg;
+                                    messageDetailData.TypeOfMessage = "Sent";
+                                    messageDetailData.Name = "Me";
+                                    messageDetailData.MessageSentTime = "Now";
+                                    adapter.addMessage(messageDetailData);
+                                } else {
+                                    adapter.removeLast();
+                                    Utils.showToast(mContext, getResources().getString(R.string.tryagain));
+                                }
                             } else {
                                 adapter.removeLast();
                                 Utils.showToast(mContext, getResources().getString(R.string.tryagain));
                             }
-                        } else {
-                            adapter.removeLast();
-                            Utils.showToast(mContext, getResources().getString(R.string.tryagain));
                         }
-                    }
 
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t error
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        adapter.removeLast();
-                        showSnackBar(getString(R.string.tryagain));
-                    }
-                });
+                        /**
+                         * Invoked when a network or unexpected exception occurred during the HTTP request.
+                         *
+                         * @param t error
+                         */
+                        @Override
+                        public void onFailure(Throwable t) {
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            adapter.removeLast();
+                            showSnackBar(getString(R.string.tryagain));
+                        }
+                    });
+                }
+            } else {
+                Utils.showToast(mContext, "Enter Message");
             }
-        } else {
-            Utils.showToast(mContext, "Enter Message");
         }
     }
 

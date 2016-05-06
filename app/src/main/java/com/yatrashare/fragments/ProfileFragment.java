@@ -169,40 +169,42 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public boolean verifyEmail(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (event.getRawX() >= (v.getRight() - ((TextView) v).getCompoundDrawables()[2].getBounds().width())) {
-                Utils.showProgress(true, mProgressView, mProgressBGView);
+                if (Utils.isInternetAvailable(mContext)) {
+                    Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationEmail(userGuide);
-                //asynchronous call
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response server response
-                     * @param retrofit adapter
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                        if (response.body() != null) {
-                            if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
-                                ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
-                                Utils.deleteFile(mContext, userGuide);
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationEmail(userGuide);
+                    //asynchronous call
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        /**
+                         * Successful HTTP response.
+                         *
+                         * @param response server response
+                         * @param retrofit adapter
+                         */
+                        @Override
+                        public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            if (response.body() != null) {
+                                if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
+                                    ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
+                                    Utils.deleteFile(mContext, userGuide);
+                                }
                             }
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
                         }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
 
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t error
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
-                });
+                        /**
+                         * Invoked when a network or unexpected exception occurred during the HTTP request.
+                         *
+                         * @param t error
+                         */
+                        @Override
+                        public void onFailure(Throwable t) {
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                        }
+                    });
+                }
             }
         }
         return false;
@@ -338,39 +340,41 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     public void userProfileTask() {
-        Utils.showProgress(true, mProgressView, mProgressBGView);
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
 
-        Call<Profile> call = Utils.getYatraShareAPI().userPublicProfile(userGuide);
-        //asynchronous call
-        call.enqueue(new Callback<Profile>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response server response
-             * @param retrofit adapter
-             */
-            @Override
-            public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                if (response.body() != null) {
-                    profile = response.body();
-                    Utils.saveProfile(mContext, profile, userGuide);
-                    loadProfile();
+            Call<Profile> call = Utils.getYatraShareAPI().userPublicProfile(userGuide);
+            //asynchronous call
+            call.enqueue(new Callback<Profile>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response server response
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    if (response.body() != null) {
+                        profile = response.body();
+                        Utils.saveProfile(mContext, profile, userGuide);
+                        loadProfile();
+                    }
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
                 }
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                }
+            });
+        }
     }
 
     /**
@@ -549,59 +553,61 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String updateChat = chatAllowRingView.getVisibility() == visible ? "1" : chatNotAllowRingView.getVisibility() == visible ? "3" : "2";
-                final String updateMusic = musicAllowRingView.getVisibility() == visible ? "1" : musicNotAllowRingView.getVisibility() == visible ? "3" : "2";
-                final String updateFood = foodAllowRingView.getVisibility() == visible ? "1" : foodNotAllowRingView.getVisibility() == visible ? "3" : "2";
-                final String updateSmoke = smokeAllowRingView.getVisibility() == visible ? "1" : smokeNotAllowRingView.getVisibility() == visible ? "3" : "2";
+                if (Utils.isInternetAvailable(mContext)) {
+                    final String updateChat = chatAllowRingView.getVisibility() == visible ? "1" : chatNotAllowRingView.getVisibility() == visible ? "3" : "2";
+                    final String updateMusic = musicAllowRingView.getVisibility() == visible ? "1" : musicNotAllowRingView.getVisibility() == visible ? "3" : "2";
+                    final String updateFood = foodAllowRingView.getVisibility() == visible ? "1" : foodNotAllowRingView.getVisibility() == visible ? "3" : "2";
+                    final String updateSmoke = smokeAllowRingView.getVisibility() == visible ? "1" : smokeNotAllowRingView.getVisibility() == visible ? "3" : "2";
 
-                UserPreferences userPreferences = new UserPreferences(updateChat, updateMusic, updateSmoke, updateFood, "3");
+                    UserPreferences userPreferences = new UserPreferences(updateChat, updateMusic, updateSmoke, updateFood, "3");
 
-                Utils.showProgress(true, progressBar, progressView);
-                dialog.setCancelable(false);
+                    Utils.showProgress(true, progressBar, progressView);
+                    dialog.setCancelable(false);
 
-                Call<UserDataDTO> call = Utils.getYatraShareAPI().updateUserPreferences(userGuide, userPreferences);
-                //asynchronous call
-                call.enqueue(new Callback<UserDataDTO>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response server response
-                     * @param retrofit adapter
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                        dialog.setCancelable(true);
-                        android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                        if (response.body() != null) {
-                            if (response.body().Data.equalsIgnoreCase("Success")) {
-                                Utils.showProgress(false, progressBar, progressView);
-                                Utils.showToast(mContext, "Prefernces updated Successfully");
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI().updateUserPreferences(userGuide, userPreferences);
+                    //asynchronous call
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        /**
+                         * Successful HTTP response.
+                         *
+                         * @param response server response
+                         * @param retrofit adapter
+                         */
+                        @Override
+                        public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                            dialog.setCancelable(true);
+                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            if (response.body() != null) {
+                                if (response.body().Data.equalsIgnoreCase("Success")) {
+                                    Utils.showProgress(false, progressBar, progressView);
+                                    Utils.showToast(mContext, "Prefernces updated Successfully");
 
-                                profile.Data.Chat = Integer.parseInt(updateChat);
-                                profile.Data.Music = Integer.parseInt(updateMusic);
-                                profile.Data.Food = Integer.parseInt(updateFood);
-                                profile.Data.Smoking = Integer.parseInt(updateSmoke);
-                                updateUserPreferences();
+                                    profile.Data.Chat = Integer.parseInt(updateChat);
+                                    profile.Data.Music = Integer.parseInt(updateMusic);
+                                    profile.Data.Food = Integer.parseInt(updateFood);
+                                    profile.Data.Smoking = Integer.parseInt(updateSmoke);
+                                    updateUserPreferences();
 
-                                dialog.dismiss();
+                                    dialog.dismiss();
+                                }
                             }
                         }
-                    }
 
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t error
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        dialog.setCancelable(true);
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showToast(mContext, getString(R.string.tryagain));
-                        Utils.showProgress(false, progressBar, progressView);
-                    }
-                });
+                        /**
+                         * Invoked when a network or unexpected exception occurred during the HTTP request.
+                         *
+                         * @param t error
+                         */
+                        @Override
+                        public void onFailure(Throwable t) {
+                            dialog.setCancelable(true);
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showToast(mContext, getString(R.string.tryagain));
+                            Utils.showProgress(false, progressBar, progressView);
+                        }
+                    });
 
+                }
             }
         });
 

@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -225,7 +227,7 @@ public class Utils {
 
     public static boolean isPhoneValid(Context mContext, String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-           return phoneNumber.length() >= 10;
+            return phoneNumber.length() >= 10;
         }
         return false;
     }
@@ -297,6 +299,19 @@ public class Utils {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public static boolean isInternetAvailable(Context mContext) {
+        boolean isConnected = false;
+        ConnectivityManager connectivity = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo activeNetwork = connectivity.getActiveNetworkInfo();
+            isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        }
+        if (!isConnected) {
+            showToast(mContext, "We are unable connect to our servers, please check your internet connection");
+        }
+        return isConnected;
     }
 
     public static Spanned getCurrency(Context mContext) {

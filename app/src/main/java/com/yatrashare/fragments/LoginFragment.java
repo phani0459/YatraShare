@@ -133,8 +133,12 @@ public class LoginFragment extends Fragment {
                                     UtilsLog.e("" + object.get("email"), "EMAIL");
                                     UtilsLog.e("" + object.get("birthday"), "BDAY");
                                     UtilsLog.e("" + object.get("id"), "ID");*/
-                                    registerUserinServer(object.optString("id"), object.optString("name"), object.optString("email"),
-                                            "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large");
+                                    if (Utils.isInternetAvailable(mContext)) {
+                                        registerUserinServer(object.optString("id"), object.optString("name"), object.optString("email"),
+                                                "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large");
+                                    } else {
+                                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

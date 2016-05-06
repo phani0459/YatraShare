@@ -130,50 +130,52 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.verify_code_bt)
     public void verifyCode() {
-        if (!verificationCodeEdit.getText().toString().isEmpty()) {
-            verifyCodeLayout.setError(null);
-            verifyCodeLayout.setErrorEnabled(false);
-            Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<UserDataDTO> call = Utils.getYatraShareAPI().verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
-            //asynchronous call
-            call.enqueue(new Callback<UserDataDTO>() {
-                /**
-                 * Successful HTTP response.
-                 *
-                 * @param response server response
-                 * @param retrofit adapter
-                 */
-                @Override
-                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                    if (response != null && response.body() != null && response.body().Data != null) {
-                        if (response.body().Data.equalsIgnoreCase("Success")) {
-                            mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, true);
-                            mEditor.commit();
-                            ((HomeActivity) mContext).showSnackBar(getString(R.string.mobileUpdated));
-                            Utils.deleteFile(mContext, userGuid);
-                            ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
-                        } else {
-                            ((HomeActivity) mContext).showSnackBar(response.body().Data);
+        if (Utils.isInternetAvailable(mContext)) {
+            if (!verificationCodeEdit.getText().toString().isEmpty()) {
+                verifyCodeLayout.setError(null);
+                verifyCodeLayout.setErrorEnabled(false);
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                Call<UserDataDTO> call = Utils.getYatraShareAPI().verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
+                //asynchronous call
+                call.enqueue(new Callback<UserDataDTO>() {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param response server response
+                     * @param retrofit adapter
+                     */
+                    @Override
+                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                        if (response != null && response.body() != null && response.body().Data != null) {
+                            if (response.body().Data.equalsIgnoreCase("Success")) {
+                                mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, true);
+                                mEditor.commit();
+                                ((HomeActivity) mContext).showSnackBar(getString(R.string.mobileUpdated));
+                                Utils.deleteFile(mContext, userGuid);
+                                ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                            } else {
+                                ((HomeActivity) mContext).showSnackBar(response.body().Data);
+                            }
                         }
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
                     }
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                }
 
-                /**
-                 * Invoked when a network or unexpected exception occurred during the HTTP request.
-                 *
-                 * @param t error
-                 */
-                @Override
-                public void onFailure(Throwable t) {
-                    android.util.Log.e(TAG, "FAILURE RESPONSE");
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                }
-            });
-        } else {
-            verifyCodeLayout.setError("Enter code");
+                    /**
+                     * Invoked when a network or unexpected exception occurred during the HTTP request.
+                     *
+                     * @param t error
+                     */
+                    @Override
+                    public void onFailure(Throwable t) {
+                        android.util.Log.e(TAG, "FAILURE RESPONSE");
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                    }
+                });
+            } else {
+                verifyCodeLayout.setError("Enter code");
+            }
         }
     }
 
@@ -186,42 +188,44 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.resend_code_bt)
     public void sendVerifyCode() {
-        if (Utils.isPhoneValid(mContext, phoneEdit.getText().toString())) {
-            resendCodeBt.setText("Resend Code");
-            Utils.showProgress(true, mProgressView, mProgressBGView);
+        if (Utils.isInternetAvailable(mContext)) {
+            if (Utils.isPhoneValid(mContext, phoneEdit.getText().toString())) {
+                resendCodeBt.setText("Resend Code");
+                Utils.showProgress(true, mProgressView, mProgressBGView);
 
-            Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationCode(userGuid);
-            //asynchronous call
-            call.enqueue(new Callback<UserDataDTO>() {
-                /**
-                 * Successful HTTP response.
-                 *
-                 * @param response server response
-                 * @param retrofit adapter
-                 */
-                @Override
-                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                    if (response != null && response.body() != null && response.body().Data != null) {
-                        if (response.body().Data.equalsIgnoreCase("Success")) {
-                            Utils.showToast(mContext, "Verification code sent");
+                Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationCode(userGuid);
+                //asynchronous call
+                call.enqueue(new Callback<UserDataDTO>() {
+                    /**
+                     * Successful HTTP response.
+                     *
+                     * @param response server response
+                     * @param retrofit adapter
+                     */
+                    @Override
+                    public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                        if (response != null && response.body() != null && response.body().Data != null) {
+                            if (response.body().Data.equalsIgnoreCase("Success")) {
+                                Utils.showToast(mContext, "Verification code sent");
+                            }
                         }
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
                     }
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                }
 
-                /**
-                 * Invoked when a network or unexpected exception occurred during the HTTP request.
-                 *
-                 * @param t error
-                 */
-                @Override
-                public void onFailure(Throwable t) {
-                    android.util.Log.e(TAG, "FAILURE RESPONSE");
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                }
-            });
+                    /**
+                     * Invoked when a network or unexpected exception occurred during the HTTP request.
+                     *
+                     * @param t error
+                     */
+                    @Override
+                    public void onFailure(Throwable t) {
+                        android.util.Log.e(TAG, "FAILURE RESPONSE");
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                    }
+                });
+            }
         }
     }
 

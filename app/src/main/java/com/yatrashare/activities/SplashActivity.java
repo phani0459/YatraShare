@@ -237,34 +237,36 @@ public class SplashActivity extends AppCompatActivity implements Callback<Google
     }
 
     private void getCountries(final String countryName, final boolean isSkip) {
-        Utils.showProgress(true, splashProgress, progressBGView);
-        Call<Countries> call = Utils.getYatraShareAPI().GetCountries();
-        call.enqueue(new Callback<Countries>() {
-            @Override
-            public void onResponse(Response<Countries> response, Retrofit retrofit) {
-                if (response.body() != null && response.body().Data != null && response.body().Data.size() > 0) {
-                    if (!isSkip) {
-                        for (int i = 0; i < response.body().Data.size(); i++) {
-                            if (response.body().Data.get(i).CountryName.equalsIgnoreCase(countryName)) {
-                                getCountryInfo(response.body().Data.get(i).CountryCode, countryName);
+        if (Utils.isInternetAvailable(this)) {
+            Utils.showProgress(true, splashProgress, progressBGView);
+            Call<Countries> call = Utils.getYatraShareAPI().GetCountries();
+            call.enqueue(new Callback<Countries>() {
+                @Override
+                public void onResponse(Response<Countries> response, Retrofit retrofit) {
+                    if (response.body() != null && response.body().Data != null && response.body().Data.size() > 0) {
+                        if (!isSkip) {
+                            for (int i = 0; i < response.body().Data.size(); i++) {
+                                if (response.body().Data.get(i).CountryName.equalsIgnoreCase(countryName)) {
+                                    getCountryInfo(response.body().Data.get(i).CountryCode, countryName);
+                                }
                             }
+                        } else {
+                            Utils.showProgress(false, splashProgress, progressBGView);
+                            Intent intent = new Intent(SplashActivity.this, SelectCountryActivity.class);
+                            intent.putExtra("Countries", response.body().Data);
+                            startActivity(intent);
+                            finish();
                         }
-                    } else {
-                        Utils.showProgress(false, splashProgress, progressBGView);
-                        Intent intent = new Intent(SplashActivity.this, SelectCountryActivity.class);
-                        intent.putExtra("Countries", response.body().Data);
-                        startActivity(intent);
-                        finish();
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Throwable t) {
-                Utils.showProgress(false, splashProgress, progressBGView);
-                startHomePage();
-            }
-        });
+                @Override
+                public void onFailure(Throwable t) {
+                    Utils.showProgress(false, splashProgress, progressBGView);
+                    startHomePage();
+                }
+            });
+        }
     }
 
     public void startHomePage() {
@@ -285,23 +287,25 @@ public class SplashActivity extends AppCompatActivity implements Callback<Google
     }
 
     private void getCountryInfo(final String countryCode, final String countryName) {
-        Call<CountryInfo> call = Utils.getYatraShareAPI().GetCountryInfo(countryCode);
-        call.enqueue(new Callback<CountryInfo>() {
-            @Override
-            public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {
-                if (response.body() != null && response.body().Data != null) {
-                    Utils.saveCountryInfo(SplashActivity.this, response.body().Data, countryName);
+        if (Utils.isInternetAvailable(this)) {
+            Call<CountryInfo> call = Utils.getYatraShareAPI().GetCountryInfo(countryCode);
+            call.enqueue(new Callback<CountryInfo>() {
+                @Override
+                public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {
+                    if (response.body() != null && response.body().Data != null) {
+                        Utils.saveCountryInfo(SplashActivity.this, response.body().Data, countryName);
+                        Utils.showProgress(false, splashProgress, progressBGView);
+                        startHomePage();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
                     Utils.showProgress(false, splashProgress, progressBGView);
                     startHomePage();
                 }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Utils.showProgress(false, splashProgress, progressBGView);
-                startHomePage();
-            }
-        });
+            });
+        }
     }
 
     public Address getAddress(double latitude, double longitude) {

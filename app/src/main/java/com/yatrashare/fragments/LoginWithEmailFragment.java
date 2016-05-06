@@ -192,20 +192,25 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                         fgtEmailLayout.setError(getString(R.string.error_invalid_phone));
                         return;
                     }
+                } else {
+                    if (!Utils.isEmailValid(email)) {
+                        fgtEmailLayout.setError(getString(R.string.error_invalid_email));
+                        return;
+                    }
                 }
 
-                if (!Utils.isEmailValid(email)) {
-                    fgtEmailLayout.setError(getString(R.string.error_invalid_email));
-                    return;
-                }
 
-                // Show a progress bar, and kick off a background task to
-                // perform the user forgot password attempt.
-                fgtEmailLayout.setErrorEnabled(false);
-                fgtPhoneLayout.setErrorEnabled(false);
-                showFgtPwdProgress(true);
-                userFgtPwdTask(email, phoneNumber, dialog);
-                dialog.setCancelable(false);
+                if (Utils.isInternetAvailable(mContext)) {
+                    // Show a progress bar, and kick off a background task to
+                    // perform the user forgot password attempt.
+                    fgtEmailLayout.setErrorEnabled(false);
+                    fgtPhoneLayout.setErrorEnabled(false);
+                    showFgtPwdProgress(true);
+                    userFgtPwdTask(email, phoneNumber, dialog);
+                    dialog.setCancelable(false);
+                } else {
+                    dialog.dismiss();
+                }
             }
         });
 
@@ -350,12 +355,13 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 mEmailLayout.setError(getString(R.string.error_invalid_phone));
                 return;
             }
+        } else {
+            if (!Utils.isEmailValid(userId)) {
+                mEmailLayout.setError(getString(R.string.error_invalid_email));
+                return;
+            }
         }
 
-        if (!Utils.isEmailValid(userId)) {
-            mEmailLayout.setError(getString(R.string.error_invalid_email));
-            return;
-        }
 
         if (TextUtils.isEmpty(password)) {
             mEmailLayout.setErrorEnabled(false);
@@ -367,8 +373,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         // perform the user login attempt.
         mEmailLayout.setErrorEnabled(false);
         mPasswordLayout.setErrorEnabled(false);
-        Utils.showProgress(true, mProgressView, mProgressBGView);
-        userLoginTask(userId, password);
+
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            userLoginTask(userId, password);
+        }
     }
 
     @Override
@@ -445,7 +454,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                     android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                     mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body());
                     mSharedPrefEditor.commit();
-                    getBasicProfileInfo(response.body());
+                    if (Utils.isInternetAvailable(mContext)) {
+                        getBasicProfileInfo(response.body());
+                    } else {
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
+                    }
                 } else {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));

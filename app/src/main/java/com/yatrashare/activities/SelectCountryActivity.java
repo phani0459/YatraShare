@@ -87,26 +87,28 @@ public class SelectCountryActivity extends AppCompatActivity {
     }
 
     private void getCountryInfo(final String countryCode, final String countryName) {
-        Utils.showProgress(true, splashProgress, progressBGView);
-        mEditor.putString(Constants.PREF_USER_COUNTRY, countryName);
-        mEditor.apply();
-        Call<CountryInfo> call = Utils.getYatraShareAPI().GetCountryInfo(countryCode);
-        call.enqueue(new Callback<CountryInfo>() {
-            @Override
-            public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {
-                Log.e("Response raw", "" + response.raw());
-                if (response.body() != null && response.body().Data != null) {
-                    Utils.saveCountryInfo(SelectCountryActivity.this, response.body().Data, countryName);
+        if (Utils.isInternetAvailable(this)) {
+            Utils.showProgress(true, splashProgress, progressBGView);
+            mEditor.putString(Constants.PREF_USER_COUNTRY, countryName);
+            mEditor.apply();
+            Call<CountryInfo> call = Utils.getYatraShareAPI().GetCountryInfo(countryCode);
+            call.enqueue(new Callback<CountryInfo>() {
+                @Override
+                public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {
+                    Log.e("Response raw", "" + response.raw());
+                    if (response.body() != null && response.body().Data != null) {
+                        Utils.saveCountryInfo(SelectCountryActivity.this, response.body().Data, countryName);
+                        Utils.showProgress(false, splashProgress, progressBGView);
+                        startHomePage();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
                     Utils.showProgress(false, splashProgress, progressBGView);
                     startHomePage();
                 }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Utils.showProgress(false, splashProgress, progressBGView);
-                startHomePage();
-            }
-        });
+            });
+        }
     }
 }

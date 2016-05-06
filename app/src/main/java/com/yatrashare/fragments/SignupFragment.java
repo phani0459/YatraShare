@@ -248,8 +248,10 @@ public class SignupFragment extends Fragment {
 
         // Show a progress spinner, and kick off a background task to
         // perform the user login attempt.
-        Utils.showProgress(true, mProgressView, mProgressBGView);
-        userSignupTask(email, password, phoneNumber, userFirstName, gender, userLastName);
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            userSignupTask(email, password, phoneNumber, userFirstName, gender, userLastName);
+        }
     }
 
     private boolean isPasswordValid(String password) {

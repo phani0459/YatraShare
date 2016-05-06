@@ -137,65 +137,67 @@ public class ProvideRatingFragment extends Fragment {
 
     @OnClick(R.id.btnfindMember)
     public void findMember() {
-        Utils.hideSoftKeyboard(findMemMobileEdit);
-        String mobile = findMemMobileEdit.getText().toString();
-        if (mobile.isEmpty()) {
-            Utils.showToast(mContext, "Enter Mobile Number");
-        } else {
-            if (isPhoneValid(mobile)) {
-                Utils.showProgress(true, mProgressView, mProgressBGView);
-
-                Call<RatingReceiverInfo> call = Utils.getYatraShareAPI().getRatingReceiverUserinfoId(userGuid, mobile);
-                //asynchronous call
-                call.enqueue(new Callback<RatingReceiverInfo>() {
-                    /**
-                     * Successful HTTP response.
-                     *
-                     * @param response
-                     * @param retrofit
-                     */
-                    @Override
-                    public void onResponse(retrofit.Response<RatingReceiverInfo> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                        if (response.body() != null && response.body().Data != null && response.body().Data.Email != null && response.body().Data.MobileNumber != null) {
-                            showFindMemberBtn.setVisibility(View.VISIBLE);
-                            receiverInfoLayout.setVisibility(View.VISIBLE);
-                            giveFeedBackLayout.setVisibility(View.VISIBLE);
-                            findMemberLayout.setVisibility(View.GONE);
-
-                            ratingReceiverEmail.setText(response.body().Data.Email);
-                            ratingReceiverMobile.setText(response.body().Data.MobileNumber);
-
-                            String profilePic = response.body().Data.ReceiverProfilePic;
-                            if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
-                                Uri uri = Uri.parse(profilePic);
-                                ratingReciverDrawee.setImageURI(uri);
-                            } else {
-                                ratingReciverDrawee.setImageURI(Constants.getDefaultPicURI());
-                            }
-
-                            receiverGuid = response.body().Data.ReceiverGuid;
-
-                        } else {
-
-                        }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
-
-                    /**
-                     * Invoked when a network or unexpected exception occurred during the HTTP request.
-                     *
-                     * @param t
-                     */
-                    @Override
-                    public void onFailure(Throwable t) {
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-                    }
-                });
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.hideSoftKeyboard(findMemMobileEdit);
+            String mobile = findMemMobileEdit.getText().toString();
+            if (mobile.isEmpty()) {
+                Utils.showToast(mContext, "Enter Mobile Number");
             } else {
-                Utils.showToast(mContext, "Enter Valid Mobile Number");
+                if (isPhoneValid(mobile)) {
+                    Utils.showProgress(true, mProgressView, mProgressBGView);
+
+                    Call<RatingReceiverInfo> call = Utils.getYatraShareAPI().getRatingReceiverUserinfoId(userGuid, mobile);
+                    //asynchronous call
+                    call.enqueue(new Callback<RatingReceiverInfo>() {
+                        /**
+                         * Successful HTTP response.
+                         *
+                         * @param response
+                         * @param retrofit
+                         */
+                        @Override
+                        public void onResponse(retrofit.Response<RatingReceiverInfo> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                            if (response.body() != null && response.body().Data != null && response.body().Data.Email != null && response.body().Data.MobileNumber != null) {
+                                showFindMemberBtn.setVisibility(View.VISIBLE);
+                                receiverInfoLayout.setVisibility(View.VISIBLE);
+                                giveFeedBackLayout.setVisibility(View.VISIBLE);
+                                findMemberLayout.setVisibility(View.GONE);
+
+                                ratingReceiverEmail.setText(response.body().Data.Email);
+                                ratingReceiverMobile.setText(response.body().Data.MobileNumber);
+
+                                String profilePic = response.body().Data.ReceiverProfilePic;
+                                if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
+                                    Uri uri = Uri.parse(profilePic);
+                                    ratingReciverDrawee.setImageURI(uri);
+                                } else {
+                                    ratingReciverDrawee.setImageURI(Constants.getDefaultPicURI());
+                                }
+
+                                receiverGuid = response.body().Data.ReceiverGuid;
+
+                            } else {
+
+                            }
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                        }
+
+                        /**
+                         * Invoked when a network or unexpected exception occurred during the HTTP request.
+                         *
+                         * @param t
+                         */
+                        @Override
+                        public void onFailure(Throwable t) {
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                            ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                        }
+                    });
+                } else {
+                    Utils.showToast(mContext, "Enter Valid Mobile Number");
+                }
             }
         }
     }
@@ -208,49 +210,51 @@ public class ProvideRatingFragment extends Fragment {
 
     @OnClick(R.id.btnSubmitRating)
     public void submitRating() {
-        Utils.showProgress(true, mProgressView, mProgressBGView);
-        String feedBack = "", stars = "", travellerType = "";
-        feedBack = feedBackEditText.getText().toString();
-        stars = ratingValue.getText().toString();
-        travellerType = travellerTypeSpinner.getSelectedItem().toString();
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            String feedBack = "", stars = "", travellerType = "";
+            feedBack = feedBackEditText.getText().toString();
+            stars = ratingValue.getText().toString();
+            travellerType = travellerTypeSpinner.getSelectedItem().toString();
 
-        UserRating userRating = new UserRating(receiverGuid, stars, feedBack, travellerType);
+            UserRating userRating = new UserRating(receiverGuid, stars, feedBack, travellerType);
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().giveRatingtoUser(userGuid, userRating);
-        //asynchronous call
-        call.enqueue(new Callback<UserDataDTO>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response
-             * @param retrofit
-             */
-            @Override
-            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response.body() != null && response.body().Data != null) {
-                    if (response.body().Data.equalsIgnoreCase("Success")) {
-                        ((HomeActivity) mContext).showSnackBar("Rating submitted Successfully");
-                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, ""));
-                    } else {
-                        ((HomeActivity) mContext).showSnackBar(response.body().Data);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI().giveRatingtoUser(userGuid, userRating);
+            //asynchronous call
+            call.enqueue(new Callback<UserDataDTO>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response
+                 * @param retrofit
+                 */
+                @Override
+                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response.body() != null && response.body().Data != null) {
+                        if (response.body().Data.equalsIgnoreCase("Success")) {
+                            ((HomeActivity) mContext).showSnackBar("Rating submitted Successfully");
+                            ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, ""));
+                        } else {
+                            ((HomeActivity) mContext).showSnackBar(response.body().Data);
+                        }
                     }
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
                 }
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package com.yatrashare.fragments;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ComponentName;
@@ -12,14 +13,18 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,6 +63,9 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -65,6 +73,7 @@ public class EditProfileFragment extends Fragment {
 
 
     private static final String TAG = EditProfileFragment.class.getSimpleName();
+    private static final int REQUEST_READ_STORAGE = 14;
     @Bind(R.id.updateProfileProgress)
     public ProgressBar mProgressView;
     @Bind(R.id.updateProfileProgressBGView)
@@ -73,12 +82,16 @@ public class EditProfileFragment extends Fragment {
     public EditText dobEdit;
     @Bind(R.id.editProfileDobLayout)
     public TextInputLayout dobTextInputLayout;
+    @Bind(R.id.editProfileAboutLayout)
+    public TextInputLayout aboutTextInputLayout;
     @Bind(R.id.editProfileAboutMeEdit)
     public EditText aboutMeEdit;
     @Bind(R.id.updateUserFirstName)
     public EditText firstNameEdit;
     @Bind(R.id.updateUserLastName)
     public EditText lastNameEdit;
+    @Bind(R.id.lastNameLayout)
+    public TextInputLayout lastNameTextInputLayout;
     @Bind(R.id.editProfilePhoneEdit)
     public EditText phoneNoEdit;
     @Bind(R.id.editProfileEmailEdit)
@@ -125,6 +138,41 @@ public class EditProfileFragment extends Fragment {
         phoneNoEdit.setFilters(Utils.getInputFilter(Utils.getMobileMaxChars(mContext)));
 
         return view;
+    }
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_READ_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateProfilePic();
+            }
+        }
+    }
+
+    private boolean mayRequestStorage() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (mContext.checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && mContext.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(firstNameEdit, R.string.storage_permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_READ_STORAGE);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_READ_STORAGE);
+        }
+        return false;
     }
 
     /**
@@ -196,46 +244,56 @@ public class EditProfileFragment extends Fragment {
 
     @OnClick(R.id.updateProfilePic)
     public void updateProfilePic() {
-        if (selectedImageUri != null) {
-            File file = null;
-            try {
-                URI uri = new URI(selectedImageUri.toString());
-                file = new File(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-                file = null;
-            }
-            try {
-                if (file == null) {
-                    file = new File(getPath(selectedImageUri));
+        if (Utils.isInternetAvailable(mContext)) {
+            if (selectedImageUri != null) {
+                if (!mayRequestStorage()) {
+                    Utils.showToast(mContext, "Enable Storage Permissions in settings to upload profile pic");
+                    return;
                 }
 
-                Utils.showProgress(true, mProgressView, mProgressBGView);
-                RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-                RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("ProfilePic", file.getName(), requestFile).build();
+                Log.e(TAG, "updateProfilePic: ");
+                File file = null;
+                try {
+                    URI uri = new URI(selectedImageUri.toString());
+                    file = new File(uri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    file = null;
+                }
+                try {
+                    if (file == null) {
+                        file = new File(getPath(selectedImageUri));
+                    }
 
-                Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadProfilePic(userGuid, body);
-                call.enqueue(new Callback<UserDataDTO>() {
-                    @Override
-                    public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
-                        android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                        if (response.body() != null && response.isSuccess()) {
-                            mEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
-                            mEditor.commit();
-                            ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
+                    Utils.showProgress(true, mProgressView, mProgressBGView);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("ProfilePic", file.getName(), requestFile).build();
+
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadProfilePic(userGuid, body);
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        @Override
+                        public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            if (response.body() != null && response.isSuccess()) {
+                                mEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
+                                mEditor.commit();
+                                ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
+                            }
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
                         }
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
 
-                    @Override
-                    public void onFailure(Throwable t) {
-                        t.printStackTrace();
-                        android.util.Log.e(TAG, "FAILURE RESPONSE");
-                        Utils.showProgress(false, mProgressView, mProgressBGView);
-                    }
-                });
-            } catch (Exception e) {
-                e.printStackTrace();
+                        @Override
+                        public void onFailure(Throwable t) {
+                            t.printStackTrace();
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Utils.showToast(mContext, "Select Image");
             }
         }
     }
@@ -416,6 +474,22 @@ public class EditProfileFragment extends Fragment {
             return;
         }
         mUpdateUserNameLayout.setErrorEnabled(false);
+        if (TextUtils.isEmpty(userLastName)) {
+            lastNameTextInputLayout.setError(getString(R.string.error_invalid_lastname));
+            return;
+        }
+
+        lastNameTextInputLayout.setErrorEnabled(false);
+        if (TextUtils.isEmpty(aboutMe)) {
+            aboutTextInputLayout.setError(getString(R.string.error_required_aboutme));
+            return;
+        }
+        if (aboutMe.length() < 50) {
+            aboutTextInputLayout.setError(getString(R.string.error_invalid_aboutme));
+            return;
+        }
+
+        aboutTextInputLayout.setErrorEnabled(false);
         if (TextUtils.isEmpty(phoneNumber)) {
             mUpdatePhoneLayout.setError(getString(R.string.error_required_phone));
             return;
@@ -426,13 +500,16 @@ public class EditProfileFragment extends Fragment {
             return;
         }
         mUpdatePhoneLayout.setErrorEnabled(false);
+
         if (TextUtils.isEmpty(dob)) {
             dobTextInputLayout.setError("Enter Date of Birth");
             return;
         }
         dobTextInputLayout.setErrorEnabled(false);
 
-        updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
+        if (Utils.isInternetAvailable(mContext)) {
+            updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);
+        }
     }
 
     private void updateProfile(final String userGuid, String userFirstName, String userLastName, String email, final String dob, final String phoneNumber, String aboutMe) {

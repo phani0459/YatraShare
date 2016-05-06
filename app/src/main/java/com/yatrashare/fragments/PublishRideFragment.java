@@ -130,6 +130,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    luggageSpinner.setVisibility(View.VISIBLE);
                     selectedVehicle = "1";
                     getUserVehicleModels();
                 }
@@ -139,6 +140,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    luggageSpinner.setVisibility(View.GONE);
                     selectedVehicle = "2";
                     getUserVehicleModels();
                 }
@@ -167,11 +169,11 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                 luggageSpinner.setSelection(1);
                 selectedLuggageSize = luggageSpinner.getSelectedItem().toString();
             }
-            if (TextUtils.isEmpty(selectedTimeFlexi) || selectedTimeFlexi.equalsIgnoreCase("Time Flexibility")) {
+            if (TextUtils.isEmpty(selectedTimeFlexi) || selectedTimeFlexi.equalsIgnoreCase("Time Flexibility") || selectedTimeFlexi.equalsIgnoreCase("15Mins")) {
                 timeFlexiSpinner.setSelection(1);
                 selectedTimeFlexi = "15Mins";
             }
-            if (TextUtils.isEmpty(selectedDetour) || selectedDetour.equalsIgnoreCase("Select detour")) {
+            if (TextUtils.isEmpty(selectedDetour) || selectedDetour.equalsIgnoreCase("Select detour") || selectedDetour.equalsIgnoreCase("NoDetour")) {
                 detourSpinner.setSelection(1);
                 selectedDetour = "NoDetour";
             }
@@ -306,7 +308,11 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         }
         Log.e("stopOvers", "size " + stopOverPoints.size());
 
-        prepareRide();
+        if (Utils.isInternetAvailable(mContext)) {
+            prepareRide();
+        } else {
+            Utils.showProgress(false, mProgressBar, mProgressBGView);
+        }
 
     }
 
@@ -333,38 +339,40 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         String ride = gson.toJson(rideInfo);
         Log.e(TAG, "prepareRide: " + ride);
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, rideInfo);
-        call.enqueue(new Callback<UserDataDTO>() {
-            /*
-             * Successful HTTP response.
-             *
-             * @param response response from server
-             * @param retrofit adapter
-             */
-            @Override
-            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response.body() != null && response.body().Data != null) {
-                    if (response.body().Data.contains("-")) {
-                        Utils.showToast(mContext, "Successfully ride created");
-                        ((AppCompatActivity) mContext).finish();
-                    } else {
-                        Utils.showToast(mContext, getString(R.string.tryagain));
+        if (Utils.isInternetAvailable(mContext)) {
+            Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, rideInfo);
+            call.enqueue(new Callback<UserDataDTO>() {
+                /*
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response.body() != null && response.body().Data != null) {
+                        if (response.body().Data.contains("-")) {
+                            Utils.showToast(mContext, "Successfully ride created");
+                            ((AppCompatActivity) mContext).finish();
+                        } else {
+                            Utils.showToast(mContext, getString(R.string.tryagain));
+                        }
                     }
                 }
-            }
 
-            /*
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t throwable error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showToast(mContext, getString(R.string.tryagain));
-            }
-        });
+                /*
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showToast(mContext, getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
     public Address getAddress(double latitude, double longitude) {
@@ -457,91 +465,95 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void getVehicleSeats(String vehicleId) {
-        Utils.showProgress(true, mProgressBar, mProgressBGView);
-        Call<Seats> call = Utils.getYatraShareAPI().getUserVehicleSeats(userGuid, vehicleId);
-        call.enqueue(new Callback<Seats>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response response from server
-             * @param retrofit adapter
-             */
-            @Override
-            public void onResponse(retrofit.Response<Seats> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                ArrayList<String> vehicleSeats = new ArrayList<String>();
-                vehicleSeats.add("Select Seats");
-                if (response.body() != null && response.isSuccess()) {
-                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
-                    ArrayList<String> vehicleDatas = response.body().Data;
-                    if (vehicleDatas != null && vehicleDatas.size() > 0) {
-                        for (int i = 0; i < vehicleDatas.size(); i++) {
-                            if (!vehicleDatas.get(i).isEmpty()) {
-                                vehicleSeats.add(vehicleDatas.get(i));
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressBar, mProgressBGView);
+            Call<Seats> call = Utils.getYatraShareAPI().getUserVehicleSeats(userGuid, vehicleId);
+            call.enqueue(new Callback<Seats>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<Seats> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    ArrayList<String> vehicleSeats = new ArrayList<String>();
+                    vehicleSeats.add("Select Seats");
+                    if (response.body() != null && response.isSuccess()) {
+                        android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
+                        ArrayList<String> vehicleDatas = response.body().Data;
+                        if (vehicleDatas != null && vehicleDatas.size() > 0) {
+                            for (int i = 0; i < vehicleDatas.size(); i++) {
+                                if (!vehicleDatas.get(i).isEmpty()) {
+                                    vehicleSeats.add(vehicleDatas.get(i));
+                                }
                             }
+                            selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                         }
-                        selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                     }
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
-                Utils.showProgress(false, mProgressBar, mProgressBGView);
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t throwable Error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, mProgressBar, mProgressBGView);
-                showSnackBar(getString(R.string.tryagain));
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable Error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
+                    showSnackBar(getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
     private void getUserVehicleModels() {
-        Utils.showProgress(true, mProgressBar, mProgressBGView);
-        Call<Vehicle> call = Utils.getYatraShareAPI().getUserVehicleModels(userGuid, selectedVehicle);
-        call.enqueue(new Callback<Vehicle>() {
-            /**
-             * Successful HTTP response.
-             *
-             * @param response response from server
-             * @param retrofit adapter
-             */
-            @Override
-            public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
-                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                ArrayList<String> vehicleModels = new ArrayList<String>();
-                vehicleModels.add("Select Model");
-                if (response.body() != null && response.isSuccess()) {
-                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
-                    vehicleDatas = response.body().Data;
-                    if (vehicleDatas != null && vehicleDatas.size() > 0) {
-                        for (int i = 0; i < vehicleDatas.size(); i++) {
-                            if (!vehicleDatas.get(i).ModelName.isEmpty()) {
-                                vehicleModels.add(vehicleDatas.get(i).ModelName);
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressBar, mProgressBGView);
+            Call<Vehicle> call = Utils.getYatraShareAPI().getUserVehicleModels(userGuid, selectedVehicle);
+            call.enqueue(new Callback<Vehicle>() {
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<Vehicle> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    ArrayList<String> vehicleModels = new ArrayList<String>();
+                    vehicleModels.add("Select Model");
+                    if (response.body() != null && response.isSuccess()) {
+                        android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
+                        vehicleDatas = response.body().Data;
+                        if (vehicleDatas != null && vehicleDatas.size() > 0) {
+                            for (int i = 0; i < vehicleDatas.size(); i++) {
+                                if (!vehicleDatas.get(i).ModelName.isEmpty()) {
+                                    vehicleModels.add(vehicleDatas.get(i).ModelName);
+                                }
                             }
+                            selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
                         }
-                        selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
                     }
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
-                Utils.showProgress(false, mProgressBar, mProgressBGView);
-            }
 
-            /**
-             * Invoked when a network or unexpected exception occurred during the HTTP request.
-             *
-             * @param t throwable Error
-             */
-            @Override
-            public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                Utils.showProgress(false, mProgressBar, mProgressBGView);
-                showSnackBar(getString(R.string.tryagain));
-            }
-        });
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable Error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
+                    showSnackBar(getString(R.string.tryagain));
+                }
+            });
+        }
     }
 
     public void showSnackBar(String msg) {

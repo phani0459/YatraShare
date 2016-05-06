@@ -263,18 +263,16 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                 String email = mEmailIdEdit.getText().toString();
                 String date = mDateEdit.getText().toString();
 
-                boolean cancel = false;
-
                 // Check for a valid email address.
                 if (TextUtils.isEmpty(email)) {
                     emailLayout.setError(getString(R.string.error_field_required));
-                    cancel = true;
+                    return;
                 } else if (!Utils.isEmailValid(email)) {
                     emailLayout.setError(getString(R.string.error_invalid_email));
-                    cancel = true;
+                    return;
                 }
 
-                if (!cancel) {
+                if (Utils.isInternetAvailable(mContext)) {
                     // Show a progress bar, and kick off a background task to
                     // perform the user forgot password attempt.
                     Utils.hideSoftKeyboard(mEmailIdEdit);
@@ -282,6 +280,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     showEmailAlertProgress(true);
                     createanEmailAlert(email, date, dialog);
                     dialog.setCancelable(false);
+                } else {
+                    dialog.dismiss();
                 }
             }
         });
@@ -375,7 +375,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             startTime = data.getStringExtra("START TIME");
             endTime = data.getStringExtra("END TIME");
             vehicleRegdType = data.getStringExtra("VEHICLE REGD");
-            searchRides();
+
+            if (Utils.isInternetAvailable(mContext)) searchRides();
         }
     }
 

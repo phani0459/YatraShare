@@ -85,7 +85,12 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
         // Set the adapter
         messagesRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        getMessages();
+        if (Utils.isInternetAvailable(mContext)) {
+            getMessages();
+        } else {
+            messagesRecycleView.setVisibility(View.GONE);
+            emptyRidesLayout.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 
@@ -113,9 +118,11 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response.body() != null && response.body().Data != null && response.body().Data.size() > 0) {
                     emptyRidesLayout.setVisibility(View.GONE);
+                    messagesRecycleView.setVisibility(View.VISIBLE);
                     MessagesList messagesList = response.body();
                     loadMessages(messagesList);
                 } else {
+                    messagesRecycleView.setVisibility(View.GONE);
                     emptyRidesLayout.setVisibility(View.VISIBLE);
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
@@ -185,8 +192,10 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        Utils.showProgress(true, mProgressView, mProgressBGView);
-                        deleteMessage(messagesListData, position);
+                        if (Utils.isInternetAvailable(mContext)) {
+                            Utils.showProgress(true, mProgressView, mProgressBGView);
+                            deleteMessage(messagesListData, position);
+                        }
                         dialog.dismiss();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -213,6 +222,6 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     }
 
     public void refreshMessagesList() {
-        getMessages();
+        if (Utils.isInternetAvailable(mContext)) getMessages();
     }
 }

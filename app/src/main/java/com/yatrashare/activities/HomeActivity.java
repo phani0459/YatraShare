@@ -747,30 +747,30 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 String newPwd = newPwdEdit.getText().toString();
                 String confirmPwd = confirmPwdEdit.getText().toString();
 
-                boolean cancel = false;
-
                 // Check for a valid Passwords
                 if (TextUtils.isEmpty(newPwd)) {
                     newPwdLayout.setError(getString(R.string.enter_newPwd_error));
-                    cancel = true;
+                    return;
                 } else if (TextUtils.isEmpty(confirmPwd)) {
                     confirmPwdLayout.setError(getString(R.string.confirm_pwd_error));
-                    cancel = true;
+                    return;
                 } else if (newPwd.length() < 6 || confirmPwd.length() < 6) {
                     confirmPwdLayout.setError("Password should be minimum 6 letters");
-                    cancel = true;
+                    return;
                 } else if (!newPwd.equals(confirmPwd)) {
                     confirmPwdLayout.setError(getString(R.string.pwd_do_not_match));
-                    cancel = true;
+                    return;
                 }
 
-                if (!cancel) {
+                if (Utils.isInternetAvailable(HomeActivity.this)) {
                     // Show a progress bar, and kick off a background task to
                     // perform the user forgot password attempt.
                     Utils.hideSoftKeyboard(confirmPwdEdit);
                     showChangePwdProgress(true);
                     changePwdTask(newPwd, dialog);
                     dialog.setCancelable(false);
+                } else {
+                    dialog.dismiss();
                 }
             }
         });

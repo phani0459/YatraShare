@@ -34,7 +34,7 @@
     <string name="searchRide">Find a Ride</string>
     <string name="offerRide">Offer a Ride</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="aboutMe">About</string>
+    <string name="aboutMe">About me*</string>
     <string name="retry">Retry</string>
     <string name="ride_type">Ride Type</string>
 
@@ -220,7 +220,7 @@
     <string name="changedPwd">Passwords changed successfully</string>
 
     <!-- String for update mobile fragment -->
-    <string name="mobileUpdated">Mobile number successfully updated.</string>
+    <string name="mobileUpdated">Mobile number successfully Verified.</string>
 
     <!-- String for No Of Seats Dialog -->
     <string name="seatsDialogHeading">How many Seats?</string>
@@ -232,6 +232,8 @@
     <string name="error_invalid_lastname">Last Name is required</string>
     <string name="error_invalid_phone">Invalid Phone number</string>
     <string name="error_required_phone">Phone number is required</string>
+    <string name="error_required_aboutme">Tell us about yourself</string>
+    <string name="error_invalid_aboutme">About yourself should be minimum of 50 characters</string>
     <string name="error_required_password">password is required</string>
     <string name="error_invalid_password">password is too short</string>
     <string name="error_invalid_login">Email or password entered is incorrect</string>
@@ -243,13 +245,9 @@
     <string name="resetpwd_ratioanle">An Email is sent to registered Mail, to reset Password.</string>
     <string name="emailalertCreated_rationale">We will send an email, Once the ride is available.</string>
     <string name="userguide_ratioanle">There is a problem with login. Please Logout and Login Again.</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing emailcompletions."</string>
     <string name="location_permission_rationale">"Location permissions are needed to access the App."</string>
-    <string name="storage_permission_rationale">"Storeage permissions are needed for providing sdcard
-        Images."
-    </string>
+    <string name="storage_permission_rationale">"Storeage permissions are needed for uploading Images."</string>
     <string name="login_rationale">Log in or Sign up</string>
     <string name="terms_and_conditions_rationale">You\'ll be agreeing to our Terms and Conditions.</string>
     <string name="password_rationale">Your password must contain a combination of letters and numbers.</string>
