@@ -15,9 +15,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -87,6 +89,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         // Required empty public constructor
     }
 
+    private LinearLayoutManager mLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,7 +107,11 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
         emptyRidesHeading.setText("There are no rides at present.");
         emptyRidesSubHeading.setText("Wait for some time and Try again!");
+
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
+        mRecyclerView.addOnScrollListener(mRecyclerViewOnScrollListener);
 
         return inflatedLayout;
     }
@@ -128,9 +135,9 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     }
 
     public void searchRides() {
-        Utils.showProgress(true, mProgressView, mProgressBGView);
+        Log.e(TAG, "searchRides: " + currentPage);
         FindRide findRide = new FindRide(whereFrom, whereTo,
-                date, comfortLevel, "1", startTime, endTime, gender, rideType, vehicleType, "10", vehicleRegdType);
+                date, comfortLevel, currentPage + "", startTime, endTime, gender, rideType, vehicleType, Constants.PAGE_SIZE + "", vehicleRegdType);
 
         Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
         //asynchronous call
@@ -150,10 +157,23 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     FindRideFragment.this.searchRides = response.body();
                     if (searchRides != null) {
                         if (searchRides.Data != null && searchRides.Data.size() > 0) {
+
+                            if (searchRides.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
+
                             emptyRidesLayout.setVisibility(View.GONE);
                             createEmailAlertBtn.setVisibility(View.GONE);
-                            mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
-                            mRecyclerView.setAdapter(mAdapter);
+
+                            if (currentPage == 1) {
+                                mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
+                                mRecyclerView.setAdapter(mAdapter);
+                            } else {
+                                if (mAdapter != null) {
+                                    for (SearchRides.SearchData data : searchRides.Data) {
+                                        mAdapter.addItem(data);
+                                    }
+                                }
+                            }
+
                         } else {
                             emptyRidesLayout.setVisibility(View.VISIBLE);
                             mRecyclerView.setAdapter(null);
@@ -162,6 +182,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     } else {
                         ((HomeActivity) mContext).showSnackBar("No rides available at this time, Try again!");
                     }
+                    if (mAdapter != null) mAdapter.removeLoading();
                 }
             }
 
@@ -189,6 +210,38 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
     final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
     Calendar newCalendar = Calendar.getInstance();
+
+    private boolean mIsLoading = false;
+    private boolean mIsLastPage = false;
+    private RecyclerView.OnScrollListener mRecyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = mLayoutManager.getChildCount();
+            int totalItemCount = mLayoutManager.getItemCount();
+            int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+            if (!mIsLoading && !mIsLastPage) {
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= Constants.PAGE_SIZE) {
+                    loadMoreItems();
+                }
+            }
+        }
+    };
+
+    int currentPage = 1;
+
+    private void loadMoreItems() {
+        mIsLoading = true;
+        if (mAdapter != null) mAdapter.addLoading();
+        currentPage = currentPage + 1;
+        searchRides();
+    }
 
     @OnClick(R.id.btn_createEmailAlert)
     public void showEmailAlertDialog() {
@@ -376,7 +429,10 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             endTime = data.getStringExtra("END TIME");
             vehicleRegdType = data.getStringExtra("VEHICLE REGD");
 
-            if (Utils.isInternetAvailable(mContext)) searchRides();
+            if (Utils.isInternetAvailable(mContext)) {
+                Utils.showProgress(true, mProgressView, mProgressBGView);
+                searchRides();
+            }
         }
     }
 

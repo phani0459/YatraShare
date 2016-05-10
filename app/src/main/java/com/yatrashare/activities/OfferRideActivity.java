@@ -414,7 +414,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         rideInfoDto.setmReturnDate(rideArrivalDate);
         rideInfoDto.setmDepartureDate(rideDepartureDate);
         rideInfoDto.setmTotalprice(totalPrice + "");
-        rideInfoDto.setmTotalprice(totalPrice + "");
         rideInfoDto.setmTotalkilometers(totalKM + "");
         rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
         rideInfoDto.setmReturnTime(rideArrivalTime);

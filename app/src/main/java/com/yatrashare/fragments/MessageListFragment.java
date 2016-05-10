@@ -50,6 +50,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     private MessagesRecyclerViewAdapter adapter;
     @Bind(R.id.emptyRidesLayout)
     public ScrollView emptyRidesLayout;
+    private LinearLayoutManager mLayoutManager;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -83,15 +84,49 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         // Set the adapter
-        messagesRecycleView.setLayoutManager(new LinearLayoutManager(mContext));
+        mLayoutManager = new LinearLayoutManager(mContext);
+        messagesRecycleView.setLayoutManager(mLayoutManager);
 
         if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
             getMessages();
         } else {
             messagesRecycleView.setVisibility(View.GONE);
             emptyRidesLayout.setVisibility(View.VISIBLE);
         }
+
+        messagesRecycleView.addOnScrollListener(mRecyclerViewOnScrollListener);
         return view;
+    }
+
+    private boolean mIsLoading = false;
+    private boolean mIsLastPage = false;
+    private RecyclerView.OnScrollListener mRecyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = mLayoutManager.getChildCount();
+            int totalItemCount = mLayoutManager.getItemCount();
+            int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+            if (!mIsLoading && !mIsLastPage) {
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= Constants.PAGE_SIZE) {
+                    loadMoreItems();
+                }
+            }
+        }
+    };
+
+    private void loadMoreItems() {
+        mIsLoading = true;
+        if (adapter != null) adapter.addLoading();
+        currentPage = currentPage + 1;
+        getMessages();
     }
 
     @Override
@@ -102,9 +137,10 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
         ((HomeActivity) mContext).prepareMenu();
     }
 
+    int currentPage = 1;
+
     public void getMessages() {
-        Utils.showProgress(true, mProgressView, mProgressBGView);
-        Call<MessagesList> call = Utils.getYatraShareAPI().userInboxMessages(userGuid, "1", "20");
+        Call<MessagesList> call = Utils.getYatraShareAPI().userInboxMessages(userGuid, currentPage + "", "" + Constants.PAGE_SIZE);
         //asynchronous call
         call.enqueue(new Callback<MessagesList>() {
             /**
@@ -144,8 +180,10 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
 
     private void loadMessages(MessagesList messagesList) {
         if (messagesList != null && messagesList.Data != null && messagesList.Data.size() > 0) {
+            if (messagesList.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
             adapter = new MessagesRecyclerViewAdapter(mContext, messagesList.Data, this);
             messagesRecycleView.setAdapter(adapter);
+            adapter.removeLoading();
         }
     }
 
@@ -222,6 +260,9 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     }
 
     public void refreshMessagesList() {
-        if (Utils.isInternetAvailable(mContext)) getMessages();
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            getMessages();
+        }
     }
 }

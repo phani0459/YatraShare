@@ -7,66 +7,11 @@ import android.net.Uri;
  */
 public class Constants {
 
-    public static final String LOGIN_URL = "http://www.yatrashare.com/api/User/Login?";
-    /**
-     * {
-     * "Email": "bharathpendru@gmail.com",
-     * "Password": "abcdefgh"
-     * }
-     */
-    public static final String REGISTER_URL = "http://www.yatrashare.com/api/User/Register?";
-    /**
-     * {
-     * "FirstName": "bharath",
-     * "Email": "bharath@gmail.com",
-     * "Password": "abcdefgh",
-     * "PhoneNumber":"9533393567"
-     * }
-     */
-    public static final String PROFILE_URL = "http://www.yatrashare.com/api/Profile/GetProfileInfo?";
-    /**
-     * userGuid = d64f79de-5745-44e8-b4bd-932838fe88cb
-     */
-    public static final String FORGOTPWD_URL = "http://www.yatrashare.com/api/User/ForgotPassword?";
-    /**
-     * {
-     * "Email": "bharathP369@gmail.com",
-     * "PhoneNumber": "9533393567"
-     * }
-     */
-
-    public static final String SEARCH_RIDE_URL = "http://www.yatrashare.com/api/Rides/SearchRides?";
-    /**
-     * {
-     * "DeparturePoint":"Hyderabad",
-     * "ArrivalPoint":"",
-     * "DepartureDate":"",
-     * "Comfort":"ALLTYPES",
-     * "currentPage":"1",
-     * "StartTime":"1",
-     * "EndTime":"24",
-     * "LadiesOnly":"All",
-     * "RideType":"1",
-     * "VehicleType":"1"
-     * }
-     */
-
-    public static final String BOOKED_RIDES_URL = "http://www.yatrashare.com/api/Rides/GetUserConnectedRides?";
-    /**
-     * userGuid=d64f79de-5745-44e8-b4bd-932838fe88cb&typeOfRide=2
-     */
-
-    public static final String LOGIN_WITH_FB = "http://www.yatrashare.com/api/User/LoginUsingFacebook?";
-    /**
-     * FaceBookid:
-     * Name:
-     * FriendsCount:
-     * Email:
-     * ProfilePicture:
-     */
-
     public static final String defaultPicURL = "http://www.mediafire.com/convkey/5b62/1bi4vdi37z3wfvczg.jpg?size_id=3";
     public static final String defaultFemaleURL = "http://www.mediafire.com/convkey/9110/ib8u5bpbdjr9frezg.jpg?size_id=3";
+    public static final int PAGE_SIZE = 20;
+    public static final int TYPE_ITEM = 3;
+    public static final int TYPE_LOADING = 4;
 
     public static Uri getDefaultFemaleURI() {
         Uri uri = Uri.parse(defaultFemaleURL);

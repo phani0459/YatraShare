@@ -213,7 +213,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         if (km > 0 && km < 10) {
             price = 20;
         } else {
-            price = Math.round(km * 1.8 / 10) * 10;
+            price = Math.round((km * 1.8) / 10) * 10;
         }
         return price;
     }
@@ -229,7 +229,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         String mDepartureState = "";
         String mArrivalState = "";
         String mRoutePrice;
-        String mUserUpdatedPrice;
         String mreadOnly;
         String mkilometers;
         String morder;
@@ -248,7 +247,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         }
 
         mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
-        mUserUpdatedPrice = rideInfoDto.getUserUpdatedPrice();
         mreadOnly = "";
 
         mkilometers = distance;
@@ -256,7 +254,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         mMainRoute = route.isMainRoute() + "";
         mTimeframe = duration;
         RideInfo.PossibleRoutes possibleRoute = new RideInfo().new PossibleRoutes(mDeparture, mArrival, mDepartureCity, mMainRoute,
-                mTimeframe, mArrivalCity, mDepartureState, mArrivalState, mRoutePrice, mUserUpdatedPrice, mreadOnly, mkilometers, morder);
+                mTimeframe, mArrivalCity, mDepartureState, mArrivalState, mRoutePrice, mRoutePrice, mreadOnly, mkilometers, morder);
 
         if (isMain) {
             mainPossibleRoutes.add(possibleRoute);

@@ -91,8 +91,8 @@ public class RatingsFragment extends Fragment {
                     /**
                      * Successful HTTP response.
                      *
-                     * @param response
-                     * @param retrofit
+                     * @param response server response
+                     * @param retrofit adapter
                      */
                     @Override
                     public void onResponse(retrofit.Response<Rating> response, Retrofit retrofit) {
@@ -114,7 +114,7 @@ public class RatingsFragment extends Fragment {
                     /**
                      * Invoked when a network or unexpected exception occurred during the HTTP request.
                      *
-                     * @param t
+                     * @param t error
                      */
                     @Override
                     public void onFailure(Throwable t) {
@@ -124,6 +124,8 @@ public class RatingsFragment extends Fragment {
                     }
                 });
             }
+        } else {
+            emptyRidesLayout.setVisibility(View.VISIBLE);
         }
     }
 

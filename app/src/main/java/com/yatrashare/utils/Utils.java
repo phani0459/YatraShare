@@ -27,6 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.okhttp.OkHttpClient;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
@@ -319,6 +322,67 @@ public class Utils {
         CountryData countryData = getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         if (countryData != null) return Html.fromHtml(countryData.CurrencySymbol);
         return Html.fromHtml("&#8377;");
+    }
+
+    public static LatLng getPresentLatLng(Context mContext) {
+        GPSTracker gps = new GPSTracker(mContext);
+        LatLng latLng;
+
+        double longitude = 0;
+        double latitude = 0;
+        if (gps.canGetLocation()) {
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+        }
+
+        latLng = new LatLng(latitude, longitude);
+        return latLng;
+    }
+
+    public static LatLngBounds createBoundsWithMinDiagonal(Context mContext) {
+        /*LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(getPresentLatLng(mContext));
+        builder.include(getPresentLatLng(mContext));
+
+        LatLngBounds tmpBounds = builder.build();
+        *//** Add 2 points 1000m northEast and southWest of the center.
+         * They increase the bounds only, if they are not already larger
+         * than this.
+         * 1000m on the diagonal translates into about 709m to each direction. *//*
+        LatLng center = tmpBounds.getCenter();
+        LatLng northEast = move(center, 709, 709);
+        LatLng southWest = move(center, -709, -709);
+        builder.include(southWest);
+        builder.include(northEast);
+        return builder.build();*/
+
+        LatLngBounds latLngBounds = new LatLngBounds(getPresentLatLng(mContext), getPresentLatLng(mContext));
+
+        return latLngBounds;
+    }
+
+    private static final double EARTHRADIUS = 6366198;
+
+    /**
+     * Create a new LatLng which lies toNorth meters north and toEast meters
+     * east of startLL
+     */
+    private static LatLng move(LatLng startLL, double toNorth, double toEast) {
+        double lonDiff = meterToLongitude(toEast, startLL.latitude);
+        double latDiff = meterToLatitude(toNorth);
+        return new LatLng(startLL.latitude + latDiff, startLL.longitude + lonDiff);
+    }
+
+    private static double meterToLongitude(double meterToEast, double latitude) {
+        double latArc = Math.toRadians(latitude);
+        double radius = Math.cos(latArc) * EARTHRADIUS;
+        double rad = meterToEast / radius;
+        return Math.toDegrees(rad);
+    }
+
+    private static double meterToLatitude(double meterToNorth) {
+        double rad = meterToNorth / EARTHRADIUS;
+        return Math.toDegrees(rad);
     }
 
     public static void showMobileVerifyDialog(final Context mContext, final String msg, final String originScree) {

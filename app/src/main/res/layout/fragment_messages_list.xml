@@ -15,6 +15,15 @@
         tools:context="com.yatrashare.fragments.MessageListFragment"
         tools:listitem="@layout/fragment_message_item" />
 
+
+    <include
+        android:id="@+id/emptyRidesLayout"
+        layout="@layout/no_rides_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
     <View
         android:id="@+id/messagesProgressBGView"
         android:layout_width="match_parent"
@@ -30,14 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
-    <include
-        android:id="@+id/emptyRidesLayout"
-        layout="@layout/no_rides_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:visibility="gone" />
 
 </RelativeLayout>

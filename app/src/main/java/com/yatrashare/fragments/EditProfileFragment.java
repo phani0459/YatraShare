@@ -251,7 +251,6 @@ public class EditProfileFragment extends Fragment {
                     return;
                 }
 
-                Log.e(TAG, "updateProfilePic: ");
                 File file = null;
                 try {
                     URI uri = new URI(selectedImageUri.toString());
@@ -275,6 +274,7 @@ public class EditProfileFragment extends Fragment {
                         public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
                             android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                             if (response.body() != null && response.isSuccess()) {
+                                Log.e(TAG, "Update Pic: " + response.body().Data);
                                 mEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
                                 mEditor.commit();
                                 ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
@@ -397,7 +397,11 @@ public class EditProfileFragment extends Fragment {
         }
 
         if (!TextUtils.isEmpty(userDob)) {
-            dobEdit.setText(userDob);
+            if (userDob.length() >= 10) {
+                dobEdit.setText(userDob.substring(0, 10));
+            } else {
+                dobEdit.setText(userDob);
+            }
         }
 
         if (!isImageLoaded) {
@@ -443,7 +447,7 @@ public class EditProfileFragment extends Fragment {
         dobDatePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                dobEdit.setText("");
+                dobEdit.setText(dobEdit.getText().toString());
                 dialog.dismiss();
             }
         });
