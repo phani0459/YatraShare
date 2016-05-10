@@ -203,6 +203,8 @@ public class Utils {
     public static int PWD_MAX_CHARS = 20;
     public static int EMAIL_MAX_CHARS = 50;
 
+    public static long TIME_CHECKER = 3 * 60 * 60 * 1000;
+
     public static InputFilter[] getInputFilter(int maxChars) {
         InputFilter[] filter = new InputFilter[]{new InputFilter.LengthFilter(maxChars)};
         return filter;

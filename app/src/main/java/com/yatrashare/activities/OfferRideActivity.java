@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.InputType;
@@ -42,6 +44,7 @@ import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -363,10 +366,29 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             Utils.showToast(this, "Enter Departure Date");
             return;
         }
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
         if (TextUtils.isEmpty(rideDepartureTime)) {
             Utils.showToast(this, "Enter Departure Time");
             return;
+        }
+
+        Date todaysDate = new Date();
+        String timeString = timeFormat.format(todaysDate.getTime() + Utils.TIME_CHECKER);
+        Log.e(TAG, "nextStep: " +  format.format(todaysDate));
+        Log.e(TAG, "22222222222222222: " +  format.format(rideDepartureDate));
+        if (format.format(todaysDate).equalsIgnoreCase(format.format(rideDepartureDate))) {
+            try {
+                Date rideTime = timeFormat.parse(rideDepartureTime);
+                Date currentTime = timeFormat.parse(timeString);
+                if (currentTime.after(rideTime)) {
+                    Utils.showToast(this, "Offer Ride atleast 3 hrs before");
+                    return;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         if (roundTripCheckBox.isChecked()) {
@@ -383,7 +405,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
                 Date departureDate = new Date();
                 Date arrivalDate = new Date();
-                SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
                 try {
                     departureDate = format.parse(rideDepartureDate);
                     arrivalDate = format.parse(rideArrivalDate);
@@ -413,6 +434,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
         rideInfoDto.setmReturnDate(rideArrivalDate);
         rideInfoDto.setmDepartureDate(rideDepartureDate);
+        rideInfoDto.setmTotalprice(totalPrice + "");
         rideInfoDto.setmTotalprice(totalPrice + "");
         rideInfoDto.setmTotalkilometers(totalKM + "");
         rideInfoDto.setmRideType(longRideRB.isChecked() ? "1" : "2");
@@ -791,7 +813,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 break;
             case R.id.bt_departuretime:
             case R.id.bt_arrivaltime:
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this, mTimeSetListener, hour, minute, false);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, mTimeSetListener, hour, minute, true);
                 timePickerDialog.show();
 
                 timePickerDialog.setOnCancelListener(new DatePickerDialog.OnCancelListener() {
