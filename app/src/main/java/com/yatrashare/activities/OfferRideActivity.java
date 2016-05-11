@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.InputType;
@@ -44,7 +42,6 @@ import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -376,21 +373,19 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
         Date todaysDate = new Date();
         String timeString = timeFormat.format(todaysDate.getTime() + Utils.TIME_CHECKER);
-        Log.e(TAG, "nextStep: " +  format.format(todaysDate));
-        Log.e(TAG, "22222222222222222: " +  format.format(rideDepartureDate));
-        if (format.format(todaysDate).equalsIgnoreCase(format.format(rideDepartureDate))) {
-            try {
+        try {
+            if (format.parse(format.format(todaysDate)).equals(format.parse(rideDepartureDate))) {
                 Date rideTime = timeFormat.parse(rideDepartureTime);
                 Date currentTime = timeFormat.parse(timeString);
                 if (currentTime.after(rideTime)) {
                     Utils.showToast(this, "Offer Ride atleast 3 hrs before");
                     return;
                 }
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (roundTripCheckBox.isChecked()) {
             if (longRideRB.isChecked()) {
                 if (TextUtils.isEmpty(rideArrivalDate)) {
@@ -403,19 +398,19 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     return;
                 }
 
-                Date departureDate = new Date();
-                Date arrivalDate = new Date();
                 try {
-                    departureDate = format.parse(rideDepartureDate);
-                    arrivalDate = format.parse(rideArrivalDate);
-                } catch (ParseException e) {
+                    Date departureDate = format.parse(rideDepartureDate);
+                    Date arrivalDate = format.parse(rideArrivalDate);
+
+                    if (departureDate.after(arrivalDate)) {
+                        Utils.showToast(this, "Return Date cannot be before Departure Date");
+                        return;
+                    }
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if (departureDate.after(arrivalDate)) {
-                    Utils.showToast(this, "Return Date cannot be before Departure Date");
-                    return;
-                }
 
             }
 
