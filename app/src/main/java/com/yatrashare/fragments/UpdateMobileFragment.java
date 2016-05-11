@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
@@ -115,8 +116,42 @@ public class UpdateMobileFragment extends Fragment {
             editNumberBtnsLayout.setVisibility(View.GONE);
             phoneNumberLayout.setError(null);
             phoneNumberLayout.setErrorEnabled(false);
+            updateMobile(phoneEdit.getText().toString());
         } else {
             phoneNumberLayout.setError("Enter valid phone number");
+        }
+    }
+
+    private void updateMobile(final String mobNum) {
+        if (Utils.isInternetAvailable(mContext)) {
+            Utils.showProgress(true, mProgressView, mProgressBGView);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI().saveMobileNumber(userGuid, mobNum);
+
+            call.enqueue(new Callback<UserDataDTO>() {
+                @Override
+                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                    if (response != null && response.body() != null && response.body().Data != null) {
+                        if (response.body().Data.equalsIgnoreCase("Success")) {
+                            mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
+                            mEditor.putString(Constants.PREF_USER_PHONE, mobNum);
+                            mEditor.commit();
+                            ((HomeActivity) mContext).showSnackBar(getString(R.string.mobileSaved));
+                            Utils.deleteFile(mContext, userGuid);
+                        } else {
+                            ((HomeActivity) mContext).showSnackBar(response.body().Data);
+                        }
+                    }
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
+            });
         }
     }
 

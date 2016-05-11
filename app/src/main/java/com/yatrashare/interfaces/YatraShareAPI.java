@@ -62,6 +62,9 @@ public interface YatraShareAPI {
     @POST("/api/User/Login")
     Call<String> userLogin(@Body UserLogin userLogin);
 
+    @POST("/api/Profile/UpdateMobile")
+    Call<UserDataDTO> saveMobileNumber(@Query("userGuid") String userGuide, @Query("mobileNumber") String mobileNumber);
+
     @Multipart
     @POST("/api/Profile/UploadProfilePic")
     Call<UserDataDTO> uploadProfilePic(@Query("userGuid") String userGuide, @Body RequestBody file);

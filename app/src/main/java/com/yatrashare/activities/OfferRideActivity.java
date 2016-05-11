@@ -49,6 +49,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -130,8 +131,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             mainPossibleRoutes.add(possibleRoutesDto);
             if (stopOverPlacesHashMap != null && stopOverPlacesHashMap.size() > 0) {
                 stopOverPlaces = new ArrayList<>();
-                for (Iterator<Integer> iterator = stopOverPlacesHashMap.keySet().iterator(); iterator.hasNext(); ) {
-                    stopOverPlaces.add(stopOverPlacesHashMap.get(iterator.next()));
+                for (Integer integer : stopOverPlacesHashMap.keySet()) {
+                    stopOverPlaces.add(stopOverPlacesHashMap.get(integer));
                 }
                 if (stopOverPlaces.size() > 0) {
                     for (int i = 0; i < stopOverPlaces.size(); i++) {
@@ -261,7 +262,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        hour = calendar.get(Calendar.HOUR);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
 
         ridePriceEditText.setText("0");
@@ -363,8 +364,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             Utils.showToast(this, "Enter Departure Date");
             return;
         }
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         if (TextUtils.isEmpty(rideDepartureTime)) {
             Utils.showToast(this, "Enter Departure Time");
@@ -381,7 +382,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     Utils.showToast(this, "Offer Ride atleast 3 hrs before");
                     return;
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -411,6 +411,18 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     e.printStackTrace();
                 }
 
+                try {
+                    if (format.parse(format.format(todaysDate)).equals(format.parse(rideArrivalDate))) {
+                        Date rideTime = timeFormat.parse(rideArrivalTime);
+                        Date departureTime = timeFormat.parse(rideDepartureTime);
+                        if (departureTime.after(rideTime)) {
+                            Utils.showToast(this, "Arrival Time cannot be before Departure time");
+                            return;
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
             }
 
@@ -418,6 +430,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 Utils.showToast(this, "Enter Return Time");
                 return;
             }
+
 
             if (dailyRideRB.isChecked()) {
                 if (rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
@@ -773,7 +786,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     String departureDate = departureDateBtn.getText().toString();
                     if (!TextUtils.isEmpty(departureDate)) {
                         Date date = new Date();
-                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
                         try {
                             date = format.parse(departureDate);
                         } catch (ParseException e) {

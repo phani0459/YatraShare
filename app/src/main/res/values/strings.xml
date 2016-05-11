@@ -221,6 +221,7 @@
 
     <!-- String for update mobile fragment -->
     <string name="mobileUpdated">Mobile number successfully Verified.</string>
+    <string name="mobileSaved">Mobile number successfully Saved.</string>
 
     <!-- String for No Of Seats Dialog -->
     <string name="seatsDialogHeading">How many Seats?</string>
