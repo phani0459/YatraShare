@@ -223,6 +223,13 @@
     <string name="mobileUpdated">Mobile number successfully Verified.</string>
     <string name="mobileSaved">Mobile number successfully Saved.</string>
 
+    <!-- String for update licence fragment -->
+    <string name="uploadLicenceInfo">Provide the driver\'s licence. Upload two sides of Licence, otherwise we wont accept it. \nWe promise you, we will not share your licence with others.
+	\nWe will manually checks each licence. Please upload clearly visible pictures only.</string>
+    <string name="imagesInfo"><b>Licence Images: </b>You have to upload two side of licence</string>
+    <string name="upload">Upload</string>
+    <string name="remove">Remove</string>
+
     <!-- String for No Of Seats Dialog -->
     <string name="seatsDialogHeading">How many Seats?</string>
     <string name="seatsDialogsubTitle">No. Of Seats</string>

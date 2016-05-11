@@ -3,6 +3,7 @@ package com.yatrashare.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.UploadLicenceActivity;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.UserPreferences;
@@ -163,6 +165,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @OnClick(R.id.mobileStatusHeading)
     public void changeMobileNumber() {
         ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, isMobileVerified, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+    }
+
+    @OnClick(R.id.licenceStatusHeading)
+    public void licence() {
+        Intent intent = new Intent(mContext, UploadLicenceActivity.class);
+        intent.putExtra("UserGuide", userGuide);
+        startActivity(intent);
     }
 
     @OnTouch(R.id.emailStatusHeading)

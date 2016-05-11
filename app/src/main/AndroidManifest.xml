@@ -79,10 +79,13 @@
         <activity android:name=".activities.SelectCountryActivity" />
 
         <provider
-            android:name="com.yatrashare.utils.PlacesSuggestionProvider"
+            android:name=".utils.PlacesSuggestionProvider"
             android:authorities="com.yatrashare.places.search_suggestion_provider"
             android:syncable="false" />
 
+        <activity
+            android:name=".activities.UploadLicenceActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
