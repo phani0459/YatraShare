@@ -231,23 +231,11 @@ public class EditProfileFragment extends Fragment {
         return chooserIntent;
     }
 
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = mContext.getContentResolver().query(uri, projection, null, null, null);
-        if (cursor == null) return null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String filePath = cursor.getString(column_index);
-        cursor.close();
-        return filePath;
-    }
-
     @OnClick(R.id.updateProfilePic)
     public void updateProfilePic() {
         if (Utils.isInternetAvailable(mContext)) {
             if (selectedImageUri != null) {
                 if (!mayRequestStorage()) {
-                    Utils.showToast(mContext, "Enable Storage Permissions in settings to upload profile pic");
                     return;
                 }
 
@@ -261,7 +249,7 @@ public class EditProfileFragment extends Fragment {
                 }
                 try {
                     if (file == null) {
-                        file = new File(getPath(selectedImageUri));
+                        file = new File(Utils.getPath(selectedImageUri, mContext));
                     }
 
                     Utils.showProgress(true, mProgressView, mProgressBGView);

@@ -1,39 +1,73 @@
 package com.yatrashare.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.RequestBody;
 import com.yatrashare.R;
+import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
+import com.yatrashare.utils.Utils;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class UploadLicenceActivity extends AppCompatActivity {
 
+    private static final String TAG = UploadLicenceActivity.class.getSimpleName();
     @Bind(R.id.im_licence_One)
     SimpleDraweeView licenceOneDrawee;
     @Bind(R.id.im_licence_Two)
     SimpleDraweeView licenceTwoDrawee;
     private Context mContext;
     private Uri licenceOneUri, licenceTwoUri;
+    @Bind(R.id.btn_remove_licence_One)
+    public Button removeLicenceOneButton;
+    @Bind(R.id.btn_remove_licence_Two)
+    public Button removeLicenceTwoButton;
+    @Bind(R.id.licenceProgress)
+    public ProgressBar mProgressBar;
+    @Bind(R.id.licenceProgressBGView)
+    public View mProgressBGView;
+    private String userGuid;
+    private SharedPreferences.Editor mSharedPrefEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +76,31 @@ public class UploadLicenceActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = this;
 
-        licenceOneDrawee.setImageURI(Constants.getDefaultNoImageURI());
-        licenceTwoDrawee.setImageURI(Constants.getDefaultNoImageURI());
+        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPrefEditor = mSharedPreferences.edit();
 
-        String userGuide = getIntent().getExtras().getString("UserGuide", "");
+        String licenceOne = mSharedPreferences.getString(Constants.PREF_USER_LICENCE_1, "");
+        String licenceTwo = mSharedPreferences.getString(Constants.PREF_USER_LICENCE_2, "");
+
+        if (!TextUtils.isEmpty(licenceOne) && !licenceOne.startsWith("/")) {
+            Uri uri = Uri.parse(licenceOne);
+            licenceOneDrawee.setImageURI(uri);
+            removeLicenceOneButton.setVisibility(View.VISIBLE);
+        } else {
+            licenceOneDrawee.setImageURI(Constants.getDefaultNoImageURI());
+            removeLicenceOneButton.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(licenceTwo) && !licenceTwo.startsWith("/")) {
+            Uri uri = Uri.parse(licenceTwo);
+            licenceTwoDrawee.setImageURI(uri);
+            removeLicenceTwoButton.setVisibility(View.VISIBLE);
+        } else {
+            licenceTwoDrawee.setImageURI(Constants.getDefaultNoImageURI());
+            removeLicenceTwoButton.setVisibility(View.GONE);
+        }
+
+        userGuid = getIntent().getExtras().getString("UserGuide", "");
 
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,26 +108,236 @@ public class UploadLicenceActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+    }
 
-        licenceOneDrawee.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    licenceOneUri = null;
-                    startActivityForResult(getPickImageChooserIntent(), RESULT_LOAD_LICENCEONE);
+    private static final int REQUEST_READ_STORAGE_ONE = 14;
+    private static final int REQUEST_READ_STORAGE_TWO = 12;
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == REQUEST_READ_STORAGE_ONE) {
+                uploadLicenceOne();
+            }
+            if (requestCode == REQUEST_READ_STORAGE_TWO) {
+                uploadLicenceTwo();
+            }
+        }
+    }
+
+    private boolean mayRequestStorage(final int licenceNumber) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (mContext.checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && mContext.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(licenceOneDrawee, R.string.storage_permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, licenceNumber);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, licenceNumber);
+        }
+        return false;
+    }
+
+    @OnClick(R.id.im_licence_One)
+    public void browseLicenceOne() {
+        licenceOneUri = null;
+        startActivityForResult(getPickImageChooserIntent(), RESULT_LOAD_LICENCEONE);
+    }
+
+    @OnClick(R.id.im_licence_Two)
+    public void browseLicenceTwo() {
+        licenceTwoUri = null;
+        startActivityForResult(getPickImageChooserIntent(), RESULT_LOAD_LICENCETWO);
+    }
+
+    public void showSnackBar(String msg) {
+        Snackbar.make(licenceOneDrawee, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    @OnClick(R.id.btn_licence_One)
+    public void uploadLicenceOne() {
+        if (Utils.isInternetAvailable(mContext)) {
+            if (licenceOneUri != null) {
+                if (!mayRequestStorage(REQUEST_READ_STORAGE_ONE)) {
+                    return;
                 }
-                return true;
+
+                File file = null;
+                try {
+                    URI uri = new URI(licenceOneUri.toString());
+                    file = new File(uri);
+                } catch (Exception e) {
+                    file = null;
+                }
+                try {
+                    if (file == null) {
+                        file = new File(Utils.getPath(licenceOneUri, mContext));
+                    }
+
+                    Utils.showProgress(true, mProgressBar, mProgressBGView);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("Licence", file.getName(), requestFile).build();
+
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadLicenceOne(userGuid, body);
+                    call.enqueue(new Callback<UserDataDTO>() {
+
+                        @Override
+                        public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            if (response.body() != null && response.isSuccess()) {
+                                Log.e(TAG, "Licence One Pic: " + response.body().Data);
+                                showSnackBar("Licence One updated successfully");
+                                mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data);
+                                mSharedPrefEditor.commit();
+                                Utils.deleteFile(mContext, userGuid);
+                            }
+                            Utils.showProgress(false, mProgressBar, mProgressBGView);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            t.printStackTrace();
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressBar, mProgressBGView);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Utils.showToast(mContext, "Select Image");
+            }
+
+        }
+    }
+
+    @OnClick(R.id.btn_licence_Two)
+    public void uploadLicenceTwo() {
+        if (Utils.isInternetAvailable(mContext)) {
+            if (licenceTwoUri != null) {
+                if (!mayRequestStorage(REQUEST_READ_STORAGE_TWO)) {
+                    return;
+                }
+
+                File file = null;
+                try {
+                    URI uri = new URI(licenceTwoUri.toString());
+                    file = new File(uri);
+                } catch (Exception e) {
+                    file = null;
+                }
+                try {
+                    if (file == null) {
+                        file = new File(Utils.getPath(licenceTwoUri, mContext));
+                    }
+
+                    Utils.showProgress(true, mProgressBar, mProgressBGView);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("Licence", file.getName(), requestFile).build();
+
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadLicenceTwo(userGuid, body);
+                    call.enqueue(new Callback<UserDataDTO>() {
+
+                        @Override
+                        public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            if (response.body() != null && response.isSuccess()) {
+                                Log.e(TAG, "Licence Two Pic: " + response.body().Data);
+                                showSnackBar("Licence Two updated successfully");
+                                mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data);
+                                mSharedPrefEditor.commit();
+                                Utils.deleteFile(mContext, userGuid);
+                            }
+                            Utils.showProgress(false, mProgressBar, mProgressBGView);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            t.printStackTrace();
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressBar, mProgressBGView);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Utils.showToast(mContext, "Select Image");
+            }
+
+        }
+    }
+
+    @OnClick(R.id.btn_remove_licence_One)
+    public void removeLicenceOne() {
+        licenceOneUri = null;
+        removeLicenceOneButton.setVisibility(View.GONE);
+        licenceOneDrawee.setImageURI(Constants.getDefaultNoImageURI());
+
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().removeLicence(userGuid, "1");
+
+        call.enqueue(new Callback<UserDataDTO>() {
+            @Override
+            public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                if (response.body() != null && response.isSuccess()) {
+                    Log.e(TAG, "Empty Licence One: " + response.body().Data);
+                    showSnackBar("Licence One removed successfully");
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data);
+                    mSharedPrefEditor.commit();
+                    Utils.deleteFile(mContext, userGuid);
+                }
+                Utils.showProgress(false, mProgressBar, mProgressBGView);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+                Utils.showProgress(false, mProgressBar, mProgressBGView);
             }
         });
 
-        licenceTwoDrawee.setOnTouchListener(new View.OnTouchListener() {
+    }
+
+    @OnClick(R.id.btn_remove_licence_Two)
+    public void removeLicenceTwo() {
+        licenceTwoUri = null;
+        removeLicenceTwoButton.setVisibility(View.GONE);
+        licenceTwoDrawee.setImageURI(Constants.getDefaultNoImageURI());
+
+        Call<UserDataDTO> call = Utils.getYatraShareAPI().removeLicence(userGuid, "2");
+
+        call.enqueue(new Callback<UserDataDTO>() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    licenceOneUri = null;
-                    startActivityForResult(getPickImageChooserIntent(), RESULT_LOAD_LICENCETWO);
+            public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                if (response.body() != null && response.isSuccess()) {
+                    Log.e(TAG, "Empty Licence Two: " + response.body().Data);
+                    showSnackBar("Licence Two removed successfully");
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data);
+                    mSharedPrefEditor.commit();
+                    Utils.deleteFile(mContext, userGuid);
                 }
-                return true;
+                Utils.showProgress(false, mProgressBar, mProgressBGView);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+                Utils.showProgress(false, mProgressBar, mProgressBGView);
             }
         });
     }
@@ -95,9 +360,11 @@ public class UploadLicenceActivity extends AppCompatActivity {
         if (requestCode == RESULT_LOAD_LICENCEONE && resultCode == Activity.RESULT_OK) {
             licenceOneUri = getPickImageResultUri(data);
             licenceOneDrawee.setImageURI(licenceOneUri);
+            removeLicenceOneButton.setVisibility(View.VISIBLE);
         } else if (requestCode == RESULT_LOAD_LICENCETWO && resultCode == Activity.RESULT_OK) {
             licenceTwoUri = getPickImageResultUri(data);
             licenceTwoDrawee.setImageURI(licenceTwoUri);
+            removeLicenceTwoButton.setVisibility(View.VISIBLE);
         }
     }
 

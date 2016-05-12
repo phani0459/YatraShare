@@ -126,14 +126,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         ((HomeActivity) mContext).setTitle("My Account");
 
-        profile = Utils.checkforProfile(mContext, userGuide);
-
-        if (profile != null) {
-            loadProfile();
-        } else {
-            userProfileTask();
-        }
-
         return inflatedLayout;
     }
 
@@ -220,23 +212,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (profile != null) {
-            if (getArguments() != null) {
-                getArguments().putSerializable("Profile", profile);
-            }
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.PROFILE_SCREEN);
         ((HomeActivity) mContext).prepareMenu();
-        if (getArguments() != null) {
-            profile = (Profile) getArguments().getSerializable("Profile");
+        profile = Utils.checkforProfile(mContext, userGuide);
+
+        if (profile != null) {
             loadProfile();
+        } else {
+            userProfileTask();
         }
 
     }

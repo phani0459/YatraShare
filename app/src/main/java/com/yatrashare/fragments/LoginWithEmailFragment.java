@@ -500,6 +500,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, response.body().Data.Gender);
                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data.ProfilePhoto);
                     mSharedPrefEditor.putString(Constants.PREF_USER_DOB, response.body().Data.Dob);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data.Licence1);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data.Licence2);
 
                     String mobileStatus = response.body().Data.VerificationStatus.MobileNumberStatus != null ? response.body().Data.VerificationStatus.MobileNumberStatus : "0";
 

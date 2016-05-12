@@ -58,6 +58,8 @@ public class Constants {
     public static final String PREF_USER_FB_ID = "id";
     public static final String PREF_USER_DOB = "dob";
     public static final String PREF_USER_COUNTRY = "country";
+    public static final String PREF_USER_LICENCE_1 = "Licence One";
+    public static final String PREF_USER_LICENCE_2 = "Licence Two";
 
     public static final String PREF_LOGGEDIN = "loggedIn";
     public static final String PREF_MOBILE_VERIFIED = "mobileVerificationStatus";
