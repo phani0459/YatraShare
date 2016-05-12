@@ -3,6 +3,7 @@ package com.yatrashare.adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,18 +103,21 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         if (viewHolder instanceof MyViewHolder) {
             MyViewHolder holder = (MyViewHolder) viewHolder;
-            String string = dataSearchArray.get(position).RideDate;
 
-            holder.rideDayText.setText(dataSearchArray.get(position).RideDate);
-            holder.rideFareText.setText("" + Utils.getCurrency(mContext) + " " + dataSearchArray.get(position).RoutePrice + " /Seat");
-            holder.rideFromText.setText(dataSearchArray.get(position).DeparturePoint);
-            holder.rideToText.setText(dataSearchArray.get(position).ArrivalPoint);
-            holder.rideVehicleText.setText(dataSearchArray.get(position).VehicleModel);
-            holder.availableSeatText.setText(dataSearchArray.get(position).RemainingSeats + " Seat(s)");
-            holder.userNameText.setText(dataSearchArray.get(position).UserName);
+            SearchRides.SearchData data = dataSearchArray.get(position);
 
-            String comfortRating = dataSearchArray.get(position).ComfortRating;
-            String profilePic = dataSearchArray.get(position).ProfilePicture;
+            holder.rideDayText.setText(data.RideDate);
+            holder.rideFareText.setText("" + Utils.getCurrency(mContext) + " " + data.RoutePrice + " /Seat");
+            holder.rideFromText.setText(data.DeparturePoint);
+            holder.rideToText.setText(data.ArrivalPoint);
+            holder.rideVehicleText.setText(data.VehicleModel);
+            holder.availableSeatText.setText(data.RemainingSeats + " Seat(s)");
+            String regdType = !TextUtils.isEmpty(data.VehicleRegdType) ? data.VehicleRegdType : "";
+            regdType = regdType.equalsIgnoreCase("1") ? "(Odd)" : regdType.equalsIgnoreCase("2") ? "(Even)" : "";
+            holder.userNameText.setText(data.UserName + " " + regdType);
+
+            String comfortRating = data.ComfortRating;
+            String profilePic = data.ProfilePicture;
 
             float comfortRatingFloat = 0.0f;
             if (comfortRating != null && !comfortRating.isEmpty()) {
@@ -132,7 +136,6 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 holder.simpleDraweeView.setImageURI(Constants.getDefaultPicURI());
             }
-
 
             holder.rideDayText.setSelected(true);
             holder.rideFromText.setSelected(true);

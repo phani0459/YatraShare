@@ -27,8 +27,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
@@ -147,6 +146,9 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             Utils.showProgress(true, mProgressView, mProgressBGView);
             FindRide findRide = new FindRide(whereFrom, whereTo,
                     date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10", "0");
+
+            Gson gson = new Gson();
+            Log.e(TAG, "searchRide: " + gson.toJson(findRide));
 
             Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
             //asynchronous call

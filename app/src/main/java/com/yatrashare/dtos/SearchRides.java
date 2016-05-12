@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by KANDAGATLAS on 07-01-2016.
  */
-public class SearchRides implements Serializable{
+public class SearchRides implements Serializable {
 
     public String ContentEncoding;
     public String ContentType;
@@ -15,7 +15,7 @@ public class SearchRides implements Serializable{
     public String MaxJsonLength;
     public String RecursionLimit;
 
-    public class SearchData implements Serializable{
+    public class SearchData implements Serializable {
         public String RideGuid;
         public String PossibleRideGuid;
         public String RideId;
@@ -45,5 +45,6 @@ public class SearchRides implements Serializable{
         public String TotalRides;
         public String LadiesOnly;
         public String Age;
+        public String VehicleRegdType;
     }
 }

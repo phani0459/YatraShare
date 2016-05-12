@@ -163,7 +163,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:entries="@array/comfortType_array" />
+                android:entries="@array/reg_comfortType_array" />
 
             <Button
                 android:id="@+id/btn_registerNewVehicle"

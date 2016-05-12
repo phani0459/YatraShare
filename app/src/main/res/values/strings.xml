@@ -316,6 +316,13 @@
         <item>Basic</item>
     </string-array>
 
+    <string-array name="reg_comfortType_array">
+        <item>Luxury</item>
+        <item>Comfortable</item>
+        <item>Normal</item>
+        <item>Basic</item>
+    </string-array>
+
     <string-array name="vehicleType_array">
         <item>Bike</item>
         <item>Car</item>
