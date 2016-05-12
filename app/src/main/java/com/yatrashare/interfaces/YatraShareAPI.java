@@ -69,6 +69,17 @@ public interface YatraShareAPI {
     @POST("/api/Profile/UploadProfilePic")
     Call<UserDataDTO> uploadProfilePic(@Query("userGuid") String userGuide, @Body RequestBody file);
 
+    @Multipart
+    @POST("/api/Profile/UploadLicence1")
+    Call<UserDataDTO> uploadLicenceOne(@Query("userGuid") String userGuide, @Body RequestBody file);
+
+    @Multipart
+    @POST("/api/Profile/UploadLicence2")
+    Call<UserDataDTO> uploadLicenceTwo(@Query("userGuid") String userGuide, @Body RequestBody file);
+
+    @POST("/api/Profile/RemoveLicence")
+    Call<UserDataDTO> removeLicence(@Query("userGuid") String userGuide, @Query("serialNo") String serialNo);
+
     @POST("/api/Rides/BookYourSeat")
     Call<UserDataDTO> bookRide(@Query("userGuid") String userGuide, @Query("possibleRideGuid") String possibleRideGuid, @Query("passengers") String passengers);
 
