@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yatrashare.R;
-import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.RideDetails;
-import com.yatrashare.utils.Constants;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

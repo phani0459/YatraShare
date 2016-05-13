@@ -27,7 +27,6 @@ import com.facebook.login.widget.LoginButton;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.CountryData;
-import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -38,7 +37,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**

@@ -1,7 +1,6 @@
 package com.yatrashare.dtos;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * Created by KANDAGATLAS on 04-01-2016.

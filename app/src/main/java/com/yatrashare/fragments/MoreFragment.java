@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
-import com.yatrashare.utils.Constants;
 
 /**
  * A simple {@link Fragment} subclass.

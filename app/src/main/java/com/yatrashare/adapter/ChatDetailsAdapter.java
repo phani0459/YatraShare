@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.dtos.MessageDetails;
-import com.yatrashare.dtos.MessagesList;
-import com.yatrashare.utils.Message;
 
 import java.util.ArrayList;
 import java.util.List;

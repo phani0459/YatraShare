@@ -1,23 +1,11 @@
 package com.yatrashare.AsyncTask;
 
-import android.location.Address;
-import android.view.View;
-
 import com.yatrashare.dtos.GoogleAddressDto;
-import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Utils;
 
-import org.json.JSONException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import retrofit.Call;
 import retrofit.Callback;

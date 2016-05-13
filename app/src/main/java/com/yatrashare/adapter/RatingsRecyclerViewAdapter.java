@@ -14,10 +14,7 @@ import com.yatrashare.dtos.Rating;
 import com.yatrashare.fragments.TabsFragment;
 import com.yatrashare.utils.Constants;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;

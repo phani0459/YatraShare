@@ -14,7 +14,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.utils.Constants;
-import com.yatrashare.utils.Utils;
 
 import java.util.List;
 

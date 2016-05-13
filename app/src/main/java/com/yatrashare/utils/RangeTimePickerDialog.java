@@ -1,12 +1,12 @@
 package com.yatrashare.utils;
 
-import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.util.Calendar;
-
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.widget.TimePicker;
+
+import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.util.Calendar;
 
 /**
  * A time dialog that allows setting a min and max time.

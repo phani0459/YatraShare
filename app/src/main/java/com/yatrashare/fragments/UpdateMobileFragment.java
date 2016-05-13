@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit.Call;
 import retrofit.Callback;
-import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
