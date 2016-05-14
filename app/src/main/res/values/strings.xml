@@ -34,7 +34,8 @@
     <string name="searchRide">Find a Ride</string>
     <string name="offerRide">Offer a Ride</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="aboutMe">About me*</string>
+    <string name="aboutMe">About me</string>
+    <string name="mandateAboutMe">About me*</string>
     <string name="retry">Retry</string>
     <string name="ride_type">Ride Type</string>
 

@@ -385,8 +385,8 @@ public class EditProfileFragment extends Fragment {
         }
 
         if (!TextUtils.isEmpty(userDob)) {
-            if (userDob.length() >= 10) {
-                dobEdit.setText(userDob.substring(0, 10));
+            if (userDob.contains(" ")) {
+                dobEdit.setText(userDob.split(" ")[0]);
             } else {
                 dobEdit.setText(userDob);
             }

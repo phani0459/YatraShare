@@ -66,8 +66,8 @@
                         android:drawableLeft="@drawable/user"
                         android:drawablePadding="4dp"
                         android:hint="@string/prompt_userfirstname"
-                        android:inputType="text"
                         android:imeOptions="actionNext"
+                        android:inputType="text"
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true" />
@@ -88,8 +88,8 @@
                         android:drawableLeft="@drawable/user"
                         android:drawablePadding="4dp"
                         android:hint="@string/prompt_userlastname"
-                        android:inputType="text"
                         android:imeOptions="actionNext"
+                        android:inputType="text"
                         android:maxLines="1"
                         android:padding="8dp"
                         android:singleLine="true" />
@@ -110,7 +110,7 @@
                     android:id="@+id/editProfileAboutMeEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/aboutMe"
+                    android:hint="@string/mandateAboutMe"
                     android:inputType="textMultiLine"
                     android:singleLine="false" />
 
