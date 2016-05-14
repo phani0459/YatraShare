@@ -137,6 +137,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                     selectSeatsSpinner.setEnabled(true);
                     luggageSpinner.setVisibility(View.VISIBLE);
                     selectedVehicle = "1";
+                    ArrayList<String> vehicleSeats = new ArrayList<String>();
+                    vehicleSeats.add("Select Seats");
+                    selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                     getUserVehicleModels();
                 }
             }
@@ -148,6 +151,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                     selectSeatsSpinner.setEnabled(true);
                     luggageSpinner.setVisibility(View.GONE);
                     selectedVehicle = "2";
+                    ArrayList<String> vehicleSeats = new ArrayList<String>();
+                    vehicleSeats.add("Select Seats");
+                    selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                     getUserVehicleModels();
                 }
             }
@@ -499,10 +505,14 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                                         vehicleSeats.add(vehicleDatas.get(i));
                                     }
                                 }
-                                selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                             }
+                        } else {
+                            vehicleSeats.add("Select Seats");
                         }
+                    } else {
+                        vehicleSeats.add("Select Seats");
                     }
+                    selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                     Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
 
@@ -522,6 +532,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void getUserVehicleModels() {
+        ArrayList<String> vehicleModels = new ArrayList<String>();
+        vehicleModels.add("Select Model");
+        selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, mProgressBar, mProgressBGView);
             Call<Vehicle> call = Utils.getYatraShareAPI().getUserVehicleModels(userGuid, selectedVehicle);
@@ -546,10 +559,10 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                                     vehicleModels.add(vehicleDatas.get(i).ModelName);
                                 }
                             }
-                            selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
                         }
                     }
                     Utils.showProgress(false, mProgressBar, mProgressBGView);
+                    selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
                 }
 
                 /**
@@ -559,7 +572,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                  */
                 @Override
                 public void onFailure(Throwable t) {
-                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    t.printStackTrace();
                     Utils.showProgress(false, mProgressBar, mProgressBGView);
                     showSnackBar(getString(R.string.tryagain));
                 }
