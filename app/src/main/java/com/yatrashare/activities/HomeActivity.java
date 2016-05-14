@@ -607,6 +607,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 intent.putExtra("DATE", searchRideFragment.date);
                 intent.putExtra("START TIME", searchRideFragment.startTime);
                 intent.putExtra("END TIME", searchRideFragment.endTime);
+                intent.putExtra("VEHICLE REGD", searchRideFragment.vehicleRegdType);
                 startActivityForResult(intent, FindRideFragment.REQUEST_CODE_RIDE_FILTER);
             }
         }

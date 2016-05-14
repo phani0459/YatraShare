@@ -99,7 +99,7 @@
                     android:id="@+id/et_provideRideDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/spinner_bg"
+                    android:background="@drawable/provide_details_bg"
                     android:gravity="top"
                     android:hint="@string/provideRidedetails"
                     android:minLines="4"

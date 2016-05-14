@@ -135,7 +135,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     }
 
     public void searchRides() {
-        Log.e(TAG, "searchRides: " + currentPage);
+        Log.e(TAG, "vehicleRegdType: " + vehicleRegdType);
         FindRide findRide = new FindRide(whereFrom, whereTo,
                 date, comfortLevel, currentPage + "", startTime, endTime, gender, rideType, vehicleType, Constants.PAGE_SIZE + "", vehicleRegdType);
 

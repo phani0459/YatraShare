@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -42,8 +44,10 @@ import com.yatrashare.interfaces.YatraShareAPI;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.GsonConverterFactory;
@@ -354,6 +358,21 @@ public class Utils {
         return latLng;
     }
 
+    public static Address getLatlngsFromLocation(String name, Context mContext) {
+        Geocoder geocoder = new Geocoder(mContext);
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocationName(name, 1);
+            if (addresses != null && addresses.size() > 0) {
+                return addresses.get(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public static LatLngBounds createBoundsWithMinDiagonal(Context mContext) {
         /*LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(getPresentLatLng(mContext));
@@ -370,8 +389,23 @@ public class Utils {
         builder.include(southWest);
         builder.include(northEast);
         return builder.build();*/
-
         LatLngBounds latLngBounds = new LatLngBounds(getPresentLatLng(mContext), getPresentLatLng(mContext));
+
+        SharedPreferences sharedPreferences = getSharedPrefs(mContext);
+        String country = sharedPreferences.getString(Constants.PREF_USER_COUNTRY, "");
+
+        if (!TextUtils.isEmpty(country)) {
+            try {
+                Address address = getLatlngsFromLocation(country, mContext);
+                if (address != null) {
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    latLngBounds = new LatLngBounds(latLng, latLng);
+                    return latLngBounds;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         return latLngBounds;
     }

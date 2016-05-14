@@ -65,4 +65,5 @@ public class Constants {
     public static final String PREF_MOBILE_VERIFIED = "mobileVerificationStatus";
     public static final String PREF_USER_PROFILE_PIC = "profilePic";
     public static final String ORIGIN_SCREEN_KEY = "ORIGIN SCREEN";
+
 }

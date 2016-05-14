@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -109,6 +108,10 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
+        luggageSpinner.setSelection(1);
+        timeFlexiSpinner.setSelection(1);
+        detourSpinner.setSelection(1);
+
         radioButtonCar.setChecked(true);
         selectedVehicle = "1";
         getUserVehicleModels();
@@ -131,6 +134,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    selectSeatsSpinner.setEnabled(true);
                     luggageSpinner.setVisibility(View.VISIBLE);
                     selectedVehicle = "1";
                     getUserVehicleModels();
@@ -141,6 +145,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    selectSeatsSpinner.setEnabled(true);
                     luggageSpinner.setVisibility(View.GONE);
                     selectedVehicle = "2";
                     getUserVehicleModels();
@@ -465,6 +470,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
     private void getVehicleSeats(String vehicleId) {
         if (Utils.isInternetAvailable(mContext)) {
+            selectSeatsSpinner.setEnabled(true);
             Utils.showProgress(true, mProgressBar, mProgressBGView);
             Call<Seats> call = Utils.getYatraShareAPI().getUserVehicleSeats(userGuid, vehicleId);
             call.enqueue(new Callback<Seats>() {
@@ -478,17 +484,23 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                 public void onResponse(retrofit.Response<Seats> response, Retrofit retrofit) {
                     android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                     ArrayList<String> vehicleSeats = new ArrayList<String>();
-                    vehicleSeats.add("Select Seats");
                     if (response.body() != null && response.isSuccess()) {
                         android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                         ArrayList<String> vehicleDatas = response.body().Data;
                         if (vehicleDatas != null && vehicleDatas.size() > 0) {
-                            for (int i = 0; i < vehicleDatas.size(); i++) {
-                                if (!vehicleDatas.get(i).isEmpty()) {
-                                    vehicleSeats.add(vehicleDatas.get(i));
+                            if (vehicleDatas.size() == 1) {
+                                vehicleSeats.add("1");
+                                selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
+                                selectSeatsSpinner.setEnabled(false);
+                            } else {
+                                vehicleSeats.add("Select Seats");
+                                for (int i = 0; i < vehicleDatas.size(); i++) {
+                                    if (!TextUtils.isEmpty(vehicleDatas.get(i))) {
+                                        vehicleSeats.add(vehicleDatas.get(i));
+                                    }
                                 }
+                                selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                             }
-                            selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
                         }
                     }
                     Utils.showProgress(false, mProgressBar, mProgressBGView);

@@ -85,7 +85,11 @@
 
         <activity
             android:name=".activities.UploadLicenceActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".AsyncTask.FetchMyProfile"
+            android:exported="false"></service>
     </application>
 
 </manifest>

@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.yatrashare.AsyncTask.FetchMyProfile;
 import com.yatrashare.R;
 import com.yatrashare.dtos.Countries;
 import com.yatrashare.dtos.CountryData;
@@ -77,6 +78,13 @@ public class SplashActivity extends AppCompatActivity implements Callback<Google
             startHandler();
         } else {
             loadGetLocationDialog();
+        }
+
+        if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
+            if (Utils.isInternetAvailable(this)) {
+                Intent intent = new Intent(this, FetchMyProfile.class);
+                startService(intent);
+            }
         }
     }
 

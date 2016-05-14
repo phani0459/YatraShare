@@ -46,6 +46,8 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
     public RadioButton dailyRideRadioButton;
     @Bind(R.id.rbtn_ladiesOnly)
     public RadioButton ladiesOnlyRadioBtn;
+    @Bind(R.id.rg_vehicleRegdType)
+    public RadioGroup vehicleRegdTypeRadioGroup;
     @Bind(R.id.rbtn_longRide)
     public RadioButton longRideRadioBtn;
     @Bind(R.id.rbtn_vehicleRegdAll)
@@ -227,11 +229,10 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
-        dateEditText.setOnTouchListener(new View.OnTouchListener() {
+        dateEditText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) datePickerDialog.show();
-                return false;
+            public void onClick(View v) {
+                datePickerDialog.show();
             }
         });
 
@@ -287,6 +288,21 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
                 break;
             default:
                 gender = "All";
+                break;
+        }
+        int regdTypeBtn = vehicleRegdTypeRadioGroup.getCheckedRadioButtonId();
+        switch (regdTypeBtn) {
+            case R.id.rbtn_vehicleRegdAll:
+                vehicleRegdNo = "0";
+                break;
+            case R.id.rbtn_vehicleRegdOdd:
+                vehicleRegdNo = "1";
+                break;
+            case R.id.rbtn_vehicleRegdEven:
+                vehicleRegdNo = "2";
+                break;
+            default:
+                vehicleRegdNo = "0";
                 break;
         }
     }
