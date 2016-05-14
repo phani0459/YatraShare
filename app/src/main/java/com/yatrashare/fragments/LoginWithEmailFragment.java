@@ -192,11 +192,14 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                         fgtEmailLayout.setError(getString(R.string.error_invalid_phone));
                         return;
                     }
+                    phoneNumber = email;
+                    email = "";
                 } else {
                     if (!Utils.isEmailValid(email)) {
                         fgtEmailLayout.setError(getString(R.string.error_invalid_email));
                         return;
                     }
+                    phoneNumber = "";
                 }
 
 

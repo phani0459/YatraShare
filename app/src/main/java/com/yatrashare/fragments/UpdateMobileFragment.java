@@ -110,9 +110,6 @@ public class UpdateMobileFragment extends Fragment {
     public void saveMobileNumber() {
         verificationCodeEdit.setEnabled(true);
         if (Utils.isPhoneValid(mContext, phoneEdit.getText().toString())) {
-            phoneEdit.setEnabled(false);
-            verifyBtnLayout.setVisibility(View.VISIBLE);
-            editNumberBtnsLayout.setVisibility(View.GONE);
             phoneNumberLayout.setError(null);
             phoneNumberLayout.setErrorEnabled(false);
             updateMobile(phoneEdit.getText().toString());
@@ -132,6 +129,10 @@ public class UpdateMobileFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                     if (response != null && response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
+                            phoneEdit.setEnabled(false);
+                            verificationCodeEdit.setVisibility(View.VISIBLE);
+                            verifyBtnLayout.setVisibility(View.VISIBLE);
+                            editNumberBtnsLayout.setVisibility(View.GONE);
                             mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
                             mEditor.putString(Constants.PREF_USER_PHONE, mobNum);
                             mEditor.commit();
@@ -157,6 +158,7 @@ public class UpdateMobileFragment extends Fragment {
     @OnClick(R.id.cancel_bt)
     public void cancelMobileNumber() {
         phoneEdit.setEnabled(false);
+        verificationCodeEdit.setVisibility(View.VISIBLE);
         verificationCodeEdit.setEnabled(true);
         verifyBtnLayout.setVisibility(View.VISIBLE);
         editNumberBtnsLayout.setVisibility(View.GONE);
@@ -271,6 +273,7 @@ public class UpdateMobileFragment extends Fragment {
             phoneEdit.setEnabled(true);
             editNumberBtnsLayout.setVisibility(View.VISIBLE);
             verifyBtnLayout.setVisibility(View.GONE);
+            verificationCodeEdit.setVisibility(View.GONE);
         } else {
             phoneEdit.setEnabled(false);
             editNumberBtnsLayout.setVisibility(View.GONE);

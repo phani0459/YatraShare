@@ -24,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -189,6 +190,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             userNameTextView.setText(userName);
         }
+
+        Log.e("wfwatwq", "loadHomePage: " + userProfilePic );
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
             if (userGender.equalsIgnoreCase("Female")) {

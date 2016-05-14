@@ -24,6 +24,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
@@ -82,6 +84,10 @@ public class UploadLicenceActivity extends AppCompatActivity {
         String licenceOne = mSharedPreferences.getString(Constants.PREF_USER_LICENCE_1, "");
         String licenceTwo = mSharedPreferences.getString(Constants.PREF_USER_LICENCE_2, "");
 
+        GenericDraweeHierarchy hierarchy = licenceOneDrawee.getHierarchy();
+        hierarchy.setProgressBarImage(new ProgressBarDrawable());
+        licenceOneDrawee.setHierarchy(hierarchy);
+
         if (!TextUtils.isEmpty(licenceOne) && !licenceOne.startsWith("/")) {
             Uri uri = Uri.parse(licenceOne);
             licenceOneDrawee.setImageURI(uri);
@@ -90,6 +96,10 @@ public class UploadLicenceActivity extends AppCompatActivity {
             licenceOneDrawee.setImageURI(Constants.getDefaultNoImageURI());
             removeLicenceOneButton.setVisibility(View.GONE);
         }
+
+        GenericDraweeHierarchy hierarch2y = licenceTwoDrawee.getHierarchy();
+        hierarch2y.setProgressBarImage(new ProgressBarDrawable());
+        licenceTwoDrawee.setHierarchy(hierarch2y);
 
         if (!TextUtils.isEmpty(licenceTwo) && !licenceTwo.startsWith("/")) {
             Uri uri = Uri.parse(licenceTwo);
