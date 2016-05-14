@@ -191,7 +191,7 @@
     <!--Offer Ride Strings -->
     <string name="findmember">Find Member</string>
     <string name="registervehicle"><u>Register New Vehicle</u></string>
-    <string name="addStopOverPoints"><u>Add more cities on your route</u></string>
+    <string name="addStopOverPoints"><u>Add Stopover</u></string>
 
     <string name="add_stopovers">Add stopovers and get more co-travellers</string>
     <string name="departuredate">Departure Date</string>

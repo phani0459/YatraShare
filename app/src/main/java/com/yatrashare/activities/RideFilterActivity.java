@@ -251,6 +251,7 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
         returnIntent.putExtra("DATE", date);
         returnIntent.putExtra("START TIME", startTime);
         returnIntent.putExtra("END TIME", endTime);
+        returnIntent.putExtra("VEHICLE REGD", vehicleRegdNo);
         setResult(RESULT_OK, returnIntent);
     }
 

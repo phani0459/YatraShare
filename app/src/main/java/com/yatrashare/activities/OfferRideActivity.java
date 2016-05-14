@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.InputType;
@@ -37,7 +38,10 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.yatrashare.R;
 import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.SerializedPlace;
+import com.yatrashare.fragments.OfferedRidesFragment;
 import com.yatrashare.fragments.PublishRideFragment;
+import com.yatrashare.fragments.PublishedConfirmationFragment;
+import com.yatrashare.fragments.TabsFragment;
 import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -264,6 +268,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
 
+        ridePriceEditText.setFilters(Utils.getInputFilter(4));
         ridePriceEditText.setText("0");
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -378,7 +383,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 Date rideTime = timeFormat.parse(rideDepartureTime);
                 Date currentTime = timeFormat.parse(timeString);
                 if (currentTime.after(rideTime)) {
-                    Utils.showToast(this, "Offer Ride atleast 3 hrs before");
+                    Utils.showToast(this, "add 3 hours to your selected time ");
                     return;
                 }
             }
@@ -477,6 +482,24 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         publishRideFragment.setArguments(bundle);
         currentScreen = 1;
         getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, publishRideFragment, null).commit();
+    }
+
+    public void loadSuccessFragment() {
+        PublishedConfirmationFragment confirmationFragment = new PublishedConfirmationFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, confirmationFragment, null).commit();
+    }
+
+    public void showSnackBar(String msg) {
+        Snackbar.make(offerWhereFromEdit, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    public void loadMyRidesFragment() {
+        OfferedRidesFragment offeredRidesFragment = new OfferedRidesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("TITLE", TabsFragment.UPCOMING_OFFERED_RIDES);
+        bundle.putString(Constants.ORIGIN_SCREEN_KEY, "");
+        offeredRidesFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().add(R.id.offerRideContent, offeredRidesFragment, null).commit();
     }
 
     private void openAutocompleteActivity(int editTextId) {

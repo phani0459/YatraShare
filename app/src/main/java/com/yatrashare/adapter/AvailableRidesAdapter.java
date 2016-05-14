@@ -109,11 +109,11 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             holder.rideFareText.setText("" + Utils.getCurrency(mContext) + " " + data.RoutePrice + " /Seat");
             holder.rideFromText.setText(data.DeparturePoint);
             holder.rideToText.setText(data.ArrivalPoint);
-            holder.rideVehicleText.setText(data.VehicleModel);
             holder.availableSeatText.setText(data.RemainingSeats + " Seat(s)");
             String regdType = !TextUtils.isEmpty(data.VehicleRegdType) ? data.VehicleRegdType : "";
             regdType = regdType.equalsIgnoreCase("1") ? "(Odd)" : regdType.equalsIgnoreCase("2") ? "(Even)" : "";
-            holder.userNameText.setText(data.UserName + " " + regdType);
+            holder.rideVehicleText.setText(data.VehicleModel + " " + regdType);
+            holder.userNameText.setText(data.UserName);
 
             String comfortRating = data.ComfortRating;
             String profilePic = data.ProfilePicture;

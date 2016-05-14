@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.SubRidesActivity;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
 import com.yatrashare.dtos.OfferedRides;
@@ -97,10 +98,10 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 Call<OfferedRides> call = null;
                 switch (mTitle) {
                     case TabsFragment.UPCOMING_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, "1", "10");
+                        call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, "1", "20");
                         break;
                     case TabsFragment.PAST_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, "1", "10");
+                        call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, "1", "20");
                         break;
                 }
                 //asynchronous call
@@ -108,7 +109,11 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                     call.enqueue(this);
                 }
             } else {
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
+                if (mContext instanceof HomeActivity) {
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
+                } else {
+                    ((OfferRideActivity) mContext).showSnackBar(getString(R.string.userguide_ratioanle));
+                }
             }
         }
     }
@@ -161,7 +166,9 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.OFFERED_RIDES_SCREEN);
+        if (mContext instanceof HomeActivity) {
+            ((HomeActivity) mContext).setCurrentScreen(HomeActivity.OFFERED_RIDES_SCREEN);
+        }
         if (getArguments() != null) {
             offeredRides = (OfferedRides) getArguments().getSerializable("RIDES");
             loadOfferedRides();
@@ -214,7 +221,11 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 if (response.body() != null && response.body().Data != null) {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         adapter.remove(position);
-                        ((HomeActivity) mContext).showSnackBar("Success");
+                        if (mContext instanceof HomeActivity) {
+                            ((HomeActivity) mContext).showSnackBar("Success");
+                        } else {
+                            ((OfferRideActivity) mContext).showSnackBar("Success");
+                        }
                     }
                 }
             }

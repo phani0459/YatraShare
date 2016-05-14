@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yatrashare.R;
-import com.yatrashare.dtos.RideDetails;
+import com.yatrashare.activities.OfferRideActivity;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,7 +21,6 @@ public class PublishedConfirmationFragment extends Fragment {
 
 
     private Context mContext;
-    RideDetails.RideDetailData rideData;
 
     public PublishedConfirmationFragment() {
         // Required empty public constructor
@@ -34,14 +33,13 @@ public class PublishedConfirmationFragment extends Fragment {
         ButterKnife.bind(this, view);
         mContext = getActivity();
 
-        rideData = (RideDetails.RideDetailData) getArguments().getSerializable("RIDE DATA");
-
         return view;
     }
 
     @OnClick(R.id.btn_ViewPublishedRides)
     public void viewRides() {
 //        ((HomeActivity) mContext).loadScreen(HomeActivity.OFFERED_RIDES_SCREEN, false, null, Constants.RIDE_CONFIRM_SCREEN_NAME);
+        ((OfferRideActivity) mContext).loadMyRidesFragment();
     }
 
 }

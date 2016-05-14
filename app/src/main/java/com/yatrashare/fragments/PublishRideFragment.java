@@ -27,6 +27,7 @@ import android.widget.Spinner;
 
 import com.google.gson.Gson;
 import com.yatrashare.R;
+import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.RegisterVehicleActivity;
 import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.Seats;
@@ -352,7 +353,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                     if (response.body() != null && response.body().Data != null) {
                         if (response.body().Data.contains("-")) {
                             Utils.showToast(mContext, "Successfully ride created");
-                            ((AppCompatActivity) mContext).finish();
+                            ((OfferRideActivity) mContext).loadSuccessFragment();
                         } else {
                             Utils.showToast(mContext, getString(R.string.tryagain));
                         }
