@@ -209,6 +209,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
                             android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                             if (response.body() != null && response.isSuccess()) {
                                 Log.e(TAG, "Licence One Pic: " + response.body().Data);
+                                licenceOneUri = null;
                                 showSnackBar("One side of licence uploaded successfully.");
                                 mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data);
                                 mSharedPrefEditor.commit();
@@ -266,6 +267,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
                             android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                             if (response.body() != null && response.isSuccess()) {
                                 Log.e(TAG, "Licence Two Pic: " + response.body().Data);
+                                licenceTwoUri = null;
                                 showSnackBar("Licence uploaded succesfully");
                                 mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data);
                                 mSharedPrefEditor.commit();

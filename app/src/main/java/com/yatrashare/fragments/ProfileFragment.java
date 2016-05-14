@@ -274,8 +274,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 emailStatusHeading.setText(Html.fromHtml("Email: " + emailHeading));
                 emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
                 emailStatusText.setText(emailSuggetionText);
-                String licenceHeading = licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Accepted</font>" : licenceStatus.equals("1") ? "<font color=\"#FAC001\">Pending</font>" :
-                        "<font color=\"#D9534F\">Rejected</font>";
+                String licenceHeading = licenceStatus.equals("1") ? "<font color=\"#FAC001\">Pending</font>" :
+                                        licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
+                                        licenceStatus.equals("3") ? "<font color=\"#D9534F\">Rejected</font>" :
+                                                        "<font color=\"#D9534F\">Not uploaded</font>";
                 String licenceSuggetionText = licenceStatus.equals("2") ? "Your licence is approved" : licenceStatus.equals("1") ? "Your licence is Pending" :
                         "Your Licence is rejected \n Click on Edit icon to provide Valid Licence";
                 licenceStatusHeading.setText(Html.fromHtml("Licence Status: " + licenceHeading));

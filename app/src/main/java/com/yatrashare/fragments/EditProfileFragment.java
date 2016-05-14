@@ -262,6 +262,7 @@ public class EditProfileFragment extends Fragment {
                             android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
                             if (response.body() != null && response.isSuccess()) {
                                 Log.e(TAG, "Update Pic: " + response.body().Data);
+                                selectedImageUri = null;
                                 mEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
                                 mEditor.commit();
                                 ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
