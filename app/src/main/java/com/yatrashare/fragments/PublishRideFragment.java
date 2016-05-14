@@ -247,8 +247,8 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         String mMainRoute;
         String mTimeframe;
 
-        mDeparture = rideInfoDto.getmRideDeparture();
-        mArrival = rideInfoDto.getmRideArrival();
+        mDeparture = route.getDeparture();
+        mArrival = route.getArrival();
 
         if (arrivalAddress != null && departureAddress != null) {
             mDepartureCity = departureAddress.getLocality();
@@ -326,6 +326,15 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
     }
 
+    public static void largeLog(String tag, String content) {
+        if (content.length() > 4000) {
+            Log.e(tag, content.substring(0, 4000));
+            largeLog(tag, content.substring(4000));
+        } else {
+            Log.e(tag, content);
+        }
+    }
+
     private void prepareRide() {
         String mRideDeparture = rideInfoDto.getmRideDeparture();
         String mRideArrival = rideInfoDto.getmRideArrival();
@@ -347,7 +356,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
         Gson gson = new Gson();
         String ride = gson.toJson(rideInfo);
-        Log.e(TAG, "prepareRide: " + ride);
+        largeLog(TAG, "prepareRide: " + ride);
 
         if (Utils.isInternetAvailable(mContext)) {
             Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, rideInfo);

@@ -19,8 +19,10 @@ import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.SubRidesActivity;
+import com.yatrashare.adapter.AvailableRidesAdapter;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
 import com.yatrashare.dtos.OfferedRides;
+import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -55,6 +57,8 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     public View mProgressBGView;
     private OfferedRidesRecyclerViewAdapter adapter;
     private String userGuide;
+    private LinearLayoutManager mLayoutManager;
+    private int currentPage = 1;
 
 
     /**
@@ -77,7 +81,10 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         setEmptyRidesTexts();
         getOfferedRides();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(mLayoutManager);
+
+        recyclerView.addOnScrollListener(mRecyclerViewOnScrollListener);
 
         return view;
     }
@@ -98,10 +105,10 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 Call<OfferedRides> call = null;
                 switch (mTitle) {
                     case TabsFragment.UPCOMING_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, "1", "20");
+                        call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, currentPage + "", Constants.PAGE_SIZE + "");
                         break;
                     case TabsFragment.PAST_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, "1", "20");
+                        call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, currentPage + "", Constants.PAGE_SIZE + "");
                         break;
                 }
                 //asynchronous call
@@ -122,6 +129,19 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         if (offeredRides != null && offeredRides.Data != null && offeredRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            if (currentPage == 1) {
+                adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
+                recyclerView.setAdapter(adapter);
+            } else {
+                if (adapter != null) {
+                    for (OfferedRides.OfferedRideData data : offeredRides.Data) {
+                        adapter.addItem(data);
+                    }
+                } else {
+                    adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
+                    recyclerView.setAdapter(adapter);
+                }
+            }
             adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
             recyclerView.setAdapter(adapter);
         } else {
@@ -150,6 +170,36 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 emptyRidesLayout.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private boolean mIsLoading = false;
+    private boolean mIsLastPage = false;
+    private RecyclerView.OnScrollListener mRecyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = mLayoutManager.getChildCount();
+            int totalItemCount = mLayoutManager.getItemCount();
+            int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
+
+            if (!mIsLoading && !mIsLastPage) {
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= Constants.PAGE_SIZE) {
+                    loadMoreItems();
+                }
+            }
+        }
+    };
+
+    private void loadMoreItems() {
+        mIsLoading = true;
+        if (adapter != null) adapter.addLoading();
+        currentPage = currentPage + 1;
+        getOfferedRides();
     }
 
     /*

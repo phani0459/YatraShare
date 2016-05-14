@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.MessagesList;
+import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.utils.Constants;
 
 import java.util.List;
@@ -43,6 +44,11 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void addLoading(){
         mIsLoadingFooterAdded = true;
+    }
+
+    public void addItem(MessagesList.MessagesListData messagesListData) {
+        mMessages.add(messagesListData);
+        notifyItemInserted(mMessages.size());
     }
 
     public void removeLoading() {

@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.adapter.AvailableRidesAdapter;
 import com.yatrashare.adapter.MessagesRecyclerViewAdapter;
 import com.yatrashare.dtos.MessagesList;
+import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -83,7 +85,6 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        // Set the adapter
         mLayoutManager = new LinearLayoutManager(mContext);
         messagesRecycleView.setLayoutManager(mLayoutManager);
 
@@ -181,8 +182,16 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     private void loadMessages(MessagesList messagesList) {
         if (messagesList != null && messagesList.Data != null && messagesList.Data.size() > 0) {
             if (messagesList.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
-            adapter = new MessagesRecyclerViewAdapter(mContext, messagesList.Data, this);
-            messagesRecycleView.setAdapter(adapter);
+            if (currentPage == 1) {
+                adapter = new MessagesRecyclerViewAdapter(mContext, messagesList.Data, this);
+                messagesRecycleView.setAdapter(adapter);
+            } else {
+                if (adapter != null) {
+                    for (MessagesList.MessagesListData data : messagesList.Data) {
+                        adapter.addItem(data);
+                    }
+                }
+            }
             adapter.removeLoading();
         }
     }

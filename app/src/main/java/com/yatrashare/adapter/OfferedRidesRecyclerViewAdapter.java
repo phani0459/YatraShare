@@ -6,18 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
+import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.fragments.TabsFragment;
+import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<OfferedRidesRecyclerViewAdapter.ViewHolder> {
+public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<OfferedRides.OfferedRideData> mValues;
     ArrayList<OfferedSubRides.SubRideData> subRides;
@@ -32,6 +35,41 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
         this.mContext = mContext;
     }
 
+    public void addLoading() {
+        mIsLoadingFooterAdded = true;
+    }
+
+    public void removeLoading() {
+        mIsLoadingFooterAdded = false;
+    }
+
+    private boolean mIsLoadingFooterAdded = false;
+
+    private boolean isPositionLoading(int position) {
+        return (position == getItemCount() - 1 && mIsLoadingFooterAdded);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isPositionLoading(position)) return Constants.TYPE_LOADING;
+
+        return Constants.TYPE_ITEM;
+    }
+
+    class MoreViewHolder extends RecyclerView.ViewHolder {
+        ProgressBar mProgressBar;
+
+        public MoreViewHolder(View view) {
+            super(view);
+            mProgressBar = (ProgressBar) view.findViewById(R.id.recycle_footer_progress);
+        }
+    }
+
+    public void addItem(OfferedRides.OfferedRideData offeredRideData) {
+        mValues.add(offeredRideData);
+        notifyItemInserted(mValues.size());
+    }
+
     public OfferedRidesRecyclerViewAdapter(Context mContext, ArrayList<OfferedSubRides.SubRideData> subRides, int mTitle, SetOnItemClickListener setOnItemClickListener, String todo) {
         this.subRides = subRides;
         this.mTitle = mTitle;
@@ -40,52 +78,61 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Offere
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offeredride_item, parent, false);
-        return new ViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == Constants.TYPE_ITEM) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.offeredride_item, parent, false);
+            return new ViewHolder(view);
+        } else {
+            View footerLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, null);
+            footerLayoutView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            return new MoreViewHolder(footerLayoutView);
+        }
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if (mValues != null) {
-            OfferedRides.OfferedRideData offeredRide = mValues.get(position);
-            holder.rideDeparturePoint.setText(offeredRide.DeparturePoint);
-            holder.rideAraivalPoint.setText(offeredRide.ArrivalPoint);
-            holder.rideDateText.setText(offeredRide.DepartureDate);
-            if (mTitle == TabsFragment.UPCOMING_OFFERED_RIDES) {
-                holder.deleteRide.setVisibility(View.VISIBLE);
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
+        if (viewHolder instanceof ViewHolder) {
+            ViewHolder holder = (ViewHolder) viewHolder;
+            if (mValues != null) {
+                OfferedRides.OfferedRideData offeredRide = mValues.get(position);
+                holder.rideDeparturePoint.setText(offeredRide.DeparturePoint);
+                holder.rideAraivalPoint.setText(offeredRide.ArrivalPoint);
+                holder.rideDateText.setText(offeredRide.DepartureDate);
+                if (mTitle == TabsFragment.UPCOMING_OFFERED_RIDES) {
+                    holder.deleteRide.setVisibility(View.VISIBLE);
+                }
+            } else {
+                OfferedSubRides.SubRideData subRideData = subRides.get(position);
+                holder.rideDeparturePoint.setText(subRideData.DeparturePoint);
+                holder.rideAraivalPoint.setText(subRideData.ArrivalPoint);
+                holder.rideDateText.setText(subRideData.DepartureTime);
+
+                holder.remainingSeats.setVisibility(View.VISIBLE);
+                holder.bookedSeats.setVisibility(View.VISIBLE);
+                holder.seatPrice.setVisibility(View.VISIBLE);
+
+                holder.bookedSeatsView.setVisibility(View.VISIBLE);
+                holder.remainingSeatsView.setVisibility(View.VISIBLE);
+
+                holder.remainingSeats.setText(subRideData.AvailableSeats + " Seat(s) left");
+                holder.bookedSeats.setText("Booked Seats: " + subRideData.BookedSeats);
+                holder.seatPrice.setText("" + Utils.getCurrency(mContext) + " " + subRideData.RoutePrice + " /Seat");
             }
-        } else {
-            OfferedSubRides.SubRideData subRideData = subRides.get(position);
-            holder.rideDeparturePoint.setText(subRideData.DeparturePoint);
-            holder.rideAraivalPoint.setText(subRideData.ArrivalPoint);
-            holder.rideDateText.setText(subRideData.DepartureTime);
 
-            holder.remainingSeats.setVisibility(View.VISIBLE);
-            holder.bookedSeats.setVisibility(View.VISIBLE);
-            holder.seatPrice.setVisibility(View.VISIBLE);
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setOnItemClickListener.onItemClick(1, position);
+                }
+            });
 
-            holder.bookedSeatsView.setVisibility(View.VISIBLE);
-            holder.remainingSeatsView.setVisibility(View.VISIBLE);
-
-            holder.remainingSeats.setText(subRideData.AvailableSeats + " Seat(s) left");
-            holder.bookedSeats.setText("Booked Seats: " + subRideData.BookedSeats);
-            holder.seatPrice.setText("" + Utils.getCurrency(mContext) + " " + subRideData.RoutePrice + " /Seat");
+            holder.deleteRide.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setOnItemClickListener.onItemClick(2, position);
+                }
+            });
         }
-
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setOnItemClickListener.onItemClick(1, position);
-            }
-        });
-
-        holder.deleteRide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setOnItemClickListener.onItemClick(2, position);
-            }
-        });
     }
 
     public Object getItem(int pos) {

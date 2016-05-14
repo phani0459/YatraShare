@@ -129,6 +129,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             possibleRoutesDto.setDepartureLongitude(departurePlace.longitude);
             possibleRoutesDto.setArrivalLatitude(arrivalPlace.latitude);
             possibleRoutesDto.setArrivalLongitude(arrivalPlace.longitude);
+            possibleRoutesDto.setDeparture(departurePlace.address);
+            possibleRoutesDto.setArrival(arrivalPlace.address);
             possibleRoutesDto.setIsMainRoute(true);
             allPossibleRoutes.add(possibleRoutesDto);
             mainPossibleRoutes.add(possibleRoutesDto);
@@ -145,6 +147,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         possibleRoutesDto.setDepartureLongitude(departurePlace.longitude);
                         possibleRoutesDto.setArrivalLatitude(stopOverPlaces.get(i).getLatLng().latitude);
                         possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i).getLatLng().longitude);
+                        possibleRoutesDto.setDeparture(departurePlace.address);
+                        possibleRoutesDto.setArrival(stopOverPlaces.get(i).getAddress() + "");
                         possibleRoutesDto.setIsMainRoute(false);
                         allPossibleRoutes.add(possibleRoutesDto);
 
@@ -153,6 +157,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         possibleRoutesDto.setDepartureLongitude(stopOverPlaces.get(i).getLatLng().longitude);
                         possibleRoutesDto.setArrivalLatitude(arrivalPlace.latitude);
                         possibleRoutesDto.setArrivalLongitude(arrivalPlace.longitude);
+                        possibleRoutesDto.setDeparture(stopOverPlaces.get(i).getAddress() + "");
+                        possibleRoutesDto.setArrival(arrivalPlace.address + "");
                         possibleRoutesDto.setIsMainRoute(false);
                         allPossibleRoutes.add(possibleRoutesDto);
 
@@ -161,8 +167,10 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setDepartureLatitude(stopOverPlaces.get(i).getLatLng().latitude);
                             possibleRoutesDto.setDepartureLongitude(stopOverPlaces.get(i).getLatLng().longitude);
                             possibleRoutesDto.setArrivalLatitude(stopOverPlaces.get(i + 1).getLatLng().latitude);
-                            possibleRoutesDto.setIsMainRoute(false);
                             possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i + 1).getLatLng().longitude);
+                            possibleRoutesDto.setDeparture(stopOverPlaces.get(i).getAddress() + "");
+                            possibleRoutesDto.setArrival(stopOverPlaces.get(i + 1).getAddress() + "");
+                            possibleRoutesDto.setIsMainRoute(false);
                             allPossibleRoutes.add(possibleRoutesDto);
                         }
 
@@ -172,6 +180,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setDepartureLongitude(departurePlace.longitude);
                             possibleRoutesDto.setArrivalLatitude(stopOverPlaces.get(i).getLatLng().latitude);
                             possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i).getLatLng().longitude);
+                            possibleRoutesDto.setDeparture(departurePlace.address);
+                            possibleRoutesDto.setArrival(stopOverPlaces.get(i).getAddress() + "");
                             possibleRoutesDto.setIsMainRoute(false);
                             mainPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -181,6 +191,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setDepartureLongitude(stopOverPlaces.get(i).getLatLng().longitude);
                             possibleRoutesDto.setArrivalLatitude(arrivalPlace.latitude);
                             possibleRoutesDto.setArrivalLongitude(arrivalPlace.longitude);
+                            possibleRoutesDto.setDeparture(stopOverPlaces.get(i).getAddress() + "");
+                            possibleRoutesDto.setArrival(arrivalPlace.address + "");
                             possibleRoutesDto.setIsMainRoute(false);
                             mainPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -190,6 +202,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setDepartureLongitude(stopOverPlaces.get(i).getLatLng().longitude);
                             possibleRoutesDto.setArrivalLatitude(stopOverPlaces.get(i + 1).getLatLng().latitude);
                             possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i + 1).getLatLng().longitude);
+                            possibleRoutesDto.setDeparture(stopOverPlaces.get(i).getAddress() + "");
+                            possibleRoutesDto.setArrival(stopOverPlaces.get(i + 1).getAddress() + "");
                             possibleRoutesDto.setIsMainRoute(false);
                             mainPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -806,7 +820,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 } else {
                     String departureDate = departureDateBtn.getText().toString();
-                    if (!TextUtils.isEmpty(departureDate)) {
+                    if (!TextUtils.isEmpty(departureDate) && !departureDate.equalsIgnoreCase(getString(R.string.departuredate))) {
                         Date date = new Date();
                         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
                         try {
@@ -814,7 +828,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        mDatePickerDialog.getDatePicker().setMinDate(date.getTime());
+                        mDatePickerDialog.getDatePicker().setMinDate(date.getTime() - 1000);
                     }
                 }
                 mDatePickerDialog.setTitle("");
