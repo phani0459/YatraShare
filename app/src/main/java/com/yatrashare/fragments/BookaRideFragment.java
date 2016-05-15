@@ -3,6 +3,7 @@ package com.yatrashare.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import com.yatrashare.R;
+import com.yatrashare.activities.EditRideActivity;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.SearchRides;
@@ -195,6 +197,19 @@ public class BookaRideFragment extends Fragment {
             public void onClick(View view) {
                 if (!Utils.isLoggedIn(getActivity())) {
                     Utils.showLoginDialog(getActivity(), Constants.BOOK_a_RIDE_SCREEN_NAME);
+                } else {
+                    openMessage();
+                }
+            }
+        });
+
+        editProfileFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!Utils.isLoggedIn(getActivity())) {
+                    Intent intent = new Intent(mContext, EditRideActivity.class);
+                    intent.putExtra("RIDE", rideData);
+                    startActivity(intent);
                 } else {
                     openMessage();
                 }
@@ -395,11 +410,11 @@ public class BookaRideFragment extends Fragment {
              *
              * @param response
              * @param retrofit
-            */
+             */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                if (response != null && response.body() != null && response.isSuccess()) {
+                if (response.body() != null && response.isSuccess()) {
                     if (response.body().Data.equalsIgnoreCase("1")) {
                         ((HomeActivity) mContext).showSnackBar("Successfully booked your seat");
                         ((HomeActivity) mContext).loadScreen(HomeActivity.RIDE_CONFIRM_SCREEN, false, rideDetails.Data, Constants.HOME_SCREEN_NAME);

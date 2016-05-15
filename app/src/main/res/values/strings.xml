@@ -91,6 +91,7 @@
 
     <!-- Offer Ride Strings -->
 
+    <string name="editPrice">Ride price</string>
     <string name="selectVehicle">Select Your Vehicle</string>
     <string name="car">Car</string>
     <string name="byk">Bike</string>

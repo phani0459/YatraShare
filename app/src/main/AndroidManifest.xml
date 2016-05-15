@@ -89,7 +89,9 @@
 
         <service
             android:name=".AsyncTask.FetchMyProfile"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".activities.EditRideActivity"></activity>
     </application>
 
 </manifest>
