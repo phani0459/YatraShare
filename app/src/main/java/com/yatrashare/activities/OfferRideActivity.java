@@ -514,6 +514,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             // builder checks this and throws an exception if it is not the case.
             Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                     .setBoundsBias(Utils.createBoundsWithMinDiagonal(this))
+                    .setFilter(Utils.getPlacesFilter())
                     .build(this);
             startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
         } catch (GooglePlayServicesRepairableException e) {

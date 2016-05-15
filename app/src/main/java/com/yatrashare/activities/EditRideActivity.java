@@ -552,7 +552,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         try {
             int seats = Integer.parseInt(rideData.RemainingSeats);
             if (selectSeatsSpinner.getCount() >= seats) {
-                selectSeatsSpinner.setSelection(Integer.parseInt(rideData.RemainingSeats));
+                selectSeatsSpinner.setSelection(seats);
             } else if (selectSeatsSpinner.getCount() >= (seats - 1)) {
                 selectSeatsSpinner.setSelection(seats - 1);
             }

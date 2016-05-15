@@ -32,6 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.okhttp.OkHttpClient;
@@ -47,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -127,6 +130,12 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static AutocompleteFilter getPlacesFilter() {
+        List<Integer> autocompleteFilter = new ArrayList<Integer>();
+        autocompleteFilter.add(Place.TYPE_COUNTRY);
+        return AutocompleteFilter.create(autocompleteFilter);
     }
 
     public static CountryData getCountryInfo(Context mContext, String fileName) {

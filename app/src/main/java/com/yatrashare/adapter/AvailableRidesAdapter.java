@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -127,6 +128,12 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 }
             }
 
+            if (data.LadiesOnly.equalsIgnoreCase("true")) {
+                holder.ladiesOnlyImageView.setVisibility(View.VISIBLE);
+            } else {
+                holder.ladiesOnlyImageView.setVisibility(View.GONE);
+            }
+
             holder.ratingBar.setRating(comfortRatingFloat);
 
             if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
@@ -148,6 +155,7 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private TextView userNameText, rideFareText, availableSeatText, rideFromText, rideToText, rideDayText, rideTimeText, rideVehicleText;
         private RatingBar ratingBar;
         SimpleDraweeView simpleDraweeView;
+        private ImageView ladiesOnlyImageView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -162,6 +170,7 @@ public class AvailableRidesAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ratingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
             rideVehicleText = (TextView) itemView.findViewById(R.id.ride_car_text);
             availableSeatText = (TextView) itemView.findViewById(R.id.ride_available_text);
+            ladiesOnlyImageView = (ImageView) itemView.findViewById(R.id.im_ladiesOnly);
             itemView.setOnClickListener(this);
         }
 
