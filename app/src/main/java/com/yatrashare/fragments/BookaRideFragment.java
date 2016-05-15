@@ -182,11 +182,26 @@ public class BookaRideFragment extends Fragment {
                 if (!Utils.isLoggedIn(getActivity())) {
                     Utils.showLoginDialog(getActivity(), Constants.BOOK_a_RIDE_SCREEN_NAME);
                 } else {
-                    if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
-                        showSeatsDialog(userGuid, rideData.PossibleRideGuid, rideData.RemainingSeats);
-                    } else {
+                    SharedPreferences sharedPreferences = Utils.getSharedPrefs(mContext);
+                    String gender = sharedPreferences.getString(Constants.PREF_USER_GENDER, "");
+                    if (!TextUtils.isEmpty(rideData.LadiesOnly) && rideData.LadiesOnly.equalsIgnoreCase("true")) {
+                        if (gender.equalsIgnoreCase("Female")) {
+                            if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
+                                showSeatsDialog(userGuid, rideData.PossibleRideGuid, rideData.RemainingSeats);
+                            } else {
 //                        Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
-                        ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
+                                ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
+                            }
+                        } else {
+                            Utils.showToast(mContext, "Ride is only for ladies");
+                        }
+                    } else {
+                        if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
+                            showSeatsDialog(userGuid, rideData.PossibleRideGuid, rideData.RemainingSeats);
+                        } else {
+//                        Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
+                            ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
+                        }
                     }
                 }
             }
