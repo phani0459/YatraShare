@@ -6,23 +6,6 @@
     android:background="@color/colorLayoutBG"
     tools:context="com.yatrashare.fragments.RatingsFragment">
 
-    <View
-        android:id="@+id/ratingProgressBGView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#40000000"
-        android:clickable="true"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/rating_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ratingsList"
         android:name="com.yatrashare.fragments.RatingsFragment"
@@ -40,5 +23,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/ratingProgressBGView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:clickable="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/rating_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
         android:visibility="gone" />
 </RelativeLayout>

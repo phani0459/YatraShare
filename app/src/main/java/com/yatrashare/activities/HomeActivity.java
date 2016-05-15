@@ -36,6 +36,7 @@ import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
@@ -189,6 +190,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             userNameTextView.setText(userName);
         }
+
+        GenericDraweeHierarchy hierarchy = userDraweeImageView.getHierarchy();
+        hierarchy.setPlaceholderImage(R.drawable.yatrashare_default);
+        userDraweeImageView.setHierarchy(hierarchy);
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
             if (userGender.equalsIgnoreCase("Female")) {
@@ -688,9 +693,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                     mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, "");
-                                    mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, "");
                                     mSharedPrefEditor.putString(Constants.PREF_USER_DOB, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, "");
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, "");
                                     mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
+                                    mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, "");
                                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, false);
                                     mSharedPrefEditor.commit();
                                     LoginManager.getInstance().logOut();

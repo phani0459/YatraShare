@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,12 +186,13 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
 
     Call<UserDataDTO> call = null;
 
-    public Call<UserDataDTO> areYouSureDialog(final int clickedItem, final String rideBookingId) {
+    public void areYouSureDialog(final int clickedItem, final String rideBookingId, final int position) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
+                        Utils.showProgress(true, mProgressView, mProgressBGView);
                         switch (clickedItem) {
                             case BookedRidesRecyclerViewAdapter.cancelRide:
                                 call = Utils.getYatraShareAPI().cancelSeat(userGuide, "" + rideBookingId);
@@ -199,8 +201,57 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
                                 call = Utils.getYatraShareAPI().deleteRide(userGuide, "" + rideBookingId);
                                 break;
                         }
+
+                        if (call != null) {
+                            call.enqueue(new Callback<UserDataDTO>() {
+                                /**
+                                 * Successful HTTP response.
+                                 *
+                                 * @param response response from server
+                                 * @param retrofit adapter
+                                 */
+                                @Override
+                                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                                    android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                                    if (response.body() != null && response.body().Data != null) {
+                                        if (response.body().Data.equalsIgnoreCase("Success")) {
+                                            switch (clickedItem) {
+                                                case BookedRidesRecyclerViewAdapter.cancelRide:
+                                                    ((HomeActivity) mContext).showSnackBar("Ride Cancelled");
+                                                    getBookedRides();
+                                                    break;
+                                                case BookedRidesRecyclerViewAdapter.deleteRide:
+                                                    ((HomeActivity) mContext).showSnackBar("Ride Deleted successfully");
+                                                    adapter.remove(position);
+                                                    break;
+                                                case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
+                                                    ((HomeActivity) mContext).showSnackBar("Message Successfully sent");
+                                                    break;
+                                            }
+                                        } else {
+                                            ((HomeActivity) mContext).showSnackBar(response.body().Data);
+                                        }
+                                    }
+                                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                                }
+
+                                /**
+                                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                                 *
+                                 * @param t exception
+                                 */
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                                }
+                            });
+                        }
+
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
+                        call = null;
                         dialog.dismiss();
                         break;
                 }
@@ -209,7 +260,6 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
-        return call;
     }
 
     @Override
@@ -221,14 +271,14 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
                 switch (clickedItem) {
                     case BookedRidesRecyclerViewAdapter.cancelRide:
                     case BookedRidesRecyclerViewAdapter.deleteRide:
-                        call = areYouSureDialog(clickedItem, "" + data.RideBookingId);
+                        areYouSureDialog(clickedItem, "" + data.RideBookingId, position);
+                        call = null;
                         break;
                     case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
+                        Utils.showProgress(true, mProgressView, mProgressBGView);
                         call = Utils.getYatraShareAPI().sendJourneyDetails(userGuide, "" + data.RideBookingId);
                         break;
                 }
-
-                Utils.showProgress(true, mProgressView, mProgressBGView);
 
                 //asynchronous call
                 if (call != null) {
@@ -278,7 +328,6 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
                 }
             }
         } else {
-            Utils.showToast(mContext, "etewtewtewt");
         }
     }
 }

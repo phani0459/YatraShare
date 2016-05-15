@@ -504,7 +504,7 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-    private void updateProfile(final String userGuid, String userFirstName, String userLastName, String email, final String dob, final String phoneNumber, String aboutMe) {
+    private void updateProfile(final String userGuid, String userFirstName, final String userLastName, String email, final String dob, final String phoneNumber, String aboutMe) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         UserProfile userProfile = new UserProfile(email, userFirstName, userLastName, phoneNumber, dob, userGender, aboutMe);
 
@@ -528,6 +528,7 @@ public class EditProfileFragment extends Fragment {
                         ((HomeActivity) mContext).showSnackBar(getString(R.string.profile_updated_rationale));
                         mEditor.putString(Constants.PREF_USER_DOB, dob);
                         mEditor.putString(Constants.PREF_USER_PHONE, phoneNumber);
+                        mEditor.putString(Constants.PREF_USER_LAST_NAME, userLastName);
                         mEditor.apply();
                         ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                     } else {

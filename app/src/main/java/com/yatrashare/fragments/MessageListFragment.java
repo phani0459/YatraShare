@@ -27,6 +27,8 @@ import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.util.Collections;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
@@ -157,6 +159,11 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
                     emptyRidesLayout.setVisibility(View.GONE);
                     messagesRecycleView.setVisibility(View.VISIBLE);
                     MessagesList messagesList = response.body();
+                    try {
+                        Collections.reverse(messagesList.Data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     loadMessages(messagesList);
                 } else {
                     messagesRecycleView.setVisibility(View.GONE);

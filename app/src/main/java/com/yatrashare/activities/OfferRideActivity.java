@@ -279,7 +279,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        hour = calendar.get(Calendar.HOUR);
         minute = calendar.get(Calendar.MINUTE);
 
         ridePriceEditText.setFilters(Utils.getInputFilter(4));
@@ -382,8 +382,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             Utils.showToast(this, "Enter Departure Date");
             return;
         }
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm", Locale.getDefault());
 
         if (TextUtils.isEmpty(rideDepartureTime)) {
             Utils.showToast(this, "Enter Departure Time");
@@ -391,15 +390,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         }
 
         Date todaysDate = new Date();
-        String timeString = timeFormat.format(todaysDate.getTime() + Utils.TIME_CHECKER);
+        String timeString = format.format(todaysDate.getTime() + Utils.TIME_CHECKER);
         try {
-            if (format.parse(format.format(todaysDate)).equals(format.parse(rideDepartureDate))) {
-                Date rideTime = timeFormat.parse(rideDepartureTime);
-                Date currentTime = timeFormat.parse(timeString);
-                if (currentTime.after(rideTime)) {
-                    Utils.showToast(this, "add 3 hours to your selected time ");
-                    return;
-                }
+            Date rideTime = format.parse(rideDepartureDate + " " + rideDepartureTime);
+            Date currentTime = format.parse(timeString);
+            if (currentTime.after(rideTime)) {
+                Utils.showToast(this, "add 3 hours to your selected time ");
+                return;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -411,17 +408,22 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     return;
                 }
 
+                if (TextUtils.isEmpty(rideArrivalTime)) {
+                    Utils.showToast(this, "Enter Return Time");
+                    return;
+                }
+
                 if (rideDepartureDate.equalsIgnoreCase(rideArrivalDate) && rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
                     Utils.showToast(this, "Return Time and departure time cannot be same");
                     return;
                 }
 
                 try {
-                    Date departureDate = format.parse(rideDepartureDate);
-                    Date arrivalDate = format.parse(rideArrivalDate);
+                    Date departureDate = format.parse(rideDepartureDate + " " + rideDepartureTime);
+                    Date arrivalDate = format.parse(rideArrivalDate + " " + rideArrivalTime);
 
                     if (departureDate.after(arrivalDate)) {
-                        Utils.showToast(this, "Return Date cannot be before Departure Date");
+                        Utils.showToast(this, "Return Time cannot be before Departure Time");
                         return;
                     }
 
@@ -429,28 +431,15 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     e.printStackTrace();
                 }
 
-                try {
-                    if (format.parse(format.format(todaysDate)).equals(format.parse(rideArrivalDate))) {
-                        Date rideTime = timeFormat.parse(rideArrivalTime);
-                        Date departureTime = timeFormat.parse(rideDepartureTime);
-                        if (departureTime.after(rideTime)) {
-                            Utils.showToast(this, "Arrival Time cannot be before Departure time");
-                            return;
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
             }
-
-            if (TextUtils.isEmpty(rideArrivalTime)) {
-                Utils.showToast(this, "Enter Return Time");
-                return;
-            }
-
 
             if (dailyRideRB.isChecked()) {
+
+                if (TextUtils.isEmpty(rideArrivalTime)) {
+                    Utils.showToast(this, "Enter Return Time");
+                    return;
+                }
+
                 if (rideArrivalTime.equalsIgnoreCase(rideDepartureTime)) {
                     Utils.showToast(this, "Return Time and departure time cannot be same");
                     return;
@@ -857,7 +846,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 break;
             case R.id.bt_departuretime:
             case R.id.bt_arrivaltime:
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this, mTimeSetListener, hour, minute, true);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(this, mTimeSetListener, hour, minute, false);
                 timePickerDialog.show();
 
                 timePickerDialog.setOnCancelListener(new DatePickerDialog.OnCancelListener() {
