@@ -258,7 +258,18 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             mArrivalState = arrivalAddress.getAdminArea();
         }
 
-        mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
+        mRoutePrice = "";
+
+        if (distance.contains("km")) {
+            try {
+                mRoutePrice = getPrice(Float.parseFloat(distance.replace("km", ""))) + "";
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (distance.contains(" ")) {
+            mRoutePrice = getPrice(Float.parseFloat(distance.split(" ")[0])) + "";
+
+        }
         mreadOnly = "";
 
         mkilometers = distance;
@@ -336,6 +347,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void prepareRide() {
+        Utils.showProgress(true, mProgressBar, mProgressBGView);
         String mRideDeparture = rideInfoDto.getmRideDeparture();
         String mRideArrival = rideInfoDto.getmRideArrival();
         String mRideType = rideInfoDto.getmRideType();
@@ -378,6 +390,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                             Utils.showToast(mContext, getString(R.string.tryagain));
                         }
                     }
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
 
                 /*
@@ -387,8 +400,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                  */
                 @Override
                 public void onFailure(Throwable t) {
-                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                    t.printStackTrace();
                     Utils.showToast(mContext, getString(R.string.tryagain));
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
             });
         }
