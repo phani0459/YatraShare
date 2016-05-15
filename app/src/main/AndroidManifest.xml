@@ -91,7 +91,9 @@
             android:name=".AsyncTask.FetchMyProfile"
             android:exported="false" />
 
-        <activity android:name=".activities.EditRideActivity"></activity>
+        <activity
+            android:name=".activities.EditRideActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

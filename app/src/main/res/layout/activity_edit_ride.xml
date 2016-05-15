@@ -15,6 +15,58 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/edit_rideFrom"
+                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_ride_from"
+                    android:drawablePadding="8dp"
+                    android:ellipsize="marquee"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="4dp"
+                    android:scrollHorizontally="true"
+                    android:textColor="@android:color/black" />
+
+                <TextView
+                    android:id="@+id/edit_rideTo"
+                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_ride_to"
+                    android:drawablePadding="8dp"
+                    android:ellipsize="marquee"
+                    android:gravity="center_vertical"
+                    android:lines="2"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:paddingTop="4dp"
+                    android:scrollHorizontally="true"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="#FFFFFF" />
+
             <TextView
                 android:id="@+id/tv_selectVehicle"
                 style="@style/TextAppearance.AppCompat.Medium"
@@ -58,6 +110,14 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="16sp" />
             </RadioGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="4dp"
+                android:background="#FFFFFF" />
 
             <Spinner
                 android:id="@+id/ride_selectModel"
@@ -232,7 +292,7 @@
                 android:text="@string/ladiesOnly" />
 
             <Button
-                android:id="@+id/btn_edit_PublishRide"
+                android:id="@+id/btn_UpdateRide"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
@@ -248,4 +308,20 @@
         </LinearLayout>
     </ScrollView>
 
+    <View
+        android:id="@+id/editRideBGView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#40000000"
+        android:clickable="true"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/editRide_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 </RelativeLayout>

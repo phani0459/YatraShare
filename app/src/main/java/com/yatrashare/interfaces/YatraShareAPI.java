@@ -22,6 +22,7 @@ import com.yatrashare.dtos.Vehicle;
 import com.yatrashare.pojos.FindRide;
 import com.yatrashare.pojos.RegisterVehicle;
 import com.yatrashare.pojos.RideInfo;
+import com.yatrashare.pojos.UpdateRide;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.pojos.UserFgtPassword;
 import com.yatrashare.pojos.UserLogin;
@@ -131,6 +132,9 @@ public interface YatraShareAPI {
 
     @POST("/api/Profile/UpdateUserProfile")
     Call<UserDataDTO> updateProfile(@Query("userGuid") String userGuide, @Body UserProfile userProfile);
+
+    @POST("/api/Rides/UpdateRide")
+    Call<UserDataDTO> updateRide(@Query("userGuid") String userGuide, @Body UpdateRide updateRide);
 
     @POST("/api/Profile/ResendVerificationCode")
     Call<UserDataDTO> sendVerificationCode(@Query("userGuid") String userGuide);

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.RatingReceiverInfo;
@@ -148,8 +150,8 @@ public class ProvideRatingFragment extends Fragment {
                         /**
                          * Successful HTTP response.
                          *
-                         * @param response
-                         * @param retrofit
+                         * @param response server response
+                         * @param retrofit adapter
                          */
                         @Override
                         public void onResponse(retrofit.Response<RatingReceiverInfo> response, Retrofit retrofit) {
@@ -182,7 +184,7 @@ public class ProvideRatingFragment extends Fragment {
                         /**
                          * Invoked when a network or unexpected exception occurred during the HTTP request.
                          *
-                         * @param t
+                         * @param t error
                          */
                         @Override
                         public void onFailure(Throwable t) {
@@ -215,14 +217,17 @@ public class ProvideRatingFragment extends Fragment {
 
             UserRating userRating = new UserRating(receiverGuid, stars, feedBack, travellerType);
 
+            Gson gson = new Gson();
+            Log.e(TAG, "submitRating: " + gson.toJson(userRating));
+
             Call<UserDataDTO> call = Utils.getYatraShareAPI().giveRatingtoUser(userGuid, userRating);
             //asynchronous call
             call.enqueue(new Callback<UserDataDTO>() {
                 /**
                  * Successful HTTP response.
                  *
-                 * @param response
-                 * @param retrofit
+                 * @param response server response
+                 * @param retrofit adapter
                  */
                 @Override
                 public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -241,7 +246,7 @@ public class ProvideRatingFragment extends Fragment {
                 /**
                  * Invoked when a network or unexpected exception occurred during the HTTP request.
                  *
-                 * @param t
+                 * @param t error
                  */
                 @Override
                 public void onFailure(Throwable t) {

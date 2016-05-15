@@ -206,12 +206,13 @@ public class BookaRideFragment extends Fragment {
         editProfileFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!Utils.isLoggedIn(getActivity())) {
+                if (Utils.isLoggedIn(getActivity())) {
                     Intent intent = new Intent(mContext, EditRideActivity.class);
                     intent.putExtra("RIDE", rideData);
+                    intent.putExtra("USERGUIDE", userGuid);
+                    if (rideDetails != null)
+                        intent.putExtra("RIDE DETAILS", rideDetails);
                     startActivity(intent);
-                } else {
-                    openMessage();
                 }
             }
         });

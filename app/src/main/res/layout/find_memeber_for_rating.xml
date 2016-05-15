@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="@drawable/spinner_bg"
         android:orientation="vertical">
 
         <Spinner
@@ -22,7 +21,8 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/edittext_bg"
             android:clickable="false"
-            android:padding="16dp" />
+            android:padding="16dp"
+            android:visibility="gone" />
 
         <TextView
             style="@style/Base.TextAppearance.AppCompat.Large"
@@ -30,13 +30,15 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="16dp"
-            android:text="@string/or" />
+            android:text="@string/or"
+            android:visibility="gone" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             android:background="@drawable/edittext_bg">
 
             <EditText
@@ -44,6 +46,7 @@
                 style="@style/Base.TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/phone"
                 android:drawablePadding="8dp"
                 android:hint="@string/mobileNumber"
