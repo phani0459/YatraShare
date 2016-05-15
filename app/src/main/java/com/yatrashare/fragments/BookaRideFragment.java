@@ -183,7 +183,7 @@ public class BookaRideFragment extends Fragment {
                     Utils.showLoginDialog(getActivity(), Constants.BOOK_a_RIDE_SCREEN_NAME);
                 } else {
                     if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
-                        showSeatsDialog(userGuid, rideData.PossibleRideGuid, "1");
+                        showSeatsDialog(userGuid, rideData.PossibleRideGuid, rideData.RemainingSeats);
                     } else {
 //                        Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
                         ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
@@ -213,6 +213,7 @@ public class BookaRideFragment extends Fragment {
                     if (rideDetails != null)
                         intent.putExtra("RIDE DETAILS", rideDetails);
                     startActivity(intent);
+                    ((HomeActivity) mContext).loadScreen(HomeActivity.HOME_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
                 }
             }
         });

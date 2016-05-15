@@ -213,9 +213,14 @@ public class ProvideRatingFragment extends Fragment {
             String feedBack = "", stars = "", travellerType = "";
             feedBack = feedBackEditText.getText().toString();
             stars = ratingValue.getText().toString();
+
+            if (stars.contains(".")) {
+                stars = stars.substring(0, stars.lastIndexOf("."));
+            }
+
             travellerType = travellerTypeSpinner.getSelectedItem().toString();
 
-            UserRating userRating = new UserRating(receiverGuid, stars, feedBack, travellerType);
+            UserRating userRating = new UserRating(receiverGuid, stars, feedBack, travellerType.replace(" ", ""));
 
             Gson gson = new Gson();
             Log.e(TAG, "submitRating: " + gson.toJson(userRating));

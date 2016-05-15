@@ -45,6 +45,7 @@ public class RatingsFragment extends Fragment {
     @Bind(R.id.emptyRidesLayout)
     public ScrollView emptyRidesLayout;
     private int mTitle;
+    private String userGuide;
 
     public RatingsFragment() {
         // Required empty public constructor
@@ -67,9 +68,7 @@ public class RatingsFragment extends Fragment {
         emptyRidesImage.setBackgroundResource(R.drawable.empty_rarings);
 
         SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-        String userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-
-        getRatings(userGuide, mTitle);
+        userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         return view;
     }
@@ -133,5 +132,6 @@ public class RatingsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.RATINGS_SCREEN);
+        getRatings(userGuide, mTitle);
     }
 }
