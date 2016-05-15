@@ -46,6 +46,8 @@ import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.sql.Time;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -355,12 +357,14 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         String rideDeparture = offerWhereFromEdit.getText().toString();
         String rideArrival = offerWhereToEdit.getText().toString();
         String rideDepartureDate = departureDateBtn.getText().toString().equalsIgnoreCase(getString(R.string.departuredate)) ? "" : departureDateBtn.getText().toString();
-        String rideDepartureTime = departureTimeBtn.getText().toString().equalsIgnoreCase(getString(R.string.time)) ? "" : departureTimeBtn.getText().toString();
+        String rideDepartureTime = departureTimeBtn.getText().toString().equalsIgnoreCase(getString(R.string.time)) ? "" : departureTimeBtn.getTag().toString();
         String rideArrivalDate = arrivalDateBtn.getText().toString().equalsIgnoreCase(getString(R.string.returndate)) ? "" : arrivalDateBtn.getText().toString();
         String rideArrivalTime = arrivalTimeBtn.getText().toString();
 
         if (rideArrivalTime.equalsIgnoreCase(getString(R.string.time)) || rideArrivalTime.equalsIgnoreCase(getString(R.string.returnTime))) {
             rideArrivalTime = "";
+        } else {
+            rideArrivalTime = arrivalTimeBtn.getTag().toString();
         }
 
         if (TextUtils.isEmpty(rideDeparture)) {
@@ -690,10 +694,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 switch (clickedButton) {
                     case R.id.bt_departuretime:
-                        departureTimeBtn.setText("" + hourOfDay + ":" + minute);
+                        departureTimeBtn.setTag("" + hourOfDay + ":" + minute);
+                        departureTimeBtn.setText(getTime(hourOfDay, minute));
                         break;
                     case R.id.bt_arrivaltime:
-                        arrivalTimeBtn.setText("" + hourOfDay + ":" + minute);
+                        arrivalTimeBtn.setTag("" + hourOfDay + ":" + minute);
+                        arrivalTimeBtn.setText(getTime(hourOfDay, minute));
                         break;
                 }
             }
@@ -721,6 +727,16 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             }
         });
 
+    }
+
+    private String getTime(int hr, int min) {
+        try {
+            Time tme = new Time(hr, min, 0);//seconds by default set to zero
+            Format formatter = new SimpleDateFormat("hh:mm a");
+            return formatter.format(tme);
+        } catch (Exception e) {
+            return "" + hr + ":" + min;
+        }
     }
 
     @Override
