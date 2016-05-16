@@ -129,6 +129,10 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         if (offeredRides != null && offeredRides.Data != null && offeredRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            mIsLoading = false;
+            if (offeredRides.Data.size() < Constants.PAGE_SIZE) {
+                mIsLastPage = true;
+            }
             if (adapter != null) {
                 for (int i = 0; i < offeredRides.Data.size(); i++) {
                     adapter.addItem(offeredRides.Data.get(i));

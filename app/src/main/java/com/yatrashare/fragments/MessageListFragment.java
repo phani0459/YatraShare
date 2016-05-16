@@ -188,6 +188,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
 
     private void loadMessages(MessagesList messagesList) {
         if (messagesList != null && messagesList.Data != null && messagesList.Data.size() > 0) {
+            mIsLoading = false;
             if (messagesList.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
             if (adapter != null) {
                 for (int i = 0; i < messagesList.Data.size(); i++) {

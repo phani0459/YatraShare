@@ -158,6 +158,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     if (searchRides != null) {
                         if (searchRides.Data != null && searchRides.Data.size() > 0) {
 
+                            mIsLoading = false;
                             if (searchRides.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
 
                             emptyRidesLayout.setVisibility(View.GONE);
