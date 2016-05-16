@@ -130,13 +130,14 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             if (adapter != null) {
-                for (OfferedRides.OfferedRideData data : offeredRides.Data) {
-                    adapter.addItem(data);
+                for (int i = 0; i < offeredRides.Data.size(); i++) {
+                    adapter.addItem(offeredRides.Data.get(i));
                 }
             } else {
                 adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
                 recyclerView.setAdapter(adapter);
             }
+            adapter.removeLoading();
         } else {
             recyclerView.setVisibility(View.GONE);
             emptyRidesLayout.setVisibility(View.VISIBLE);
