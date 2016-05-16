@@ -21,6 +21,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -503,6 +504,8 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                     mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, response.body().Data.Gender);
                     mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data.ProfilePhoto);
                     mSharedPrefEditor.putString(Constants.PREF_USER_DOB, response.body().Data.Dob);
+                    Log.e(TAG, "response.body().Data.Licence1: " + response.body().Data.Licence1);
+                    Log.e(TAG, "response.body().Data.Licence2: " + response.body().Data.Licence2);
                     mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data.Licence1);
                     mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data.Licence2);
 

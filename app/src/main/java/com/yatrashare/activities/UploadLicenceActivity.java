@@ -88,6 +88,9 @@ public class UploadLicenceActivity extends AppCompatActivity {
         hierarchy.setProgressBarImage(new ProgressBarDrawable());
         licenceOneDrawee.setHierarchy(hierarchy);
 
+        Log.e(TAG, "Licence One: " + licenceOne);
+        Log.e(TAG, "Licence Two: " + licenceTwo);
+
         if (!TextUtils.isEmpty(licenceOne) && !licenceOne.startsWith("/")) {
             Uri uri = Uri.parse(licenceOne);
             licenceOneDrawee.setImageURI(uri);

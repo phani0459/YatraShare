@@ -408,7 +408,9 @@ public class Utils {
                 Address address = getLatlngsFromLocation(country, mContext);
                 if (address != null) {
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    latLngBounds = new LatLngBounds(latLng, latLng);
+                    LatLng latLng1 = new LatLng(32.6393,-117.004304);
+                    LatLng latLng2 = new LatLng(44.901184 ,-67.32254);
+                    latLngBounds = new LatLngBounds(latLng1, latLng2);
                     return latLngBounds;
                 }
             } catch (Exception e) {

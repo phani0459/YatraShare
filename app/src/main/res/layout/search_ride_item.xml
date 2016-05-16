@@ -36,7 +36,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:layout_toLeftOf="@+id/im_ladiesOnly"
                 android:layout_toRightOf="@+id/userImage_drawee"
                 android:orientation="vertical">
 
@@ -75,13 +74,13 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/im_ladiesOnly"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerInParent="true"
                 android:padding="4dp"
-                android:src="@drawable/ladies" />
+                android:src="@drawable/ladies"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -174,6 +173,14 @@
                 android:gravity="center"
                 android:text="2522"
                 android:textColor="@color/colorRideDetails" />
+
+            <ImageView
+                android:id="@+id/im_ladiesOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="4dp"
+                android:src="@drawable/ladies" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

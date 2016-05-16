@@ -129,21 +129,14 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         if (offeredRides != null && offeredRides.Data != null && offeredRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            if (currentPage == 1) {
+            if (adapter != null) {
+                for (OfferedRides.OfferedRideData data : offeredRides.Data) {
+                    adapter.addItem(data);
+                }
+            } else {
                 adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
                 recyclerView.setAdapter(adapter);
-            } else {
-                if (adapter != null) {
-                    for (OfferedRides.OfferedRideData data : offeredRides.Data) {
-                        adapter.addItem(data);
-                    }
-                } else {
-                    adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
-                    recyclerView.setAdapter(adapter);
-                }
             }
-            adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
-            recyclerView.setAdapter(adapter);
         } else {
             recyclerView.setVisibility(View.GONE);
             emptyRidesLayout.setVisibility(View.VISIBLE);

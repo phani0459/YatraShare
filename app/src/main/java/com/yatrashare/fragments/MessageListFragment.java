@@ -189,15 +189,13 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     private void loadMessages(MessagesList messagesList) {
         if (messagesList != null && messagesList.Data != null && messagesList.Data.size() > 0) {
             if (messagesList.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
-            if (currentPage == 1) {
+            if (adapter != null) {
+                for (MessagesList.MessagesListData data : messagesList.Data) {
+                    adapter.addItem(data);
+                }
+            } else {
                 adapter = new MessagesRecyclerViewAdapter(mContext, messagesList.Data, this);
                 messagesRecycleView.setAdapter(adapter);
-            } else {
-                if (adapter != null) {
-                    for (MessagesList.MessagesListData data : messagesList.Data) {
-                        adapter.addItem(data);
-                    }
-                }
             }
             adapter.removeLoading();
         }

@@ -5,12 +5,14 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,7 +46,10 @@ import com.yatrashare.pojos.UserProfile;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -303,8 +308,24 @@ public class EditProfileFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
             selectedImageUri = getPickImageResultUri(data);
-            isImageLoaded = true;
-            userDraweeImageView.setImageURI(selectedImageUri);
+            try {
+                ContentResolver cr = mContext.getContentResolver();
+                InputStream is = cr.openInputStream(selectedImageUri);
+                assert is != null;
+                int size = is.available();
+
+                if (size < Constants.IMAGE_SIZE) {
+                    isImageLoaded = true;
+                    userDraweeImageView.setImageURI(selectedImageUri);
+                } else {
+                    selectedImageUri = null;
+                    Utils.showToast(mContext, "Image size cannot be more than 5MB");
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             isImageLoaded = false;
         }
