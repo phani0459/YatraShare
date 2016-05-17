@@ -68,6 +68,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     public ProgressBar mProgressView;
     private SharedPreferences mSharedPreferences;
     private SerializedPlace whereFromPlace, wheretoPlace;
+    private boolean isPopupInitiated;
 
 
     @OnClick(R.id.swapAreas)
@@ -145,7 +146,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
              */
             Utils.showProgress(true, mProgressView, mProgressBGView);
             FindRide findRide = new FindRide(whereFrom, whereTo,
-                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", "10", "0");
+                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", Constants.PAGE_SIZE + "", "0");
 
             Gson gson = new Gson();
             Log.e(TAG, "searchRide: " + gson.toJson(findRide));
@@ -219,7 +220,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                dateEditText.setText("" + dayOfMonth + "/" + (monthOfYear + 1) + "/" + year);
+                dateEditText.setText((monthOfYear + 1) + "/" + "" + dayOfMonth + "/" + year);
             }
         };
     }
@@ -241,6 +242,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
 
         // Check that the result was from the autocomplete widget.
         if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            isPopupInitiated = false;
             if (resultCode == Activity.RESULT_OK) {
                 // Get the user's selected place from the Intent.
                 Place place = PlaceAutocomplete.getPlace(mContext, data);
@@ -275,26 +277,29 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     }
 
     private void openAutocompleteActivity() {
-        try {
-            // The autocomplete activity requires Google Play Services to be available. The intent
-            // builder checks this and throws an exception if it is not the case.
-            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                    .setBoundsBias(Utils.createBoundsWithMinDiagonal(mContext))
-                    .build(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // Indicates that Google Play Services is either not installed or not up to date. Prompt
-            // the user to correct the issue.
-            GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(),
-                    0 /* requestCode */).show();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // Indicates that Google Play Services is not available and the problem is not easily
-            // resolvable.
-            String message = "Google Play Services is not available: " +
-                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+        if (!isPopupInitiated) {
+            isPopupInitiated = true;
+            try {
+                // The autocomplete activity requires Google Play Services to be available. The intent
+                // builder checks this and throws an exception if it is not the case.
+                Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                        .setBoundsBias(Utils.createBoundsWithMinDiagonal(mContext))
+                        .build(getActivity());
+                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            } catch (GooglePlayServicesRepairableException e) {
+                // Indicates that Google Play Services is either not installed or not up to date. Prompt
+                // the user to correct the issue.
+                GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(),
+                        0 /* requestCode */).show();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                // Indicates that Google Play Services is not available and the problem is not easily
+                // resolvable.
+                String message = "Google Play Services is not available: " +
+                        GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
 
-            Log.e(TAG, message);
-            Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, message);
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

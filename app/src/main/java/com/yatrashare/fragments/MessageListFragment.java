@@ -221,6 +221,10 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
+                    if (adapter.getItemCount() == 0) {
+                        emptyRidesLayout.setVisibility(View.VISIBLE);
+                    }
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }
@@ -265,6 +269,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     @Override
     public void onItemClick(boolean isView, final int position) {
         if (adapter != null) {
+
             MessagesList.MessagesListData messageData = adapter.getItem(position);
             if (isView) {
                 ((HomeActivity) mContext).loadScreen(HomeActivity.MESSAGE_DETAILS_SCREEN, false, messageData, Constants.MESSAGE_SCREEN_NAME);
@@ -276,6 +281,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
 
     public void refreshMessagesList() {
         if (Utils.isInternetAvailable(mContext)) {
+            adapter = null;
             Utils.showProgress(true, mProgressView, mProgressBGView);
             getMessages();
         }

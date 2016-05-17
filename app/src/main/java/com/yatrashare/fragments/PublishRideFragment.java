@@ -199,7 +199,10 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
             allPossibleRoutes = new ArrayList<>();
             stopOverPoints = new ArrayList<>();
 
-            addRoutes(true);
+            if (Utils.isInternetAvailable(mContext)) {
+                Utils.showProgress(true, mProgressBar, mProgressBGView);
+                addRoutes(true);
+            }
 
         } else {
             Utils.showToast(mContext, "Register New Vehicle");
@@ -347,7 +350,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     }
 
     private void prepareRide() {
-        Utils.showProgress(true, mProgressBar, mProgressBGView);
         String mRideDeparture = rideInfoDto.getmRideDeparture();
         String mRideArrival = rideInfoDto.getmRideArrival();
         String mRideType = rideInfoDto.getmRideType();
@@ -387,8 +389,10 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                             Utils.showToast(mContext, "Successfully ride created");
                             ((OfferRideActivity) mContext).loadSuccessFragment();
                         } else {
-                            Utils.showToast(mContext, getString(R.string.tryagain));
+                            Utils.showToast(mContext, response.body().Data);
                         }
+                    } else {
+                        Utils.showToast(mContext, getString(R.string.tryagain));
                     }
                     Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
@@ -427,9 +431,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
 
     private void getMainRoutes(final int pos, final ArrayList<RideInfoDto.PossibleRoutesDto> possibleRoutesDtos, final boolean isMain) {
         if (possibleRoutesDtos != null && possibleRoutesDtos.size() > 0) {
-            if (mProgressBar.getVisibility() == View.GONE) {
-                Utils.showProgress(true, mProgressBar, mProgressBGView);
-            }
             try {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://maps.googleapis.com")
@@ -457,8 +458,6 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                                 if (pos < possibleRoutesDtos.size()) {
                                     getMainRoutes(pos + 1, possibleRoutesDtos, isMain);
                                 }
-                                if (!isMain && pos == possibleRoutesDtos.size() - 1)
-                                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                             }
                         }
                     }

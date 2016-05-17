@@ -134,6 +134,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 mIsLastPage = true;
             }
             if (adapter != null) {
+                adapter.removeLoading();
                 for (int i = 0; i < offeredRides.Data.size(); i++) {
                     adapter.addItem(offeredRides.Data.get(i));
                 }
@@ -141,7 +142,6 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
                 recyclerView.setAdapter(adapter);
             }
-            adapter.removeLoading();
         } else {
             recyclerView.setVisibility(View.GONE);
             emptyRidesLayout.setVisibility(View.VISIBLE);
@@ -274,6 +274,11 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                         } else {
                             ((OfferRideActivity) mContext).showSnackBar("Success");
                         }
+
+                        if (adapter.getItemCount() == 0) {
+                            emptyRidesLayout.setVisibility(View.VISIBLE);
+                        }
+
                     }
                 }
             }

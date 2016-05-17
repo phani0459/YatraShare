@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -142,11 +143,24 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if (call != null) {
+                Log.e(TAG, "onDestroy: ");
+                call.cancel();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
-     * Invoked when a network or unexpected exception occurred during the HTTP request.
-     *
-     * @param t
-     * */
+         * Invoked when a network or unexpected exception occurred during the HTTP request.
+         *
+         * @param t
+         * */
     @Override
     public void onFailure(Throwable t) {
         android.util.Log.e(TAG, t.getLocalizedMessage() + "");

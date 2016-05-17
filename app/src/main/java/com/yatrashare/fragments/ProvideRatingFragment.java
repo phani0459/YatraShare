@@ -157,6 +157,13 @@ public class ProvideRatingFragment extends Fragment {
                         public void onResponse(retrofit.Response<RatingReceiverInfo> response, Retrofit retrofit) {
                             android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                             if (response.body() != null && response.body().Data != null && response.body().Data.Email != null && response.body().Data.MobileNumber != null) {
+                                receiverGuid = response.body().Data.ReceiverGuid;
+
+                                if (receiverGuid.equalsIgnoreCase(userGuid)) {
+                                    Utils.showToast(mContext, "You cannot provide rating to yourself");
+                                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                                    return;
+                                }
                                 showFindMemberBtn.setVisibility(View.VISIBLE);
                                 receiverInfoLayout.setVisibility(View.VISIBLE);
                                 giveFeedBackLayout.setVisibility(View.VISIBLE);
@@ -173,7 +180,6 @@ public class ProvideRatingFragment extends Fragment {
                                     ratingReciverDrawee.setImageURI(Constants.getDefaultPicURI());
                                 }
 
-                                receiverGuid = response.body().Data.ReceiverGuid;
 
                             } else {
 

@@ -83,7 +83,7 @@ public class MessagesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void removeItem(int position) {
         mMessages.remove(position);
-        notifyDataSetChanged();
+        notifyItemRemoved(position);
     }
 
     @Override

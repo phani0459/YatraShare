@@ -121,6 +121,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     private ArrayList<Place> stopOverPlaces;
     private PublishRideFragment publishRideFragment;
     private CountryData countryData;
+    private boolean isPopupInitiated;
 
     public void possibleRoutes() {
         allPossibleRoutes = new ArrayList<>();
@@ -508,27 +509,30 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     }
 
     private void openAutocompleteActivity(int editTextId) {
-        selectedEditText = editTextId;
-        try {
-            // The autocomplete activity requires Google Play Services to be available. The intent
-            // builder checks this and throws an exception if it is not the case.
-            Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                    .setBoundsBias(Utils.createBoundsWithMinDiagonal(this))
-                    .setFilter(Utils.getPlacesFilter())
-                    .build(this);
-            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // Indicates that Google Play Services is either not installed or not up to date. Prompt
-            // the user to correct the issue.
-            GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
-                    0 /* requestCode */).show();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // Indicates that Google Play Services is not available and the problem is not easily
-            // resolvable.
-            String message = "Google Play Services is not available: " + GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+        if (!isPopupInitiated) {
+            isPopupInitiated = true;
+            selectedEditText = editTextId;
+            try {
+                // The autocomplete activity requires Google Play Services to be available. The intent
+                // builder checks this and throws an exception if it is not the case.
+                Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                        .setBoundsBias(Utils.createBoundsWithMinDiagonal(this))
+                        .setFilter(Utils.getPlacesFilter())
+                        .build(this);
+                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            } catch (GooglePlayServicesRepairableException e) {
+                // Indicates that Google Play Services is either not installed or not up to date. Prompt
+                // the user to correct the issue.
+                GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(),
+                        0 /* requestCode */).show();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                // Indicates that Google Play Services is not available and the problem is not easily
+                // resolvable.
+                String message = "Google Play Services is not available: " + GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
 
-            Log.e(TAG, message);
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, message);
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -739,6 +743,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        isPopupInitiated = false;
         super.onActivityResult(requestCode, resultCode, data);
         // Check that the result was from the autocomplete widget.
         if (resultCode == Activity.RESULT_OK) {
@@ -823,15 +828,27 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                 } else {
                     String departureDate = departureDateBtn.getText().toString();
+                    String departureTime = departureTimeBtn.getText().toString();
+
+                    if (TextUtils.isEmpty(departureTime)) {
+                        departureTime = "12:00 PM";
+                    }
+
+                    if (departureDate.equalsIgnoreCase(getString(R.string.time))) {
+                        departureTime = "12:00 PM";
+                    }
+
                     if (!TextUtils.isEmpty(departureDate) && !departureDate.equalsIgnoreCase(getString(R.string.departuredate))) {
                         Date date = new Date();
-                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+                        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
                         try {
-                            date = format.parse(departureDate);
+                            date = format.parse(departureDate + " " + departureTime);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
                         mDatePickerDialog.getDatePicker().setMinDate(date.getTime() - 1000);
+                    } else {
+                        mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                     }
                 }
                 mDatePickerDialog.setTitle("");

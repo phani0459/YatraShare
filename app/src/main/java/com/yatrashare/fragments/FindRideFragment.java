@@ -324,9 +324,9 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     return;
                 }
 
+                Log.e(TAG, "onClick: " + date );
+
                 if (Utils.isInternetAvailable(mContext)) {
-                    // Show a progress bar, and kick off a background task to
-                    // perform the user forgot password attempt.
                     Utils.hideSoftKeyboard(mEmailIdEdit);
                     emailLayout.setErrorEnabled(false);
                     showEmailAlertProgress(true);

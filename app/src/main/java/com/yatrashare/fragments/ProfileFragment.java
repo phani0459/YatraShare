@@ -441,10 +441,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             changeViews(profile.Data.Music, musicAllowRingView, musicNotAllowRingView, musicNotMuchRingView);
             changeViews(profile.Data.Food, foodAllowRingView, foodNotAllowRingView, foodNotMuchRingView);
             changeViews(profile.Data.Smoking, smokeAllowRingView, smokeNotAllowRingView, smokeNotMuchRingView);
-            chatToolTip.setText(profile.Data.ChatTooltip != null ? profile.Data.ChatTooltip : "I talk moderately");
-            musicToolTip.setText(profile.Data.MusicTooltip != null ? profile.Data.MusicTooltip : "I listen to music sometimes");
-            foodToolTip.setText(profile.Data.FoodTooltip != null ? profile.Data.FoodTooltip : "You can have food neatly");
-            smokeToolTip.setText(profile.Data.SmokingTooltip != null ? profile.Data.SmokingTooltip : "I don’t encourage smoking much");
+            chatToolTip.setText(!TextUtils.isEmpty(profile.Data.ChatTooltip) ? profile.Data.ChatTooltip : "I talk moderately");
+            musicToolTip.setText(!TextUtils.isEmpty(profile.Data.MusicTooltip) ? profile.Data.MusicTooltip : "I listen to music sometimes");
+            foodToolTip.setText(!TextUtils.isEmpty(profile.Data.FoodTooltip) ? profile.Data.FoodTooltip : "You can have food neatly");
+            smokeToolTip.setText(!TextUtils.isEmpty(profile.Data.SmokingTooltip) ? profile.Data.SmokingTooltip : "I don’t encourage smoking much");
         }
 
         Button cancel = (Button) dialog.findViewById(R.id.btnCancel);
@@ -583,6 +583,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                     profile.Data.Food = Integer.parseInt(updateFood);
                                     profile.Data.Smoking = Integer.parseInt(updateSmoke);
                                     updateUserPreferences();
+
+                                    Utils.deleteFile(mContext, userGuide);
+                                    onResume();
 
                                     dialog.dismiss();
                                 }
