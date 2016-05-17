@@ -10,7 +10,7 @@ public class Constants {
     public static final String defaultPicURL = "http://www.mediafire.com/convkey/5b62/1bi4vdi37z3wfvczg.jpg?size_id=3";
     public static final String defaultFemaleURL = "http://www.mediafire.com/convkey/9110/ib8u5bpbdjr9frezg.jpg?size_id=3";
     public static final String noImageURL = "http://www.mediafire.com/convkey/f3c2/8h849nu7g5x89fzzg.jpg?size_id=3";
-    public static final int PAGE_SIZE = 3;
+    public static final int PAGE_SIZE = 5;
     public static final int IMAGE_SIZE = 5 * 1000 * 1000;
     public static final int TYPE_ITEM = 3;
     public static final int TYPE_LOADING = 4;

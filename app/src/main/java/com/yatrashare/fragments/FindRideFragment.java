@@ -114,6 +114,29 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
         mRecyclerView.addOnScrollListener(mRecyclerViewOnScrollListener);
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            this.foundRides = (FoundRides) bundle.getSerializable("Searched Rides");
+            if (foundRides != null) {
+                this.searchRides = foundRides.searchRides;
+                whereFrom = foundRides.destinationPlace;
+                whereTo = foundRides.arriavalPlace;
+                date = foundRides.selectedDate;
+            }
+            if (searchRides != null) {
+                if (searchRides.Data != null && searchRides.Data.size() > 0) {
+                    emptyRidesLayout.setVisibility(View.GONE);
+                    createEmailAlertBtn.setVisibility(View.GONE);
+                    mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
+                    mRecyclerView.setAdapter(mAdapter);
+                } else {
+                    emptyRidesLayout.setVisibility(View.VISIBLE);
+                    createEmailAlertBtn.setVisibility(View.VISIBLE);
+                    mRecyclerView.setAdapter(null);
+                }
+            }
+        }
+
         return inflatedLayout;
     }
 
@@ -156,7 +179,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                 Utils.showProgress(false, mProgressView, mProgressBGView);
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response.body() != null) {
-                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                     FindRideFragment.this.searchRides = response.body();
                     if (searchRides != null) {
                         if (searchRides.Data != null && searchRides.Data.size() > 0) {
@@ -177,18 +199,17 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                             }
 
                         } else {
-                            emptyRidesLayout.setVisibility(View.VISIBLE);
-                            mRecyclerView.setVisibility(View.GONE);
-                            createEmailAlertBtn.setVisibility(View.VISIBLE);
+                            if (mAdapter != null && mAdapter.getItemCount() > 0) {
+                                mIsLastPage = true;
+                            } else {
+                                emptyRidesLayout.setVisibility(View.VISIBLE);
+                                mRecyclerView.setVisibility(View.GONE);
+                                createEmailAlertBtn.setVisibility(View.VISIBLE);
+                            }
                         }
-                    } else {
-                        emptyRidesLayout.setVisibility(View.VISIBLE);
-                        mRecyclerView.setVisibility(View.GONE);
-                        createEmailAlertBtn.setVisibility(View.VISIBLE);
-                        ((HomeActivity) mContext).showSnackBar("No rides available at this time, Try again!");
                     }
-                    if (mAdapter != null) mAdapter.removeLoading();
                 }
+                if (mAdapter != null) mAdapter.removeLoading();
             }
 
             /**
@@ -198,7 +219,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
              */
             @Override
             public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                t.printStackTrace();
                 Utils.showProgress(false, mProgressView, mProgressBGView);
                 ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
             }
@@ -330,8 +351,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     return;
                 }
 
-                Log.e(TAG, "onClick: " + date);
-
                 if (Utils.isInternetAvailable(mContext)) {
                     Utils.hideSoftKeyboard(mEmailIdEdit);
                     emailLayout.setErrorEnabled(false);
@@ -390,7 +409,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response.body() != null) {
-                    android.util.Log.e("SUCCEESS RESPONSE BODY", response.body() + "");
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         dialog.dismiss();
                         ((HomeActivity) mContext).showSnackBar(getString(R.string.emailalertCreated_rationale));
@@ -409,7 +427,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
              */
             @Override
             public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                t.printStackTrace();
                 ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
                 showEmailAlertProgress(false);
                 dialog.setCancelable(true);
@@ -439,21 +457,10 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                 searchRides = null;
                 mAdapter = null;
                 currentPage = 1;
+                mIsLastPage = false;
                 searchRides();
             }
         }
-    }
-
-    @Override
-    public void onPause() {
-        /*if (searchRides != null) {
-            foundRides.searchRides = searchRides;
-            foundRides.destinationPlace = whereFrom;
-            foundRides.arriavalPlace = whereTo;
-            foundRides.selectedDate = date;
-            getArguments().putSerializable("Searched Rides", foundRides);
-        }*/
-        super.onPause();
     }
 
     @Override
@@ -461,28 +468,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         super.onResume();
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.SEARCH_RIDE_SCREEN);
         ((HomeActivity) mContext).prepareMenu();
-        /*Bundle bundle = getArguments();
-        if (bundle != null) {
-            this.foundRides = (FoundRides) bundle.getSerializable("Searched Rides");
-            if (foundRides != null) {
-                this.searchRides = foundRides.searchRides;
-                whereFrom = foundRides.destinationPlace;
-                whereTo = foundRides.arriavalPlace;
-                date = foundRides.selectedDate;
-            }
-            if (searchRides != null) {
-                if (searchRides.Data != null && searchRides.Data.size() > 0) {
-                    emptyRidesLayout.setVisibility(View.GONE);
-                    createEmailAlertBtn.setVisibility(View.GONE);
-                    mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
-                    mRecyclerView.setAdapter(mAdapter);
-                } else {
-                    emptyRidesLayout.setVisibility(View.VISIBLE);
-                    createEmailAlertBtn.setVisibility(View.VISIBLE);
-                    mRecyclerView.setAdapter(null);
-                }
-            }
-        }*/
     }
 
     @Override

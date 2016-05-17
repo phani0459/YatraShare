@@ -86,15 +86,14 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
 
         recyclerView.addOnScrollListener(mRecyclerViewOnScrollListener);
 
-        return view;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (offeredRides != null) {
-            getArguments().putSerializable("RIDES", offeredRides);
+        if (getArguments() != null) {
+            offeredRides = (OfferedRides) getArguments().getSerializable("RIDES");
+            adapter = null;
+            currentPage = 1;
+            loadOfferedRides();
         }
+
+        return view;
     }
 
     public void getOfferedRides() {
@@ -129,10 +128,12 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         if (offeredRides != null && offeredRides.Data != null && offeredRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+
             mIsLoading = false;
             if (offeredRides.Data.size() < Constants.PAGE_SIZE) {
                 mIsLastPage = true;
             }
+
             if (adapter != null) {
                 adapter.removeLoading();
                 for (int i = 0; i < offeredRides.Data.size(); i++) {
@@ -143,8 +144,12 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 recyclerView.setAdapter(adapter);
             }
         } else {
-            recyclerView.setVisibility(View.GONE);
-            emptyRidesLayout.setVisibility(View.VISIBLE);
+            if (adapter != null && adapter.getItemCount() > 0) {
+                mIsLastPage = true;
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                emptyRidesLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -216,12 +221,6 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         super.onResume();
         if (mContext instanceof HomeActivity) {
             ((HomeActivity) mContext).setCurrentScreen(HomeActivity.OFFERED_RIDES_SCREEN);
-        }
-        if (getArguments() != null) {
-            offeredRides = (OfferedRides) getArguments().getSerializable("RIDES");
-            adapter = null;
-            currentPage = 1;
-            loadOfferedRides();
         }
     }
 

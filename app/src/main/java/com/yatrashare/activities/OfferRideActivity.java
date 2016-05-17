@@ -834,19 +834,21 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         departureTime = "12:00 PM";
                     }
 
-                    if (departureDate.equalsIgnoreCase(getString(R.string.time))) {
+                    if (departureTime.equalsIgnoreCase(getString(R.string.time))) {
                         departureTime = "12:00 PM";
                     }
 
                     if (!TextUtils.isEmpty(departureDate) && !departureDate.equalsIgnoreCase(getString(R.string.departuredate))) {
-                        Date date = new Date();
+                        Date date = null;
                         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
                         try {
                             date = format.parse(departureDate + " " + departureTime);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        mDatePickerDialog.getDatePicker().setMinDate(date.getTime() - 1000);
+                        if (date != null) {
+                            mDatePickerDialog.getDatePicker().setMinDate(date.getTime() - 1000);
+                        }
                     } else {
                         mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
                     }

@@ -155,19 +155,9 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             @Override
             public void onResponse(retrofit.Response<MessagesList> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response.body() != null && response.body().Data != null && response.body().Data.size() > 0) {
-                    emptyRidesLayout.setVisibility(View.GONE);
-                    messagesRecycleView.setVisibility(View.VISIBLE);
+                if (response.body() != null) {
                     MessagesList messagesList = response.body();
-                    try {
-                        Collections.reverse(messagesList.Data);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                     loadMessages(messagesList);
-                } else {
-                    messagesRecycleView.setVisibility(View.GONE);
-                    emptyRidesLayout.setVisibility(View.VISIBLE);
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }
@@ -188,6 +178,15 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
 
     private void loadMessages(MessagesList messagesList) {
         if (messagesList != null && messagesList.Data != null && messagesList.Data.size() > 0) {
+
+            emptyRidesLayout.setVisibility(View.GONE);
+            messagesRecycleView.setVisibility(View.VISIBLE);
+
+            try {
+                Collections.reverse(messagesList.Data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mIsLoading = false;
             if (messagesList.Data.size() < Constants.PAGE_SIZE) mIsLastPage = true;
             if (adapter != null) {
@@ -199,6 +198,13 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
                 messagesRecycleView.setAdapter(adapter);
             }
             adapter.removeLoading();
+        } else {
+            if (adapter != null && adapter.getItemCount() > 0) {
+                mIsLastPage = true;
+            } else {
+                messagesRecycleView.setVisibility(View.GONE);
+                emptyRidesLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 
