@@ -282,6 +282,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     public void refreshMessagesList() {
         if (Utils.isInternetAvailable(mContext)) {
             adapter = null;
+            currentPage = 1;
             Utils.showProgress(true, mProgressView, mProgressBGView);
             getMessages();
         }

@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.AvailableRidesAdapter;
@@ -135,9 +136,11 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     }
 
     public void searchRides() {
-        Log.e(TAG, "vehicleRegdType: " + vehicleRegdType);
         FindRide findRide = new FindRide(whereFrom, whereTo,
                 date, comfortLevel, currentPage + "", startTime, endTime, gender, rideType, vehicleType, Constants.PAGE_SIZE + "", vehicleRegdType);
+
+        Gson gson = new Gson();
+        Log.e(TAG, "searchRides: " + gson.toJson(findRide));
 
         Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
         //asynchronous call
@@ -175,10 +178,13 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
                         } else {
                             emptyRidesLayout.setVisibility(View.VISIBLE);
-                            mRecyclerView.setAdapter(null);
+                            mRecyclerView.setVisibility(View.GONE);
                             createEmailAlertBtn.setVisibility(View.VISIBLE);
                         }
                     } else {
+                        emptyRidesLayout.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                        createEmailAlertBtn.setVisibility(View.VISIBLE);
                         ((HomeActivity) mContext).showSnackBar("No rides available at this time, Try again!");
                     }
                     if (mAdapter != null) mAdapter.removeLoading();
@@ -324,7 +330,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     return;
                 }
 
-                Log.e(TAG, "onClick: " + date );
+                Log.e(TAG, "onClick: " + date);
 
                 if (Utils.isInternetAvailable(mContext)) {
                     Utils.hideSoftKeyboard(mEmailIdEdit);
@@ -377,8 +383,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             /**
              * Successful HTTP response.
              *
-             * @param response
-             * @param retrofit
+             * @param response server
+             * @param retrofit adapter
              */
             @Override
             public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
@@ -399,7 +405,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             /**
              * Invoked when a network or unexpected exception occurred during the HTTP request.
              *
-             * @param t
+             * @param t error
              */
             @Override
             public void onFailure(Throwable t) {
@@ -430,6 +436,9 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
             if (Utils.isInternetAvailable(mContext)) {
                 Utils.showProgress(true, mProgressView, mProgressBGView);
+                searchRides = null;
+                mAdapter = null;
+                currentPage = 1;
                 searchRides();
             }
         }
@@ -437,13 +446,13 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
     @Override
     public void onPause() {
-        if (searchRides != null) {
+        /*if (searchRides != null) {
             foundRides.searchRides = searchRides;
             foundRides.destinationPlace = whereFrom;
             foundRides.arriavalPlace = whereTo;
             foundRides.selectedDate = date;
             getArguments().putSerializable("Searched Rides", foundRides);
-        }
+        }*/
         super.onPause();
     }
 
@@ -452,7 +461,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         super.onResume();
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.SEARCH_RIDE_SCREEN);
         ((HomeActivity) mContext).prepareMenu();
-        Bundle bundle = getArguments();
+        /*Bundle bundle = getArguments();
         if (bundle != null) {
             this.foundRides = (FoundRides) bundle.getSerializable("Searched Rides");
             if (foundRides != null) {
@@ -473,7 +482,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     mRecyclerView.setAdapter(null);
                 }
             }
-        }
+        }*/
     }
 
     @Override

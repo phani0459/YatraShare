@@ -219,6 +219,8 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
         }
         if (getArguments() != null) {
             offeredRides = (OfferedRides) getArguments().getSerializable("RIDES");
+            adapter = null;
+            currentPage = 1;
             loadOfferedRides();
         }
     }
