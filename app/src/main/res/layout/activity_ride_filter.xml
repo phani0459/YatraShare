@@ -83,49 +83,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
-            android:text="@string/timeRangeHeading"
-            android:textColor="@color/colorPrimary" />
-
-        <TextView
-            style="@android:style/TextAppearance.DeviceDefault.Small"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:text="@string/timeRangeSubHeading"
-            android:textColor="@color/colorPrimary" />
-
-        <com.appyvet.rangebar.RangeBar
-            android:id="@+id/timeRangeBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            custom:connectingLineColor="@color/colorPrimary"
-            custom:pinColor="@color/colorPrimary"
-            custom:pinRadius="16dp"
-            custom:temporaryPins="false"
-            custom:tickColor="@color/colorPrimary"
-            custom:tickEnd="24"
-            custom:tickInterval="1"
-            custom:tickStart="1" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:background="#FFFFFF" />
-
-        <TextView
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
             android:padding="8dp"
             android:text="@string/vehicleTypeHeading"
             android:textColor="@color/colorPrimary" />
@@ -252,6 +209,49 @@
                 android:layout_height="wrap_content"
                 android:text="@string/AllGenders" />
         </RadioGroup>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:text="@string/timeRangeHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            style="@android:style/TextAppearance.DeviceDefault.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:text="@string/timeRangeSubHeading"
+            android:textColor="@color/colorPrimary" />
+
+        <com.appyvet.rangebar.RangeBar
+            android:id="@+id/timeRangeBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            custom:connectingLineColor="@color/colorPrimary"
+            custom:pinColor="@color/colorPrimary"
+            custom:pinRadius="16dp"
+            custom:temporaryPins="false"
+            custom:tickColor="@color/colorPrimary"
+            custom:tickEnd="24"
+            custom:tickInterval="1"
+            custom:tickStart="1" />
 
     </LinearLayout>
 </ScrollView>

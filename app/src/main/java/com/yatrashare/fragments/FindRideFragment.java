@@ -253,7 +253,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
             if (!mIsLoading && !mIsLastPage) {
-                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount && firstVisibleItemPosition >= 0 && totalItemCount >= Constants.PAGE_SIZE) {
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount - 1 && firstVisibleItemPosition >= 0 && totalItemCount >= Constants.PAGE_SIZE) {
                     loadMoreItems();
                 }
             }
