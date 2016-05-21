@@ -31,7 +31,6 @@ import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.RideDetails;
-import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.Seats;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.dtos.Vehicle;
@@ -59,7 +58,6 @@ import retrofit.Retrofit;
 public class EditRideActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private static final String TAG = EditRideActivity.class.getSimpleName();
-    private SearchRides.SearchData rideData;
     private RideDetails rideDetails;
 
     @Bind(R.id.rbtn_ride_vehicle_car)
@@ -116,15 +114,14 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         ButterKnife.bind(this);
         mContext = this;
 
-        rideData = (SearchRides.SearchData) getIntent().getExtras().getSerializable("RIDE");
         userGuid = getIntent().getExtras().getString("USERGUIDE", "");
 
         if (getIntent().hasExtra("RIDE DETAILS")) {
             rideDetails = (RideDetails) getIntent().getExtras().getSerializable("RIDE DETAILS");
         }
 
-        if (rideData != null) {
-            if (rideData.VehicleType.equalsIgnoreCase("Car")) {
+        if (rideDetails != null && !TextUtils.isEmpty(rideDetails.Data.VehicleType)) {
+            if (rideDetails.Data.VehicleType.equalsIgnoreCase("Car")) {
                 radioButtonCar.setChecked(true);
                 radioButtonBike.setChecked(false);
                 selectedVehicle = "1";
@@ -156,23 +153,23 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         if (countryData != null)
             priceSymbolEditText.setText(Html.fromHtml(countryData.CurrencySymbol));
 
-        ridePriceEditText.setText(rideData.RoutePrice);
+        ridePriceEditText.setText(rideDetails.Data.RoutePrice + "");
 
         if (rideDetails != null) {
             try {
                 provideRideDetEditText.setText(!TextUtils.isEmpty(rideDetails.Data.OtherDetails) ? rideDetails.Data.OtherDetails : "");
-                departureDateBtn.setText(rideDetails.Data.DepartureDate);
-                departureTimeBtn.setText(rideDetails.Data.DepartureTime);
-                luggageSpinner.setSelection(getLuggage(rideDetails.Data.MaxLuggageSize));
-                timeFlexiSpinner.setSelection(getTimeFlexi(rideDetails.Data.DepartureTimeFlexi));
-                detourSpinner.setSelection(getDetour(rideDetails.Data.MakeDetour));
+                departureDateBtn.setText(rideDetails.Data.DepartureDate + "");
+                departureTimeBtn.setText(rideDetails.Data.DepartureTime + "");
+                luggageSpinner.setSelection(getLuggage("" + rideDetails.Data.MaxLuggageSize));
+                timeFlexiSpinner.setSelection(getTimeFlexi("" + rideDetails.Data.DepartureTimeFlexi));
+                detourSpinner.setSelection(getDetour("" + rideDetails.Data.MakeDetour));
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        rideFrom.setText(rideData.DeparturePoint != null ? rideData.DeparturePoint : "");
-        rideTo.setText(rideData.ArrivalPoint != null ? rideData.ArrivalPoint : "");
+        rideFrom.setText(!TextUtils.isEmpty(rideDetails.Data.Departure) ? rideDetails.Data.Departure : "");
+        rideTo.setText(!TextUtils.isEmpty(rideDetails.Data.Arrival) ? rideDetails.Data.Arrival : "");
 
         luggageSpinner.setOnItemSelectedListener(this);
         selectModelSpinner.setOnItemSelectedListener(this);
@@ -182,10 +179,10 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         departureDateBtn.setOnClickListener(this);
         departureTimeBtn.setOnClickListener(this);
 
-        seatsSelected = rideData.RemainingSeats;
-        selectedModel = rideData.VehicleModel;
+        seatsSelected = rideDetails.Data.RemainingSeats;
+        selectedModel = rideDetails.Data.VehicleModel;
 
-        if (!TextUtils.isEmpty(rideData.LadiesOnly) && rideData.LadiesOnly.equalsIgnoreCase("true")) {
+        if (!TextUtils.isEmpty(rideDetails.Data.LadiesOnly) && rideDetails.Data.LadiesOnly.equalsIgnoreCase("true")) {
             ladiesOnlyCheckBox.setChecked(true);
         } else {
             ladiesOnlyCheckBox.setChecked(false);
@@ -258,14 +255,16 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
     }
 
     private String getVehicleId(String selectedModel) {
-        if (vehicleDatas != null && vehicleDatas.size() > 0) {
-            for (int i = 0; i < vehicleDatas.size(); i++) {
-                if (vehicleDatas.get(i).ModelName.equalsIgnoreCase(selectedModel)) {
-                    return vehicleDatas.get(i).UserVehicleId;
+        if (selectedModel != null) {
+            if (vehicleDatas != null && vehicleDatas.size() > 0) {
+                for (int i = 0; i < vehicleDatas.size(); i++) {
+                    if (vehicleDatas.get(i).ModelName.equalsIgnoreCase(selectedModel)) {
+                        return vehicleDatas.get(i).UserVehicleId;
+                    }
                 }
             }
         }
-        return null;
+        return "";
     }
 
     @Override
@@ -309,8 +308,8 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
                     if (isLoad) {
                         loadSelectedVehicle();
                     }
-                    selectedVehicleId = getVehicleId(rideData.VehicleModel);
-                    if (selectedVehicleId != null) {
+                    selectedVehicleId = getVehicleId(rideDetails.Data.VehicleModel);
+                    if (!TextUtils.isEmpty(selectedVehicleId)) {
                         getVehicleSeats(selectedVehicleId, isLoad);
                     }
                 }
@@ -430,7 +429,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
                     public void onCancel(DialogInterface dialog) {
                         switch (v.getId()) {
                             case R.id.bt_ride_departuredate:
-                                departureDateBtn.setText(rideDetails.Data.DepartureDate);
+                                departureDateBtn.setText("" + rideDetails.Data.DepartureDate);
                                 break;
                         }
                     }
@@ -452,7 +451,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
                     public void onCancel(DialogInterface dialog) {
                         switch (v.getId()) {
                             case R.id.bt_ride_departuretime:
-                                departureTimeBtn.setText(rideDetails.Data.DepartureTime);
+                                departureTimeBtn.setText("" + rideDetails.Data.DepartureTime);
                                 break;
                         }
                     }
@@ -516,8 +515,8 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
             e.printStackTrace();
         }
 
-        UpdateRide updateRide = new UpdateRide(rideData.PossibleRideGuid, seatsSelected, departureDate, departureTime, selectedTimeFlexi, ladiesOnlyCheckBox.isChecked() + "", selectedDetour, selectedLuggageSize,
-                otherDetails, ridePrice, getVehicleId(selectedModel));
+        UpdateRide updateRide = new UpdateRide(rideDetails.Data.PossibleRideGuid, seatsSelected, departureDate, departureTime, selectedTimeFlexi, ladiesOnlyCheckBox.isChecked() + "",
+                selectedDetour, selectedLuggageSize, otherDetails, ridePrice, getVehicleId(selectedModel));
 
         Gson gson = new Gson();
         Log.e(TAG, "updateRide: " + gson.toJson(updateRide));
@@ -550,7 +549,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
 
     private void loadSelectedSeats() {
         try {
-            int seats = Integer.parseInt(rideData.RemainingSeats);
+            int seats = Integer.parseInt(!TextUtils.isEmpty(rideDetails.Data.RemainingSeats) ? rideDetails.Data.RemainingSeats : "0");
             if (selectSeatsSpinner.getCount() >= seats) {
                 selectSeatsSpinner.setSelection(seats);
             } else if (selectSeatsSpinner.getCount() >= (seats - 1)) {
@@ -563,11 +562,13 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
 
     private void loadSelectedVehicle() {
         try {
-            if (vehicleDatas != null) {
-                for (int i = 0; i < vehicleDatas.size(); i++) {
-                    if (vehicleDatas.get(i).ModelName.equalsIgnoreCase(rideData.VehicleModel)) {
-                        if (selectModelSpinner.getCount() >= (i + 1)) {
-                            selectModelSpinner.setSelection(i + 1);
+            if (!TextUtils.isEmpty(rideDetails.Data.VehicleModel)) {
+                if (vehicleDatas != null) {
+                    for (int i = 0; i < vehicleDatas.size(); i++) {
+                        if (vehicleDatas.get(i).ModelName.equalsIgnoreCase(rideDetails.Data.VehicleModel)) {
+                            if (selectModelSpinner.getCount() >= (i + 1)) {
+                                selectModelSpinner.setSelection(i + 1);
+                            }
                         }
                     }
                 }

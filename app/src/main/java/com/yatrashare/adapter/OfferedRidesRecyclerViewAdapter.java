@@ -100,6 +100,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 holder.rideDateText.setText(offeredRide.DepartureDate);
                 if (mTitle == TabsFragment.UPCOMING_OFFERED_RIDES) {
                     holder.deleteRide.setVisibility(View.VISIBLE);
+                    holder.editRide.setVisibility(View.VISIBLE);
                 }
             } else {
                 OfferedSubRides.SubRideData subRideData = subRides.get(position);
@@ -130,6 +131,13 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 @Override
                 public void onClick(View v) {
                     setOnItemClickListener.onItemClick(2, position);
+                }
+            });
+
+            holder.editRide.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setOnItemClickListener.onItemClick(3, position);
                 }
             });
         }
@@ -166,7 +174,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         private TextView rideDeparturePoint, rideDateText, rideAraivalPoint;
         private TextView remainingSeats, bookedSeats, seatPrice;
         private View remainingSeatsView, bookedSeatsView;
-        private ImageView deleteRide;
+        private ImageView deleteRide, editRide;
 
         public ViewHolder(View view) {
             super(view);
@@ -181,6 +189,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
 
             remainingSeatsView = view.findViewById(R.id.remainSeats_divider);
             deleteRide = (ImageView) view.findViewById(R.id.im_delete_ofrdRide);
+            editRide = (ImageView) view.findViewById(R.id.im_edit_ofrdRide);
             bookedSeatsView = view.findViewById(R.id.bukdSeats_divider);
         }
 

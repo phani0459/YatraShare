@@ -28,19 +28,42 @@
             android:paddingRight="8dp"
             android:textColor="@color/white" />
 
-        <TextView
-            android:id="@+id/tv_to"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
             android:gravity="center"
-            android:paddingBottom="2dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="2dp"
-            android:text="to"
-            android:textColor="@color/white" />
+            android:orientation="horizontal"
+            android:weightSum="8">
+
+            <TextView
+                android:id="@+id/tv_to"
+                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="7"
+                android:background="@color/colorAccent"
+                android:gravity="center"
+                android:paddingBottom="2dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:text="to"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/im_edit_ofrdRide"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:src="@drawable/ic_action_edit_light"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/tv_rideArrivalPoint"
@@ -87,10 +110,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="gone"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:src="@android:drawable/ic_menu_delete" />
+                android:src="@android:drawable/ic_menu_delete"
+                android:visibility="gone" />
 
         </LinearLayout>
 

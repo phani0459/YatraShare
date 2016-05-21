@@ -222,13 +222,13 @@ public class BookaRideFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (Utils.isLoggedIn(getActivity())) {
-                    Intent intent = new Intent(mContext, EditRideActivity.class);
-                    intent.putExtra("RIDE", rideData);
-                    intent.putExtra("USERGUIDE", userGuid);
-                    if (rideDetails != null)
+                    if (rideDetails != null) {
+                        Intent intent = new Intent(mContext, EditRideActivity.class);
+                        intent.putExtra("USERGUIDE", userGuid);
                         intent.putExtra("RIDE DETAILS", rideDetails);
-                    startActivity(intent);
-                    ((HomeActivity) mContext).loadScreen(HomeActivity.HOME_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
+                        startActivity(intent);
+                        ((HomeActivity) mContext).loadScreen(HomeActivity.HOME_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
+                    }
                 }
             }
         });

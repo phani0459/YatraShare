@@ -16,13 +16,13 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.yatrashare.R;
+import com.yatrashare.activities.EditRideActivity;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.SubRidesActivity;
-import com.yatrashare.adapter.AvailableRidesAdapter;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
 import com.yatrashare.dtos.OfferedRides;
-import com.yatrashare.dtos.SearchRides;
+import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -250,7 +250,48 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
             startActivity(intent);
         } else if (clickedItem == 2) {
             if (Utils.isInternetAvailable(mContext)) deleteRide(offeredRide, position);
+        } else if (clickedItem == 3) {
+            if (Utils.isInternetAvailable(mContext)) editRide(offeredRide);
         }
+    }
+
+    private void editRide(final OfferedRides.OfferedRideData offeredRide) {
+        Utils.showProgress(true, mProgressView, mProgressBGView);
+        Call<RideDetails> call = Utils.getYatraShareAPI().getRideDetails(offeredRide.RideGuid);
+        //asynchronous call
+        call.enqueue(new Callback<RideDetails>() {
+            /*
+             * Successful HTTP response.
+             *
+             * @param response
+             * @param retrofit
+            */
+            @Override
+            public void onResponse(retrofit.Response<RideDetails> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                if (response.body() != null && response.isSuccess()) {
+                    if (response.body().Data != null) {
+                        RideDetails rideDetails = response.body();
+                        Intent intent = new Intent(mContext, EditRideActivity.class);
+                        intent.putExtra("USERGUIDE", userGuide);
+                        intent.putExtra("RIDE DETAILS", rideDetails);
+                        startActivity(intent);
+                    }
+                }
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+            }
+
+            /*
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+            }
+        });
     }
 
     private void deleteRide(OfferedRides.OfferedRideData offeredRide, final int position) {
