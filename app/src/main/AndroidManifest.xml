@@ -45,11 +45,18 @@
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAZxOqokBM3G-2KEyHuUaJMhVV75ZYncEo" />
+            android:value="@string/api_key" />
 
         <activity
             android:name=".activities.RideFilterActivity"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".activities.SearchPlacesActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
@@ -93,7 +100,7 @@
 
         <activity
             android:name=".activities.EditRideActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

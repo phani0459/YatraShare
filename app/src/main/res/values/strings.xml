@@ -5,6 +5,8 @@
     <string name="allow">Allow</string>
     <string name="skip">Skip</string>
     <string name="yourcountry">Your country</string>
+    <string name="api_key">AIzaSyAZxOqokBM3G-2KEyHuUaJMhVV75ZYncEo</string>
+    <string name="server_api_key">AIzaSyBHzhxlAtMDm56gRwsJqxGUW20smcBNXJk</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

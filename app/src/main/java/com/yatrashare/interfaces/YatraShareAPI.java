@@ -7,6 +7,7 @@ import com.yatrashare.dtos.CountryInfo;
 import com.yatrashare.dtos.GetUserBookings;
 import com.yatrashare.dtos.GoogleAddressDto;
 import com.yatrashare.dtos.GoogleMapsDto;
+import com.yatrashare.dtos.GooglePlacesDto;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.OfferedRides;
@@ -190,6 +191,9 @@ public interface YatraShareAPI {
      */
     @GET("/maps/api/geocode/json?sensor=false")
     Call<GoogleAddressDto> getGoogleAddressAPI(@Query("latlng") String latlng);
+
+    @GET("/maps/api/place/autocomplete/json")
+    Call<GooglePlacesDto> getGooglePlacesAPI(@Query("input") String query, @Query("key") String apiKey, @Query("components") String countryComponent);
 
     @POST("/api/Messages/GetUserMessagesConversation")
     Call<MessageDetails> getMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);

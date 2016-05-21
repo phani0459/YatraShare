@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorLayoutBG"
-    tools:context="com.yatrashare.activities.SearchResultsActivity">
+    tools:context="com.yatrashare.activities.SearchPlacesActivity">
 
     <ProgressBar
         android:id="@+id/searchProgressBar"
@@ -16,9 +15,14 @@
         android:layout_margin="12dp"
         android:visibility="gone" />
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/searchResultsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:divider="@color/msg_border_color"
+        android:dividerHeight="1dp"
+        android:padding="4dp"
+        android:scrollbars="none"
+        tools:listfooter="@layout/powered_google" />
 
 </RelativeLayout>
