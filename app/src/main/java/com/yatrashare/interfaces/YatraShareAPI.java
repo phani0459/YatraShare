@@ -12,6 +12,7 @@ import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
+import com.yatrashare.dtos.PlaceDetailDto;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.Rating;
 import com.yatrashare.dtos.RatingReceiverInfo;
@@ -125,7 +126,7 @@ public interface YatraShareAPI {
     @GET("/api/User/GetCountries")
     Call<Countries> GetCountries();
 
-    @GET("/api/User/GetCountyConfigInfo")
+    @GET("/api/User/GetCountryConfigInfo")
     Call<CountryInfo> GetCountryInfo(@Query("countryCode") String countryCode);
 
     @GET("/api/Profile/GetProfileInfo")
@@ -194,6 +195,9 @@ public interface YatraShareAPI {
 
     @GET("/maps/api/place/autocomplete/json")
     Call<GooglePlacesDto> getGooglePlacesAPI(@Query("input") String query, @Query("key") String apiKey, @Query("components") String countryComponent);
+
+    @GET("/maps/api/place/details/json")
+    Call<PlaceDetailDto> getPlaceDetailsAPI(@Query("placeid") String placeid, @Query("key") String apiKey);
 
     @POST("/api/Messages/GetUserMessagesConversation")
     Call<MessageDetails> getMessageConversation(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid);

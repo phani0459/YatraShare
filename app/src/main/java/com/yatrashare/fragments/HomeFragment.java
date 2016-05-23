@@ -19,11 +19,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
@@ -31,6 +27,7 @@ import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
+import com.yatrashare.activities.SearchPlacesActivity;
 import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.SerializedPlace;
@@ -245,16 +242,17 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             isPopupInitiated = false;
             if (resultCode == Activity.RESULT_OK) {
                 // Get the user's selected place from the Intent.
-                Place place = PlaceAutocomplete.getPlace(mContext, data);
-                Log.e(TAG, "Place Selected: " + place.getAddress());
+                /*Place place = PlaceAutocomplete.getPlace(mContext, data);*/
+                SerializedPlace place = (SerializedPlace) data.getSerializableExtra("Searched Place");
+                Log.e(TAG, "Place Selected: " + place.address);
 
                 // Format the place's details and display them in the TextView.
                 if (whereFromhasFocus) {
-                    whereFromPlace = preparePlace(place);
-                    whereFromEditText.setText(place.getAddress());
+                    whereFromPlace = place;
+                    whereFromEditText.setText(place.address);
                 } else {
-                    wheretoPlace = preparePlace(place);
-                    whereToEditText.setText(place.getAddress());
+                    wheretoPlace = place;
+                    whereToEditText.setText(place.address);
                 }
 
                 whereFromEditText.setError(null);
@@ -279,7 +277,9 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     private void openAutocompleteActivity() {
         if (!isPopupInitiated) {
             isPopupInitiated = true;
-            try {
+            Intent intent = new Intent(mContext, SearchPlacesActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+            /*try {
                 // The autocomplete activity requires Google Play Services to be available. The intent
                 // builder checks this and throws an exception if it is not the case.
                 Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
@@ -290,7 +290,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 // Indicates that Google Play Services is either not installed or not up to date. Prompt
                 // the user to correct the issue.
                 GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(),
-                        0 /* requestCode */).show();
+                        0 *//* requestCode *//*).show();
             } catch (GooglePlayServicesNotAvailableException e) {
                 // Indicates that Google Play Services is not available and the problem is not easily
                 // resolvable.
@@ -299,7 +299,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
 
                 Log.e(TAG, message);
                 Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-            }
+            }*/
         }
     }
 

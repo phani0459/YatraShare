@@ -14,4 +14,5 @@ public class CountryData implements Serializable {
     public double FarePerDistance;
     public String DistanceMesure;
     public String MobileCode;
+    public String Token;
 }

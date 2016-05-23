@@ -2,25 +2,29 @@ package com.yatrashare.activities;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.yatrashare.R;
+import com.yatrashare.adapter.RecyclerViewAdapter;
 import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.GooglePlacesDto;
+import com.yatrashare.dtos.PlaceDetailDto;
+import com.yatrashare.dtos.SerializedPlace;
 import com.yatrashare.interfaces.YatraShareAPI;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -32,10 +36,10 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
-public class SearchPlacesActivity extends AppCompatActivity implements SearchView.OnCloseListener, SearchView.OnQueryTextListener {
+public class SearchPlacesActivity extends AppCompatActivity implements SearchView.OnCloseListener, SearchView.OnQueryTextListener, RecyclerViewAdapter.SetOnItemClickListener {
 
     public ProgressBar searchProgressBar;
-    public ListView searchResultsList;
+    public RecyclerView searchResultsList;
     private String country;
 
     @Override
@@ -44,7 +48,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
         setContentView(R.layout.activity_search_results);
 
         searchProgressBar = (ProgressBar) findViewById(R.id.searchProgressBar);
-        searchResultsList = (ListView) findViewById(R.id.searchResultsList);
+        searchResultsList = (RecyclerView) findViewById(R.id.searchResultsList);
 
         getSupportActionBar().setTitle("");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,9 +63,10 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
             country = countryData.CountryCode;
         }
 
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.powered_google, null);
-        searchResultsList.addFooterView(view);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(SearchPlacesActivity.this);
+
+        searchResultsList.setHasFixedSize(true);
+        searchResultsList.setLayoutManager(mLayoutManager);
 
     }
 
@@ -81,13 +86,81 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         try {
-            // to Remove Search Iocn
+            // to Remove Search Icon
             ImageView magImage = (ImageView) searchView.findViewById(android.support.v7.appcompat.R.id.search_mag_icon);
             magImage.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public void getPlacesDetails(String placeid) {
+        try {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://maps.googleapis.com")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(Utils.getOkHttpClient())
+                    .build();
+            YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
+            Call<PlaceDetailDto> call = yatraShareAPI.getPlaceDetailsAPI(placeid, getString(R.string.server_api_key));
+            call.enqueue(new Callback<PlaceDetailDto>() {
+                /**
+                 * administrative_area_level_1 = State
+                 * locality = City
+                 * country = Country
+                 */
+                /**
+                 * Successful HTTP response.
+                 *
+                 * @param response response from server
+                 * @param retrofit adapter
+                 */
+                @Override
+                public void onResponse(retrofit.Response<PlaceDetailDto> response, Retrofit retrofit) {
+                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                    if (response.body() != null && response.isSuccess()) {
+                        String city = "";
+                        String state = "";
+                        if (response.body().result.address_components != null && response.body().result.address_components.size() > 0) {
+                            for (PlaceDetailDto.AddressComponent addressComponent : response.body().result.address_components) {
+                                if (addressComponent.types.contains("locality")) {
+                                    city = addressComponent.long_name;
+                                }
+                                if (addressComponent.types.contains("administrative_area_level_1")) {
+                                    state = addressComponent.long_name;
+                                }
+                            }
+                        }
+                        SerializedPlace serializedPlace = new SerializedPlace();
+                        serializedPlace.address = response.body().result.formatted_address;
+                        serializedPlace.latitude = response.body().result.geometry.location.lat;
+                        serializedPlace.longitude = response.body().result.geometry.location.lng;
+                        serializedPlace.city = city;
+                        serializedPlace.state = state;
+
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("Searched Place", serializedPlace);
+                        setResult(RESULT_OK, returnIntent);
+                        finish();
+                    }
+                    searchProgressBar.setVisibility(View.GONE);
+                    searchResultsList.setVisibility(View.VISIBLE);
+                }
+
+                /**
+                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                 *
+                 * @param t throwable error
+                 */
+                @Override
+                public void onFailure(Throwable t) {
+                    t.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -121,14 +194,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
                     if (response.body() != null && response.isSuccess()) {
                         ArrayList<GooglePlacesDto.PlaceResults> results = response.body().predictions;
                         if (results != null && results.size() > 0) {
-                            ArrayList<String> places = new ArrayList<String>();
-                            for (int i = 0; i < results.size(); i++) {
-                                GooglePlacesDto.PlaceResults component = results.get(i);
-                                if (!TextUtils.isEmpty(component.description)) {
-                                    places.add(component.description);
-                                }
-                            }
-                            searchResultsList.setAdapter(new ArrayAdapter<String>(SearchPlacesActivity.this, android.R.layout.simple_list_item_1, android.R.id.text1, places));
+                            searchResultsList.setAdapter(new RecyclerViewAdapter(results, SearchPlacesActivity.this));
                         }
                     }
                     searchProgressBar.setVisibility(View.GONE);
@@ -142,7 +208,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
                  */
                 @Override
                 public void onFailure(Throwable t) {
-                    android.util.Log.e("", "FAILURE RESPONSE");
+                    t.printStackTrace();
                 }
             });
         } catch (Exception e) {
@@ -176,5 +242,12 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
             getPlacesFromApi(newText);
         }
         return false;
+    }
+
+    @Override
+    public void onItemClick(GooglePlacesDto.PlaceResults data) {
+        searchProgressBar.setVisibility(View.VISIBLE);
+        searchResultsList.setVisibility(View.GONE);
+        getPlacesDetails(data.place_id);
     }
 }

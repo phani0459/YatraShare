@@ -15,14 +15,20 @@
         android:layout_margin="12dp"
         android:visibility="gone" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/searchResultsList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@color/msg_border_color"
-        android:dividerHeight="1dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/googlePowered"
         android:padding="4dp"
-        android:scrollbars="none"
-        tools:listfooter="@layout/powered_google" />
+        android:scrollbars="none" />
+
+    <ImageView
+        android:id="@+id/googlePowered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="4dp"
+        android:src="@drawable/powered_by_google_light" />
 
 </RelativeLayout>
