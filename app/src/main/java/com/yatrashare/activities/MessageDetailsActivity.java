@@ -107,11 +107,11 @@ public class MessageDetailsActivity extends AppCompatActivity {
             if (!msg.isEmpty()) {
                 Call<UserDataDTO> call = null;
                 if (messagesDetailsList != null && messagesDetailsList.Data != null && messagesDetailsList.Data.size() > 0) {
-                    call = Utils.getYatraShareAPI().SendReplyMessage(userGuid, messagesDetailsList.Data.get(0).MessageGuid, msg);
+                    call = Utils.getYatraShareAPI(this).SendReplyMessage(userGuid, messagesDetailsList.Data.get(0).MessageGuid, msg);
                 } else if (rideDetailData != null && rideDetailData.PossibleRideGuid != null && rideDetailData.UserGuid != null) {
-                    call = Utils.getYatraShareAPI().sendMessage(userGuid, rideDetailData.UserGuid, rideDetailData.PossibleRideGuid, msg);
+                    call = Utils.getYatraShareAPI(this).sendMessage(userGuid, rideDetailData.UserGuid, rideDetailData.PossibleRideGuid, msg);
                 } else if (userBookingData != null) {
-                    call = Utils.getYatraShareAPI().sendMessage(userGuid, userBookingData.BookedUserGuid, PossibleRideGuid, msg);
+                    call = Utils.getYatraShareAPI(this).sendMessage(userGuid, userBookingData.BookedUserGuid, PossibleRideGuid, msg);
                 }
                 if (call != null) {
                     MessageDetails.MessageDetailData messageDetailData = new MessageDetails().new MessageDetailData();
@@ -182,7 +182,7 @@ public class MessageDetailsActivity extends AppCompatActivity {
     public void getConversationList() {
         if (messagesListData != null) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<MessageDetails> call = Utils.getYatraShareAPI().getMessageConversation(userGuid, messagesListData.MessageGuid);
+            Call<MessageDetails> call = Utils.getYatraShareAPI(this).getMessageConversation(userGuid, messagesListData.MessageGuid);
             //asynchronous call
             call.enqueue(new Callback<MessageDetails>() {
                 /**

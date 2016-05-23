@@ -121,7 +121,7 @@ public class UpdateMobileFragment extends Fragment {
     private void updateMobile(final String mobNum) {
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<UserDataDTO> call = Utils.getYatraShareAPI().saveMobileNumber(userGuid, mobNum);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).saveMobileNumber(userGuid, mobNum);
 
             call.enqueue(new Callback<UserDataDTO>() {
                 @Override
@@ -171,7 +171,7 @@ public class UpdateMobileFragment extends Fragment {
                 verifyCodeLayout.setError(null);
                 verifyCodeLayout.setErrorEnabled(false);
                 Utils.showProgress(true, mProgressView, mProgressBGView);
-                Call<UserDataDTO> call = Utils.getYatraShareAPI().verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
+                Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).verifyMobileNumber(userGuid, phoneEdit.getText().toString(), verificationCodeEdit.getText().toString());
                 //asynchronous call
                 call.enqueue(new Callback<UserDataDTO>() {
                     /**
@@ -229,7 +229,7 @@ public class UpdateMobileFragment extends Fragment {
                 resendCodeBt.setText("Resend Code");
                 Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationCode(userGuid);
+                Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).sendVerificationCode(userGuid);
                 //asynchronous call
                 call.enqueue(new Callback<UserDataDTO>() {
                     /**

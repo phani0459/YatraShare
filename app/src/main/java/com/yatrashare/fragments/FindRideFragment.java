@@ -165,7 +165,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         Gson gson = new Gson();
         Log.e(TAG, "searchRides: " + gson.toJson(findRide));
 
-        Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
+        Call<SearchRides> call = Utils.getYatraShareAPI(mContext).FindRides(findRide);
         //asynchronous call
         call.enqueue(new Callback<SearchRides>() {
             /**
@@ -396,7 +396,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     public void createanEmailAlert(String email, String alertDate, final Dialog dialog) {
         String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().createEmailAlert(userGuid, email, alertDate, whereFrom, whereTo, rideType, vehicleType);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).createEmailAlert(userGuid, email, alertDate, whereFrom, whereTo, rideType, vehicleType);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

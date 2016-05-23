@@ -93,10 +93,10 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
                 Call<OfferedSubRides> call = null;
                 switch (mTitle) {
                     case TabsFragment.UPCOMING_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().upComingSubRides(userGuide, offeredRideData.RideGuid);
+                        call = Utils.getYatraShareAPI(this).upComingSubRides(userGuide, offeredRideData.RideGuid);
                         break;
                     case TabsFragment.PAST_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().pastSubRides(userGuide, offeredRideData.RideGuid);
+                        call = Utils.getYatraShareAPI(this).pastSubRides(userGuide, offeredRideData.RideGuid);
                         break;
                 }
                 //asynchronous call

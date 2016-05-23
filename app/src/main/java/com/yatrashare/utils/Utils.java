@@ -36,7 +36,10 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.CountryData;
@@ -156,19 +159,19 @@ public class Utils {
     public static Retrofit retrofit;
     public static YatraShareAPI yatraShareAPI;
 
-    public static YatraShareAPI getYatraShareAPI() {
+    public static YatraShareAPI getYatraShareAPI(Context mContext) {
         if (yatraShareAPI == null) {
-            yatraShareAPI = getRetrofit().create(YatraShareAPI.class);
+            yatraShareAPI = getRetrofit(mContext).create(YatraShareAPI.class);
         }
         return yatraShareAPI;
     }
 
-    public static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit(Context mContext) {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(YatraShareAPI.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(getOkHttpClient())
+                    .client(getOkHttpClient(mContext))
                     .build();
         }
         return retrofit;
@@ -263,8 +266,21 @@ public class Utils {
         return false;
     }
 
-    public static OkHttpClient getOkHttpClient() {
+    public static OkHttpClient getOkHttpClient(final Context mContext) {
         final OkHttpClient okHttpClient = new OkHttpClient();
+        okHttpClient.interceptors().add(new Interceptor() {
+            @Override
+            public Response intercept(Interceptor.Chain chain) throws IOException {
+                Request original = chain.request();
+
+                Request request = original.newBuilder()
+                        .header("Token", getToken(mContext))
+                        .method(original.method(), original.body())
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
         okHttpClient.setReadTimeout(60, TimeUnit.SECONDS);
         okHttpClient.setConnectTimeout(60, TimeUnit.SECONDS);
         return okHttpClient;
@@ -367,6 +383,16 @@ public class Utils {
         return latLng;
     }
 
+
+    public static String token;
+
+    public static String getToken(Context mContext) {
+        if (TextUtils.isEmpty(token)) {
+            token = Utils.getSharedPrefs(mContext).getString(Constants.PREF_USER_TOKEN, "");
+        }
+        return token;
+    }
+
     public static Address getLatlngsFromLocation(String name, Context mContext) {
         Geocoder geocoder = new Geocoder(mContext);
         List<Address> addresses = null;
@@ -408,8 +434,8 @@ public class Utils {
                 Address address = getLatlngsFromLocation(country, mContext);
                 if (address != null) {
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    LatLng latLng1 = new LatLng(32.6393,-117.004304);
-                    LatLng latLng2 = new LatLng(44.901184 ,-67.32254);
+                    LatLng latLng1 = new LatLng(32.6393, -117.004304);
+                    LatLng latLng2 = new LatLng(44.901184, -67.32254);
                     latLngBounds = new LatLngBounds(latLng1, latLng2);
                     return latLngBounds;
                 }

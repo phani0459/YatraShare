@@ -204,7 +204,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                     RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("Licence", file.getName(), requestFile).build();
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadLicenceOne(userGuid, body);
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(this).uploadLicenceOne(userGuid, body);
                     call.enqueue(new Callback<UserDataDTO>() {
 
                         @Override
@@ -262,7 +262,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                     RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("Licence", file.getName(), requestFile).build();
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadLicenceTwo(userGuid, body);
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(this).uploadLicenceTwo(userGuid, body);
                     call.enqueue(new Callback<UserDataDTO>() {
 
                         @Override
@@ -302,7 +302,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
         removeLicenceOneButton.setVisibility(View.GONE);
         licenceOneDrawee.setImageURI(Constants.getDefaultNoImageURI());
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().removeLicence(userGuid, "1");
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(this).removeLicence(userGuid, "1");
 
         call.enqueue(new Callback<UserDataDTO>() {
             @Override
@@ -333,7 +333,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
         removeLicenceTwoButton.setVisibility(View.GONE);
         licenceTwoDrawee.setImageURI(Constants.getDefaultNoImageURI());
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().removeLicence(userGuid, "2");
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(this).removeLicence(userGuid, "2");
 
         call.enqueue(new Callback<UserDataDTO>() {
             @Override

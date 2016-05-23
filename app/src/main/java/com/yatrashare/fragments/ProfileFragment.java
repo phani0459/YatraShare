@@ -173,7 +173,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 if (Utils.isInternetAvailable(mContext)) {
                     Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI().sendVerificationEmail(userGuide);
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).sendVerificationEmail(userGuide);
                     //asynchronous call
                     call.enqueue(new Callback<UserDataDTO>() {
                         /**
@@ -339,7 +339,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
 
-            Call<Profile> call = Utils.getYatraShareAPI().userPublicProfile(userGuide);
+            Call<Profile> call = Utils.getYatraShareAPI(mContext).userPublicProfile(userGuide);
             //asynchronous call
             call.enqueue(new Callback<Profile>() {
                 /**
@@ -560,7 +560,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     Utils.showProgress(true, progressBar, progressView);
                     dialog.setCancelable(false);
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI().updateUserPreferences(userGuide, userPreferences);
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).updateUserPreferences(userGuide, userPreferences);
                     //asynchronous call
                     call.enqueue(new Callback<UserDataDTO>() {
                         /**

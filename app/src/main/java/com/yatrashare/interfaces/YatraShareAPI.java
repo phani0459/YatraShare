@@ -178,7 +178,7 @@ public interface YatraShareAPI {
     Call<UserDataDTO> SendReplyMessage(@Query("userGuid") String userGuide, @Query("messageGuid") String messageGuid, @Query("message") String message);
 
     @GET("/api/Rides/GetRideDetails")
-    Call<RideDetails> getRideDetails(@Query("possibleRideGuid") String possibleRideGuid);
+    Call<RideDetails> getRideDetails(@Query("possibleRideGuid") String possibleRideGuid, @Query("RideGuid") String rideGuid);
 
 
     @GET("/maps/api/directions/json?sensor=false")

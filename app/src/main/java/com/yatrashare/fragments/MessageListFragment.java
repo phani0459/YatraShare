@@ -143,7 +143,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     int currentPage = 1;
 
     public void getMessages() {
-        Call<MessagesList> call = Utils.getYatraShareAPI().userInboxMessages(userGuid, currentPage + "", "" + Constants.PAGE_SIZE);
+        Call<MessagesList> call = Utils.getYatraShareAPI(mContext).userInboxMessages(userGuid, currentPage + "", "" + Constants.PAGE_SIZE);
         //asynchronous call
         call.enqueue(new Callback<MessagesList>() {
             /**
@@ -209,7 +209,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     }
 
     public void deleteMessage(MessagesList.MessagesListData messageData, final int position) {
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().deleteMessage(userGuid, messageData.MessageGuid);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).deleteMessage(userGuid, messageData.MessageGuid);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

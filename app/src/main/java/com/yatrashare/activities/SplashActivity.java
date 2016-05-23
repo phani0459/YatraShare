@@ -189,7 +189,7 @@ public class SplashActivity extends AppCompatActivity implements Callback<Google
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://maps.googleapis.com")
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(Utils.getOkHttpClient())
+                    .client(Utils.getOkHttpClient(this))
                     .build();
             YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
             Call<GoogleAddressDto> call = yatraShareAPI.getGoogleAddressAPI(lat + "," + lng);
@@ -247,7 +247,7 @@ public class SplashActivity extends AppCompatActivity implements Callback<Google
     private void getCountries(final String countryName, final boolean isSkip) {
         if (Utils.isInternetAvailable(this)) {
             Utils.showProgress(true, splashProgress, progressBGView);
-            Call<Countries> call = Utils.getYatraShareAPI().GetCountries();
+            Call<Countries> call = Utils.getYatraShareAPI(this).GetCountries();
             call.enqueue(new Callback<Countries>() {
                 @Override
                 public void onResponse(Response<Countries> response, Retrofit retrofit) {
@@ -296,11 +296,13 @@ public class SplashActivity extends AppCompatActivity implements Callback<Google
 
     private void getCountryInfo(final String countryCode, final String countryName) {
         if (Utils.isInternetAvailable(this)) {
-            Call<CountryInfo> call = Utils.getYatraShareAPI().GetCountryInfo(countryCode);
+            Call<CountryInfo> call = Utils.getYatraShareAPI(this).GetCountryInfo(countryCode);
             call.enqueue(new Callback<CountryInfo>() {
                 @Override
                 public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {
                     if (response.body() != null && response.body().Data != null) {
+                        mEditor.putString(Constants.PREF_USER_TOKEN, response.body().Data.Token);
+                        mEditor.apply();
                         Utils.saveCountryInfo(SplashActivity.this, response.body().Data, countryName);
                         Utils.showProgress(false, splashProgress, progressBGView);
                         startHomePage();

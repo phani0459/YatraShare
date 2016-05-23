@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             Gson gson = new Gson();
             Log.e(TAG, "searchRide: " + gson.toJson(findRide));
 
-            Call<SearchRides> call = Utils.getYatraShareAPI().FindRides(findRide);
+            Call<SearchRides> call = Utils.getYatraShareAPI(mContext).FindRides(findRide);
             //asynchronous call
             call.enqueue(new Callback<SearchRides>() {
                 /**

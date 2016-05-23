@@ -279,7 +279,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, mProgressBar, mProgressBGView);
-            Call<Vehicle> call = Utils.getYatraShareAPI().getUserVehicleModels(userGuid, selectedVehicle);
+            Call<Vehicle> call = Utils.getYatraShareAPI(this).getUserVehicleModels(userGuid, selectedVehicle);
             call.enqueue(new Callback<Vehicle>() {
                 /**
                  * Successful HTTP response.
@@ -333,7 +333,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         if (Utils.isInternetAvailable(mContext)) {
             selectSeatsSpinner.setEnabled(true);
             Utils.showProgress(true, mProgressBar, mProgressBGView);
-            Call<Seats> call = Utils.getYatraShareAPI().getUserVehicleSeats(userGuid, vehicleId);
+            Call<Seats> call = Utils.getYatraShareAPI(this).getUserVehicleSeats(userGuid, vehicleId);
             call.enqueue(new Callback<Seats>() {
                 /**
                  * Successful HTTP response.
@@ -522,7 +522,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         Log.e(TAG, "updateRide: " + gson.toJson(updateRide));
         Utils.showProgress(true, mProgressBar, mProgressBGView);
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().updateRide(userGuid, updateRide);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(this).updateRide(userGuid, updateRide);
         call.enqueue(new Callback<UserDataDTO>() {
             @Override
             public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {

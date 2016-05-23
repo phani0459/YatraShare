@@ -246,7 +246,7 @@ public class BookaRideFragment extends Fragment {
 
     public void getRideDetails() {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        Call<RideDetails> call = Utils.getYatraShareAPI().getRideDetails(rideData.PossibleRideGuid);
+        Call<RideDetails> call = Utils.getYatraShareAPI(mContext).getRideDetails(rideData.PossibleRideGuid, "");
         //asynchronous call
         call.enqueue(new Callback<RideDetails>() {
             /*
@@ -419,7 +419,7 @@ public class BookaRideFragment extends Fragment {
     }
 
     private void bookRide(String userGuid, String possibleRideGuid, String passengers) {
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().bookRide(userGuid, possibleRideGuid, passengers);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).bookRide(userGuid, possibleRideGuid, passengers);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
 

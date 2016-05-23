@@ -373,7 +373,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         largeLog(TAG, "prepareRide: " + ride);
 
         if (Utils.isInternetAvailable(mContext)) {
-            Call<UserDataDTO> call = Utils.getYatraShareAPI().offerRide(userGuid, rideInfo);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).offerRide(userGuid, rideInfo);
             call.enqueue(new Callback<UserDataDTO>() {
                 /*
                  * Successful HTTP response.
@@ -435,7 +435,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("http://maps.googleapis.com")
                         .addConverterFactory(GsonConverterFactory.create())
-                        .client(Utils.getOkHttpClient())
+                        .client(Utils.getOkHttpClient(mContext))
                         .build();
                 YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
                 Call<GoogleMapsDto> call = yatraShareAPI.getGoogleMapsAPI(possibleRoutesDtos.get(pos).getDepartureLatitude() + "," + possibleRoutesDtos.get(pos).getDepartureLongitude(),
@@ -500,7 +500,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         if (Utils.isInternetAvailable(mContext)) {
             selectSeatsSpinner.setEnabled(true);
             Utils.showProgress(true, mProgressBar, mProgressBGView);
-            Call<Seats> call = Utils.getYatraShareAPI().getUserVehicleSeats(userGuid, vehicleId);
+            Call<Seats> call = Utils.getYatraShareAPI(mContext).getUserVehicleSeats(userGuid, vehicleId);
             call.enqueue(new Callback<Seats>() {
                 /**
                  * Successful HTTP response.
@@ -559,7 +559,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, mProgressBar, mProgressBGView);
-            Call<Vehicle> call = Utils.getYatraShareAPI().getUserVehicleModels(userGuid, selectedVehicle);
+            Call<Vehicle> call = Utils.getYatraShareAPI(mContext).getUserVehicleModels(userGuid, selectedVehicle);
             call.enqueue(new Callback<Vehicle>() {
                 /**
                  * Successful HTTP response.

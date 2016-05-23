@@ -144,7 +144,7 @@ public class ProvideRatingFragment extends Fragment {
                 if (isPhoneValid(mobile)) {
                     Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                    Call<RatingReceiverInfo> call = Utils.getYatraShareAPI().getRatingReceiverUserinfoId(userGuid, mobile);
+                    Call<RatingReceiverInfo> call = Utils.getYatraShareAPI(mContext).getRatingReceiverUserinfoId(userGuid, mobile);
                     //asynchronous call
                     call.enqueue(new Callback<RatingReceiverInfo>() {
                         /**
@@ -231,7 +231,7 @@ public class ProvideRatingFragment extends Fragment {
             Gson gson = new Gson();
             Log.e(TAG, "submitRating: " + gson.toJson(userRating));
 
-            Call<UserDataDTO> call = Utils.getYatraShareAPI().giveRatingtoUser(userGuid, userRating);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).giveRatingtoUser(userGuid, userRating);
             //asynchronous call
             call.enqueue(new Callback<UserDataDTO>() {
                 /**

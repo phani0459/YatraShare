@@ -79,9 +79,9 @@ public class RatingsFragment extends Fragment {
 
             Call<Rating> call = null;
             if (title == TabsFragment.RECEIVED_RATINGS) {
-                call = Utils.getYatraShareAPI().userReceivedRatings(userGuide);
+                call = Utils.getYatraShareAPI(mContext).userReceivedRatings(userGuide);
             } else {
-                call = Utils.getYatraShareAPI().userGivenRatings(userGuide);
+                call = Utils.getYatraShareAPI(mContext).userGivenRatings(userGuide);
             }
 
             //asynchronous call

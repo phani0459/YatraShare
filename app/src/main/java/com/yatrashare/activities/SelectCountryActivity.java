@@ -91,7 +91,7 @@ public class SelectCountryActivity extends AppCompatActivity {
             Utils.showProgress(true, splashProgress, progressBGView);
             mEditor.putString(Constants.PREF_USER_COUNTRY, countryName);
             mEditor.apply();
-            Call<CountryInfo> call = Utils.getYatraShareAPI().GetCountryInfo(countryCode);
+            Call<CountryInfo> call = Utils.getYatraShareAPI(this).GetCountryInfo(countryCode);
             call.enqueue(new Callback<CountryInfo>() {
                 @Override
                 public void onResponse(Response<CountryInfo> response, Retrofit retrofit) {

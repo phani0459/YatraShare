@@ -100,7 +100,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         android.util.Log.e("getBookedRides", userGuide);
         if (!TextUtils.isEmpty(userGuide)) {
             Utils.showProgress(true, mProgressView, mProgressBGView);
-            Call<BookedRides> call = Utils.getYatraShareAPI().bookedRides(userGuide, "" + (mTitle + 1));
+            Call<BookedRides> call = Utils.getYatraShareAPI(mContext).bookedRides(userGuide, "" + (mTitle + 1));
             //asynchronous call
             call.enqueue(this);
         } else {
@@ -195,10 +195,10 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
                         Utils.showProgress(true, mProgressView, mProgressBGView);
                         switch (clickedItem) {
                             case BookedRidesRecyclerViewAdapter.cancelRide:
-                                call = Utils.getYatraShareAPI().cancelSeat(userGuide, "" + rideBookingId);
+                                call = Utils.getYatraShareAPI(mContext).cancelSeat(userGuide, "" + rideBookingId);
                                 break;
                             case BookedRidesRecyclerViewAdapter.deleteRide:
-                                call = Utils.getYatraShareAPI().deleteRide(userGuide, "" + rideBookingId);
+                                call = Utils.getYatraShareAPI(mContext).deleteRide(userGuide, "" + rideBookingId);
                                 break;
                         }
 
@@ -276,7 +276,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
                         break;
                     case BookedRidesRecyclerViewAdapter.getOwnerDetailsbySMS:
                         Utils.showProgress(true, mProgressView, mProgressBGView);
-                        call = Utils.getYatraShareAPI().sendJourneyDetails(userGuide, "" + data.RideBookingId);
+                        call = Utils.getYatraShareAPI(mContext).sendJourneyDetails(userGuide, "" + data.RideBookingId);
                         break;
                 }
 

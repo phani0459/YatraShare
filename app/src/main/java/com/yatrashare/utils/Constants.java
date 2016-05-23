@@ -61,6 +61,7 @@ public class Constants {
     public static final String PREF_USER_COUNTRY = "country";
     public static final String PREF_USER_LICENCE_1 = "LicenceOne";
     public static final String PREF_USER_LICENCE_2 = "LicenceTwo";
+    public static final String PREF_USER_TOKEN = "token";
 
     public static final String PREF_LOGGEDIN = "loggedIn";
     public static final String PREF_MOBILE_VERIFIED = "mobileVerificationStatus";

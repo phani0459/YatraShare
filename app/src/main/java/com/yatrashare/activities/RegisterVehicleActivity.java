@@ -91,7 +91,7 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
     public void getVehicleModels() {
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, registerProgressBar, registerBGView);
-            Call<Vehicle> call = Utils.getYatraShareAPI().getVehicleModels(userGuide, vehicleType, vehicleBrand);
+            Call<Vehicle> call = Utils.getYatraShareAPI(this).getVehicleModels(userGuide, vehicleType, vehicleBrand);
             call.enqueue(new Callback<Vehicle>() {
                 /**
                  * Successful HTTP response.
@@ -135,7 +135,7 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
     public void getVehicleBrands() {
         if (Utils.isInternetAvailable(mContext)) {
             Utils.showProgress(true, registerProgressBar, registerBGView);
-            Call<Vehicle> call = Utils.getYatraShareAPI().getVehicleBrands(userGuide, vehicleType);
+            Call<Vehicle> call = Utils.getYatraShareAPI(this).getVehicleBrands(userGuide, vehicleType);
             call.enqueue(new Callback<Vehicle>() {
                 /**
                  * Successful HTTP response.
@@ -225,7 +225,7 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
             Utils.showProgress(true, registerProgressBar, registerBGView);
             RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort, regdNo);
 
-            Call<UserDataDTO> call = Utils.getYatraShareAPI().registerVehicle(userGuide, vehicleInfo);
+            Call<UserDataDTO> call = Utils.getYatraShareAPI(this).registerVehicle(userGuide, vehicleInfo);
             call.enqueue(new Callback<UserDataDTO>() {
                 @Override
                 public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {

@@ -104,10 +104,10 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                 Call<OfferedRides> call = null;
                 switch (mTitle) {
                     case TabsFragment.UPCOMING_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().upComingOfferedRides(userGuide, currentPage + "", Constants.PAGE_SIZE + "");
+                        call = Utils.getYatraShareAPI(mContext).upComingOfferedRides(userGuide, currentPage + "", Constants.PAGE_SIZE + "");
                         break;
                     case TabsFragment.PAST_OFFERED_RIDES:
-                        call = Utils.getYatraShareAPI().pastOfferedRides(userGuide, currentPage + "", Constants.PAGE_SIZE + "");
+                        call = Utils.getYatraShareAPI(mContext).pastOfferedRides(userGuide, currentPage + "", Constants.PAGE_SIZE + "");
                         break;
                 }
                 //asynchronous call
@@ -257,7 +257,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
 
     private void editRide(final OfferedRides.OfferedRideData offeredRide) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        Call<RideDetails> call = Utils.getYatraShareAPI().getRideDetails(offeredRide.RideGuid);
+        Call<RideDetails> call = Utils.getYatraShareAPI(mContext).getRideDetails("", offeredRide.RideGuid);
         //asynchronous call
         call.enqueue(new Callback<RideDetails>() {
             /*
@@ -296,7 +296,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
 
     private void deleteRide(OfferedRides.OfferedRideData offeredRide, final int position) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().deleteOfferedRide(userGuide, offeredRide.RideGuid);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).deleteOfferedRide(userGuide, offeredRide.RideGuid);
         call.enqueue(new Callback<UserDataDTO>() {
             /**
              * Successful HTTP response.

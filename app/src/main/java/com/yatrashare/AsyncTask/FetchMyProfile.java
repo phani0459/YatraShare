@@ -43,7 +43,7 @@ public class FetchMyProfile extends IntentService {
     public void userProfileTask(final String userGuide) {
         if (Utils.isInternetAvailable(this)) {
 
-            Call<Profile> call = Utils.getYatraShareAPI().userPublicProfile(userGuide);
+            Call<Profile> call = Utils.getYatraShareAPI(this).userPublicProfile(userGuide);
             //asynchronous call
             call.enqueue(new Callback<Profile>() {
                 /**
@@ -76,7 +76,7 @@ public class FetchMyProfile extends IntentService {
     }
 
     private void getBasicProfileInfo(final String userGuid) {
-        Call<Profile> call = Utils.getYatraShareAPI().userBasicProfile(userGuid);
+        Call<Profile> call = Utils.getYatraShareAPI(this).userBasicProfile(userGuid);
         //asynchronous call
         call.enqueue(new Callback<Profile>() {
             /**

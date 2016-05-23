@@ -87,7 +87,7 @@ public class UserBookingsActivity extends AppCompatActivity implements UserBooki
         if (Utils.isInternetAvailable(mContext)) {
             if (!TextUtils.isEmpty(userGuide)) {
                 Utils.showProgress(true, mProgressView, mProgressBGView);
-                Call<GetUserBookings> call = Utils.getYatraShareAPI().getUserBookings(userGuide, selectedSubRideData.PossibleRideGuid);
+                Call<GetUserBookings> call = Utils.getYatraShareAPI(mContext).getUserBookings(userGuide, selectedSubRideData.PossibleRideGuid);
                 //asynchronous call
                 call.enqueue(this);
             } else {
@@ -135,10 +135,10 @@ public class UserBookingsActivity extends AppCompatActivity implements UserBooki
                 Call<UserDataDTO> call = null;
                 switch (clickedItem) {
                     case R.id.approveSeat:
-                        call = Utils.getYatraShareAPI().approveSeat(userGuide, data.RideBookingId + "");
+                        call = Utils.getYatraShareAPI(mContext).approveSeat(userGuide, data.RideBookingId + "");
                         break;
                     case R.id.rejectSeat:
-                        call = Utils.getYatraShareAPI().rejectSeat(userGuide, data.RideBookingId + "");
+                        call = Utils.getYatraShareAPI(mContext).rejectSeat(userGuide, data.RideBookingId + "");
                         break;
                 }
                 if (call != null) {

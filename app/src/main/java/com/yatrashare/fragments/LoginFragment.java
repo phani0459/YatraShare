@@ -183,7 +183,7 @@ public class LoginFragment extends Fragment {
         String countryCode = countryData != null ? countryData.CountryCode : "";
         UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode);
 
-        Call<String> call = Utils.getYatraShareAPI().userFBLogin(userFBLogin);
+        Call<String> call = Utils.getYatraShareAPI(mContext).userFBLogin(userFBLogin);
         //asynchronous call
         call.enqueue(new Callback<String>() {
             /**

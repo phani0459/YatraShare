@@ -260,7 +260,7 @@ public class EditProfileFragment extends Fragment {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                     RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("ProfilePic", file.getName(), requestFile).build();
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI().uploadProfilePic(userGuid, body);
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).uploadProfilePic(userGuid, body);
                     call.enqueue(new Callback<UserDataDTO>() {
                         @Override
                         public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
@@ -529,7 +529,7 @@ public class EditProfileFragment extends Fragment {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         UserProfile userProfile = new UserProfile(email, userFirstName, userLastName, phoneNumber, dob, userGender, aboutMe);
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().updateProfile(userGuid, userProfile);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).updateProfile(userGuid, userProfile);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

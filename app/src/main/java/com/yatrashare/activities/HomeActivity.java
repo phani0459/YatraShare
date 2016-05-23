@@ -820,7 +820,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         final TextInputLayout changePwdLayout = (TextInputLayout) dialog.findViewById(R.id.newPasswordLayout);
         String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().changePassword(userGuid, newPassword);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(this).changePassword(userGuid, newPassword);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**

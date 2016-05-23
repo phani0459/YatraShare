@@ -336,7 +336,7 @@ public class SignupFragment extends Fragment {
         String countryCode = countryData != null ? countryData.CountryCode : "";
         UserSignUp userSignUp = new UserSignUp(mEmail, mUserFirstName, mPassword, mPhone, countryCode, gender, userLastName);
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI().userRegistration(userSignUp);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).userRegistration(userSignUp);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /*

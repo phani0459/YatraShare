@@ -100,7 +100,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://maps.googleapis.com")
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(Utils.getOkHttpClient())
+                    .client(Utils.getOkHttpClient(this))
                     .build();
             YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
             Call<PlaceDetailDto> call = yatraShareAPI.getPlaceDetailsAPI(placeid, getString(R.string.server_api_key));
@@ -177,7 +177,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://maps.googleapis.com")
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(Utils.getOkHttpClient())
+                    .client(Utils.getOkHttpClient(this))
                     .build();
             YatraShareAPI yatraShareAPI = retrofit.create(YatraShareAPI.class);
             Call<GooglePlacesDto> call = yatraShareAPI.getGooglePlacesAPI(query, getString(R.string.server_api_key), "country:" + country.toLowerCase());
