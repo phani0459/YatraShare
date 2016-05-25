@@ -285,7 +285,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
              */
             @Override
             public void onFailure(Throwable t) {
-                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                t.printStackTrace();
                 dialog.setCancelable(true);
                 showFgtPwdProgress(false);
                 fgtPhoneLayout.setError(getString(R.string.tryagain));

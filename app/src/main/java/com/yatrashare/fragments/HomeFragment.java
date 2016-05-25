@@ -171,6 +171,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                             foundRides.arriavalPlace = whereTo;
                             foundRides.selectedDate = date;
                             ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, foundRides, null);
+                            setNullValues();
                         } else {
                             ((HomeActivity) mContext).showSnackBar("No rides available at this time, Try again!");
                         }
@@ -192,6 +193,14 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
         }
     }
 
+    private void setNullValues() {
+        whereFromEditText.setText("");
+        whereToEditText.setText("");
+        dateEditText.setText("");
+        whereFromPlace = null;
+        wheretoPlace = null;
+    }
+
     @OnClick(R.id.offerRide)
     public void offerRide() {
         if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
@@ -204,6 +213,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             intent.putExtra("ARRIVAL", wheretoPlace);
             intent.putExtra("DATE", dateEditText.getText().toString());
             startActivity(intent);
+            setNullValues();
         } else {
             Utils.showLoginDialog(mContext, Constants.HOME_SCREEN_NAME);
         }

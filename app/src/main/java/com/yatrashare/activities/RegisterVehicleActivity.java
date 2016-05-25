@@ -223,7 +223,7 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
             }
 
             Utils.showProgress(true, registerProgressBar, registerBGView);
-            RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort, regdNo);
+            RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort.toUpperCase(), regdNo);
 
             Call<UserDataDTO> call = Utils.getYatraShareAPI(this).registerVehicle(userGuide, vehicleInfo);
             call.enqueue(new Callback<UserDataDTO>() {
