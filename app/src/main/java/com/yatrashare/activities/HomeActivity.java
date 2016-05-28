@@ -1,20 +1,26 @@
 package com.yatrashare.activities;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -24,7 +30,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +46,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.Profile;
@@ -70,6 +76,8 @@ import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Retrofit;
+
+import static android.Manifest.permission.CALL_PHONE;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -113,6 +121,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private FindRideFragment searchRideFragment;
     private EditText confirmPwdEdit;
     private EditText newPwdEdit;
+    private CountryData countryData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +167,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         userNameTextView = (TextView) view.findViewById(R.id.userNameTextView);
         userDraweeImageView = (SimpleDraweeView) view.findViewById(R.id.userDraweeView);
 
+        countryData = Utils.getCountryInfo(this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+
         loadHomePage(true, "");
     }
 
@@ -178,6 +189,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         MenuItem changePwdItem = navigationView.getMenu().getItem(5).getSubMenu().getItem(3);
         MenuItem logoutItem = navigationView.getMenu().getItem(5).getSubMenu().getItem(4);
+        MenuItem callUsItem = navigationView.getMenu().getItem(5).getSubMenu().getItem(1);
         if (isUserLogin) {
             logoutItem.setVisible(true);
             changePwdItem.setVisible(true);
@@ -190,6 +202,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             userNameTextView.setText(getString(R.string.login_rationale));
         } else {
             userNameTextView.setText(userName);
+        }
+
+        if (countryData != null && !TextUtils.isEmpty(countryData.CallUs)) {
+            callUsItem.setVisible(true);
+        } else {
+            callUsItem.setVisible(false);
         }
 
         GenericDraweeHierarchy hierarchy = userDraweeImageView.getHierarchy();
@@ -667,11 +685,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_invitefriends:
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                if (countryData != null && !TextUtils.isEmpty(countryData.InviteFriendsMsg)) {
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, countryData.InviteFriendsMsg);
+                } else {
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "Checkout Yatrashare App");
+                }
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
                 break;
             case R.id.nav_callus:
+                try {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:" + countryData.CallUs));
+                        startActivity(callIntent);
+                    } else {
+                        mayRequestCall();
+                    }
+                } catch (ActivityNotFoundException activityException) {
+                    activityException.printStackTrace();
+                }
                 break;
             case R.id.nav_more:
                 loadScreen(MORE_SCREEN, false, null, Constants.HOME_SCREEN_NAME);
@@ -722,9 +755,49 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CALL_PHONE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + countryData.CallUs));
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                startActivity(callIntent);
+            }
+        }
+    }
+
+    private boolean mayRequestCall() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(CALL_PHONE)) {
+            Snackbar.make(navigationView, R.string.call_permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{CALL_PHONE}, REQUEST_CALL_PHONE);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{CALL_PHONE}, REQUEST_CALL_PHONE);
+        }
+        return false;
+    }
+
     public Button submitPwdButton;
     public Button cancelButton;
     public ProgressBar mChangePwdProgressBar;
+    private static final int REQUEST_CALL_PHONE = 14;
 
     private void loadChangePwdDialog() {
         final Dialog dialog = new Dialog(this, android.R.style.Theme_DeviceDefault_Light_Dialog_MinWidth);

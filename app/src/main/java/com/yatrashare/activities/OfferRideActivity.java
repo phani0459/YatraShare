@@ -673,7 +673,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 switch (clickedButton) {
                     case R.id.bt_departuredate:
-                        departureDateBtn.setText("" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + +year);
+                        departureDateBtn.setText("" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
                         break;
                     case R.id.bt_arrivaldate:
                         arrivalDateBtn.setText("" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year);

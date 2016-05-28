@@ -15,4 +15,6 @@ public class CountryData implements Serializable {
     public String DistanceMesure;
     public String MobileCode;
     public String Token;
+    public String CallUs;
+    public String InviteFriendsMsg;
 }

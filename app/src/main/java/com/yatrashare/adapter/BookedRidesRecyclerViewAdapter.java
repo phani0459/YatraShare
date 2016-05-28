@@ -71,8 +71,8 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
 
         if (mTitle == TabsFragment.PAST_BOOKED_RIDES) {
             holder.cancelSeatBtn.setVisibility(View.GONE);
-            holder.getDetailsSMSBtn.setText("Delete");
-            holder.getDetailsSMSBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.delete, 0, 0, 0);
+            holder.getDetailsSMSBtn.setText("");
+            holder.getDetailsSMSBtn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.delete, 0);
         }
 
         if (bookingStatus.equalsIgnoreCase("Cancelled")) {

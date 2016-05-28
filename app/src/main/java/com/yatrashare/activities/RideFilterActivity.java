@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -203,16 +205,12 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
         dateEditText.setText(date);
         dateEditText.setInputType(InputType.TYPE_NULL);
 
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
-
         Calendar newCalendar = Calendar.getInstance();
 
         final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                date = dateFormatter.format(newDate.getTime());
+                date = "" + (monthOfYear + 1) + "/" + dayOfMonth + "/" + year;
                 dateEditText.setText(date);
             }
 
@@ -220,11 +218,28 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
 
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 
+        if (!TextUtils.isEmpty(date)) {
+            try {
+                String[] strings = date.split("/");
+                for (int i = 0; i < strings.length; i++) {
+                    /**
+                     * 0 - month
+                     * 1 - day of month
+                     * 2 - year
+                     */
+                    datePickerDialog.getDatePicker().updateDate(Integer.parseInt(strings[2]), Integer.parseInt(strings[0]) - 1, Integer.parseInt(strings[1]));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        datePickerDialog.setTitle("");
+
         datePickerDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dateEditText.setText("");
-                date = "";
+                dateEditText.setText(date != null ? date : "");
                 dialog.dismiss();
             }
         });
