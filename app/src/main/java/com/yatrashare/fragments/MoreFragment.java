@@ -13,11 +13,12 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.MoreContentActivity;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MoreFragment extends Fragment implements View.OnClickListener{
+public class MoreFragment extends Fragment implements View.OnClickListener {
 
 
     private Context mContext;
@@ -44,7 +45,7 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
         contactUs.setOnClickListener(this);
         termsNcondns.setOnClickListener(this);
 
-        ((HomeActivity)mContext).setTitle("More");
+        ((HomeActivity) mContext).setTitle("More");
 
         return view;
     }
@@ -57,6 +58,7 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         String url = "";
+        String title = "";
         if (v.getId() == R.id.feedBackText) {
             /* Create the Intent */
             final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
@@ -71,20 +73,30 @@ public class MoreFragment extends Fragment implements View.OnClickListener{
         } else {
             switch (v.getId()) {
                 case R.id.howItWorksText:
-                    url = "http://www.yatrashare.com/public/Howitworks";
+//                    url = "http://www.yatrashare.com/public/Howitworks";
+                    url = MoreContentActivity.howItWorks;
+                    title = "How Yatrashare works?";
                     break;
                 case R.id.faqsText:
-                    url = "http://www.yatrashare.com/Public/Faq";
+//                    url = "http://www.yatrashare.com/Public/Faq";
+                    url = MoreContentActivity.faqS;
+                    title = "FAQ";
                     break;
                 case R.id.contactUsText:
-                    url = "http://www.yatrashare.com/public/contactus";
+//                    url = "http://www.yatrashare.com/public/contactus";
+                    url = MoreContentActivity.ContactUs;
+                    title = "Contact Us";
                     break;
                 case R.id.termsText:
-                    url = "http://www.yatrashare.com/public/TermsConditions";
+//                    url = "http://www.yatrashare.com/public/TermsConditions";
+                    url = MoreContentActivity.terms;
+                    title = "Terms";
                     break;
             }
 //            ((HomeActivity)mContext).loadScreen(HomeActivity.WEB_SCREEN, false, url, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            Intent browserIntent = new Intent(mContext, MoreContentActivity.class);
+            browserIntent.putExtra("KEY", url);
+            browserIntent.putExtra("TITLE", title);
             startActivity(browserIntent);
         }
     }

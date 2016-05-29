@@ -10,6 +10,7 @@ import com.yatrashare.dtos.GoogleMapsDto;
 import com.yatrashare.dtos.GooglePlacesDto;
 import com.yatrashare.dtos.MessageDetails;
 import com.yatrashare.dtos.MessagesList;
+import com.yatrashare.dtos.MoreDataDTO;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
 import com.yatrashare.dtos.PlaceDetailDto;
@@ -122,6 +123,9 @@ public interface YatraShareAPI {
 
     @GET("/api/Profile/GetPublicProfileInfo")
     Call<Profile> userPublicProfile(@Query("publicUserGuid") String userGuide);
+
+    @GET("/api/User/PageContentPresenter")
+    Call<MoreDataDTO> getMoreContent(@Query("pageName") String pageName, @Query("countryCode") String countryCode);
 
     @GET("/api/User/GetCountries")
     Call<Countries> GetCountries();

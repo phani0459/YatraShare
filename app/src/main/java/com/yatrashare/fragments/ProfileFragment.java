@@ -130,7 +130,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     public void editProfile() {
-        profile = Utils.checkforProfile(mContext, userGuide);
+        profile = Utils.getProfile(mContext, userGuide);
         if (profile != null) {
             ((HomeActivity) mContext).loadScreen(HomeActivity.EDIT_PROFILE_SCREEN, false, profile, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
         }
@@ -216,7 +216,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         super.onResume();
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.PROFILE_SCREEN);
         ((HomeActivity) mContext).prepareMenu();
-        profile = Utils.checkforProfile(mContext, userGuide);
+        profile = Utils.getProfile(mContext, userGuide);
 
         if (profile != null) {
             loadProfile();

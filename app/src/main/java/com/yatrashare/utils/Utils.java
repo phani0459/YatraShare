@@ -32,8 +32,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.okhttp.Interceptor;
@@ -52,7 +50,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -94,17 +91,21 @@ public class Utils {
         }
     }
 
-    public static Profile checkforProfile(Context mContext, String fileName) {
-        Profile profile = null;
-        try {
-            FileInputStream fis = mContext.openFileInput(fileName + ".ser");
-            ObjectInputStream is = new ObjectInputStream(fis);
-            profile = (Profile) is.readObject();
-            is.close();
-            fis.close();
-            Log.e("Profile", " Retrieved");
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static Profile profile;
+
+    public static Profile getProfile(Context mContext, String fileName) {
+        if (profile == null) {
+            try {
+                FileInputStream fis = mContext.openFileInput(fileName + ".ser");
+                ObjectInputStream is = new ObjectInputStream(fis);
+                profile = (Profile) is.readObject();
+                is.close();
+                fis.close();
+                Log.e("Profile", " Retrieved");
+            } catch (Exception e) {
+                profile = null;
+                e.printStackTrace();
+            }
         }
         return profile;
     }
@@ -135,23 +136,21 @@ public class Utils {
         }
     }
 
-    public static AutocompleteFilter getPlacesFilter() {
-        List<Integer> autocompleteFilter = new ArrayList<Integer>();
-        autocompleteFilter.add(Place.TYPE_COUNTRY);
-        return AutocompleteFilter.create(autocompleteFilter);
-    }
+    public static CountryData countryData;
 
     public static CountryData getCountryInfo(Context mContext, String fileName) {
-        CountryData countryData = null;
-        try {
-            FileInputStream fis = mContext.openFileInput(fileName + ".ser");
-            ObjectInputStream is = new ObjectInputStream(fis);
-            countryData = (CountryData) is.readObject();
-            is.close();
-            fis.close();
-            Log.e("Country Data", " Retrieved");
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (countryData == null) {
+            try {
+                FileInputStream fis = mContext.openFileInput(fileName + ".ser");
+                ObjectInputStream is = new ObjectInputStream(fis);
+                countryData = (CountryData) is.readObject();
+                is.close();
+                fis.close();
+                Log.e("Country Data", " Retrieved");
+            } catch (Exception e) {
+                countryData = null;
+                e.printStackTrace();
+            }
         }
         return countryData;
     }
@@ -243,8 +242,12 @@ public class Utils {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    private static SharedPreferences mSharedPreferences;
+
     public static SharedPreferences getSharedPrefs(Context mContext) {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        if (mSharedPreferences == null) {
+            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        }
         return mSharedPreferences;
     }
 

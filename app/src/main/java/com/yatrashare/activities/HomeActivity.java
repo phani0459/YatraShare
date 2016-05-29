@@ -583,7 +583,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (getCurrentScreen() == HOME_SCREEN) {
-            menu.getItem(4).setVisible(true);
+            if (countryData != null && !TextUtils.isEmpty(countryData.CallUs)) {
+                menu.getItem(4).setVisible(true);
+            } else {
+                menu.getItem(4).setVisible(false);
+            }
         } else {
             menu.getItem(4).setVisible(false);
         }
@@ -613,8 +617,18 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_call_yatrs) {
+            try {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:" + countryData.CallUs));
+                    startActivity(callIntent);
+                } else {
+                    mayRequestCall();
+                }
+            } catch (ActivityNotFoundException activityException) {
+                activityException.printStackTrace();
+            }
         }
 
         if (id == R.id.action_edit) {
