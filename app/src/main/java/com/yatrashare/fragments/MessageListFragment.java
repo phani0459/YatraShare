@@ -19,10 +19,8 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
-import com.yatrashare.adapter.AvailableRidesAdapter;
 import com.yatrashare.adapter.MessagesRecyclerViewAdapter;
 import com.yatrashare.dtos.MessagesList;
-import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;

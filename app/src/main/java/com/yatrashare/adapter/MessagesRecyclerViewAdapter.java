@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.MessagesList;
-import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.utils.Constants;
 
 import java.util.List;

@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.yatrashare.R;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
-import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.fragments.TabsFragment;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -102,7 +101,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 if (mTitle == TabsFragment.UPCOMING_OFFERED_RIDES) {
                     holder.deleteRide.setVisibility(View.VISIBLE);
                     if (offeredRide.PendingBooking) {
-                        holder.editRide.setVisibility(View.GONE);
+                        holder.editRide.setVisibility(View.INVISIBLE);
                         holder.pendingText.setVisibility(View.VISIBLE);
                     } else {
                         holder.editRide.setVisibility(View.VISIBLE);
