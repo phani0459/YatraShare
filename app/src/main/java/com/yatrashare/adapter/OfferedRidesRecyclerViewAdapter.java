@@ -98,10 +98,20 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                 holder.rideDeparturePoint.setText(offeredRide.DeparturePoint);
                 holder.rideAraivalPoint.setText(offeredRide.ArrivalPoint);
                 holder.rideDateText.setText(offeredRide.DepartureDate);
+
                 if (mTitle == TabsFragment.UPCOMING_OFFERED_RIDES) {
                     holder.deleteRide.setVisibility(View.VISIBLE);
-                    holder.editRide.setVisibility(View.VISIBLE);
+                    if (offeredRide.PendingBooking) {
+                        holder.editRide.setVisibility(View.GONE);
+                        holder.pendingText.setVisibility(View.VISIBLE);
+                    } else {
+                        holder.editRide.setVisibility(View.VISIBLE);
+                        holder.pendingText.setVisibility(View.GONE);
+                    }
+                } else {
+                    holder.pendingText.setVisibility(View.GONE);
                 }
+
             } else {
                 OfferedSubRides.SubRideData subRideData = subRides.get(position);
                 holder.rideDeparturePoint.setText(subRideData.DeparturePoint);
@@ -172,7 +182,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         private TextView rideDeparturePoint, rideDateText, rideAraivalPoint;
-        private TextView remainingSeats, bookedSeats, seatPrice;
+        private TextView remainingSeats, bookedSeats, seatPrice, pendingText;
         private View remainingSeatsView, bookedSeatsView;
         private ImageView deleteRide, editRide;
 
@@ -182,6 +192,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
             rideDeparturePoint = (TextView) view.findViewById(R.id.tv_rideDeparturePoint);
             rideAraivalPoint = (TextView) view.findViewById(R.id.tv_rideArrivalPoint);
             rideDateText = (TextView) view.findViewById(R.id.tv_rideDate);
+            pendingText = (TextView) view.findViewById(R.id.tv_pendingStatus);
 
             remainingSeats = (TextView) view.findViewById(R.id.tv_remainingSeats);
             bookedSeats = (TextView) view.findViewById(R.id.tv_bookdSeats);

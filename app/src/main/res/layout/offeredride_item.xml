@@ -17,6 +17,18 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/tv_pendingStatus"
+            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/title_gray"
+            android:gravity="right"
+            android:padding="8dp"
+            android:text="@string/pendingBookings"
+            android:textColor="@color/white"
+            android:visibility="visible" />
+
+        <TextView
             android:id="@+id/tv_rideDeparturePoint"
             style="@android:style/TextAppearance.DeviceDefault.Medium"
             android:layout_width="match_parent"

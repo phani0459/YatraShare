@@ -442,8 +442,6 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     public void userLoginTask(final String mEmail, final String mPassword) {
         UserLogin userLogin = new UserLogin(mEmail, mPassword);
 
-        Log.e(TAG, "userLoginTask: " + Utils.getToken(mContext));
-
         Call<String> call = Utils.getYatraShareAPI(mContext).userLogin(userLogin);
         //asynchronous call
         call.enqueue(new Callback<String>() {
