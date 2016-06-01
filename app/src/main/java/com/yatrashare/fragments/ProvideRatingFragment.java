@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +76,8 @@ public class ProvideRatingFragment extends Fragment {
     public TextView ratingReceiverMobile;
     @Bind(R.id.im_drawee_receiver)
     public SimpleDraweeView ratingReciverDrawee;
+    @Bind(R.id.feedBackTextLayout)
+    public TextInputLayout feedBackTextLayout;
 
     private String receiverGuid;
     private String userGuid;
@@ -215,10 +219,23 @@ public class ProvideRatingFragment extends Fragment {
     @OnClick(R.id.btnSubmitRating)
     public void submitRating() {
         if (Utils.isInternetAvailable(mContext)) {
+            Utils.hideSoftKeyboard(feedBackEditText);
             Utils.showProgress(true, mProgressView, mProgressBGView);
             String feedBack = "", stars = "", travellerType = "";
             feedBack = feedBackEditText.getText().toString();
             stars = ratingValue.getText().toString();
+
+            if (TextUtils.isEmpty(stars) || stars.equalsIgnoreCase("0.0")) {
+                Utils.showToast(mContext, "Provide rating");
+                return;
+            }
+
+            if (TextUtils.isEmpty(feedBack)) {
+                feedBackTextLayout.setError("Say how was your journey");
+                return;
+            }
+
+            feedBackTextLayout.setErrorEnabled(false);
 
             if (stars.contains(".")) {
                 stars = stars.substring(0, stars.lastIndexOf("."));

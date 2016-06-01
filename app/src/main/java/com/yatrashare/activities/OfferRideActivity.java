@@ -816,9 +816,50 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 DatePickerDialog mDatePickerDialog = new DatePickerDialog(this, mDateSetListener, year, month, day);
                 if (v.getId() == R.id.bt_departuredate) {
                     mDatePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+
+                    String previouslySelecteddate = departureDateBtn.getText().toString();
+
+                    if (!TextUtils.isEmpty(previouslySelecteddate) && !previouslySelecteddate.equalsIgnoreCase(getString(R.string.departuredate))) {
+                        try {
+                            String[] strings = previouslySelecteddate.split("/");
+                            for (int i = 0; i < strings.length; i++) {
+                                /**
+                                 * 0 - month
+                                 * 1 - day of month
+                                 * 2 - year
+                                 */
+                                mDatePickerDialog.getDatePicker().updateDate(Integer.parseInt(strings[2]), Integer.parseInt(strings[0]) - 1, Integer.parseInt(strings[1]));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mDatePickerDialog.setTitle("");
+
                 } else {
                     String departureDate = departureDateBtn.getText().toString();
                     String departureTime = departureTimeBtn.getText().toString();
+
+                    String previouslySelecteddate = arrivalDateBtn.getText().toString();
+
+                    if (!TextUtils.isEmpty(previouslySelecteddate) && !previouslySelecteddate.equalsIgnoreCase(getString(R.string.returndate))) {
+                        try {
+                            String[] strings = previouslySelecteddate.split("/");
+                            for (int i = 0; i < strings.length; i++) {
+                                /**
+                                 * 0 - month
+                                 * 1 - day of month
+                                 * 2 - year
+                                 */
+                                mDatePickerDialog.getDatePicker().updateDate(Integer.parseInt(strings[2]), Integer.parseInt(strings[0]) - 1, Integer.parseInt(strings[1]));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    mDatePickerDialog.setTitle("");
 
                     if (TextUtils.isEmpty(departureTime)) {
                         departureTime = "12:00 PM";
@@ -845,6 +886,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 }
                 mDatePickerDialog.setTitle("");
                 mDatePickerDialog.show();
+
+
 
                 mDatePickerDialog.setOnCancelListener(new DatePickerDialog.OnCancelListener() {
 

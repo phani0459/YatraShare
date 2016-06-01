@@ -68,8 +68,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_messages_list, container, false);
         ButterKnife.bind(this, view);
         mContext = getActivity();
@@ -266,7 +265,7 @@ public class MessageListFragment extends Fragment implements MessagesRecyclerVie
             }
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+        builder.setMessage("Are you sure you want to delete?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
     }
 

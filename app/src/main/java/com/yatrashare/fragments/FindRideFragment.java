@@ -127,11 +127,13 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                 if (searchRides.Data != null && searchRides.Data.size() > 0) {
                     emptyRidesLayout.setVisibility(View.GONE);
                     createEmailAlertBtn.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
                     mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     emptyRidesLayout.setVisibility(View.VISIBLE);
                     createEmailAlertBtn.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
                     mRecyclerView.setAdapter(null);
                 }
             }
@@ -194,6 +196,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                                     mAdapter.addItem(searchRides.Data.get(i));
                                 }
                             } else {
+                                mRecyclerView.setVisibility(View.VISIBLE);
                                 mAdapter = new AvailableRidesAdapter(mContext, searchRides.Data, FindRideFragment.this);
                                 mRecyclerView.setAdapter(mAdapter);
                             }

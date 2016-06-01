@@ -11,23 +11,18 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
-        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif"
         android:paddingBottom="12dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingTop="12dp"
-        android:textColor="@android:color/white" />
+        android:textColor="@color/colorAccent" />
 
-    <TextView
+    <WebView
         android:id="@+id/description"
-        style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:paddingBottom="12dp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:paddingTop="8dp"
-        android:textColor="@color/title_gray" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" />
 
 </LinearLayout>

@@ -305,12 +305,14 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
                     }
                     Utils.showProgress(false, mProgressBar, mProgressBGView);
                     selectModelSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleModels));
+
                     if (isLoad) {
                         loadSelectedVehicle();
                     }
+
                     selectedVehicleId = getVehicleId(rideDetails.Data.VehicleModel);
                     if (!TextUtils.isEmpty(selectedVehicleId)) {
-                        getVehicleSeats(selectedVehicleId, isLoad);
+                        getVehicleSeats(selectedVehicleId);
                     }
                 }
 
@@ -329,7 +331,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
         }
     }
 
-    private void getVehicleSeats(String vehicleId, final boolean isLoad) {
+    private void getVehicleSeats(String vehicleId) {
         if (Utils.isInternetAvailable(mContext)) {
             selectSeatsSpinner.setEnabled(true);
             Utils.showProgress(true, mProgressBar, mProgressBGView);
@@ -367,11 +369,14 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
                     } else {
                         vehicleSeats.add("Select Seats");
                     }
+
                     selectSeatsSpinner.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, vehicleSeats));
-                    Utils.showProgress(false, mProgressBar, mProgressBGView);
-                    if (isLoad) {
+
+                    if (selectedModel.equalsIgnoreCase(rideDetails.Data.VehicleModel)) {
                         loadSelectedSeats();
                     }
+
+                    Utils.showProgress(false, mProgressBar, mProgressBGView);
                 }
 
                 /**
@@ -550,9 +555,9 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
     private void loadSelectedSeats() {
         try {
             int seats = Integer.parseInt(!TextUtils.isEmpty(rideDetails.Data.RemainingSeats) ? rideDetails.Data.RemainingSeats : "0");
-            if (selectSeatsSpinner.getCount() >= seats) {
+            if (selectSeatsSpinner.getAdapter().getCount() >= seats) {
                 selectSeatsSpinner.setSelection(seats);
-            } else if (selectSeatsSpinner.getCount() >= (seats - 1)) {
+            } else if (selectSeatsSpinner.getAdapter().getCount() >= (seats - 1)) {
                 selectSeatsSpinner.setSelection(seats - 1);
             }
         } catch (Exception e) {
@@ -629,7 +634,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
                 selectedModel = (String) parent.getAdapter().getItem(position);
                 selectedVehicleId = getVehicleId(selectedModel);
                 if (selectedVehicleId != null) {
-                    getVehicleSeats(selectedVehicleId, false);
+                    getVehicleSeats(selectedVehicleId);
                 }
                 break;
             case R.id.ride_selectSeats:

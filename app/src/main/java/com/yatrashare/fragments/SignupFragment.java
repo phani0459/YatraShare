@@ -1,6 +1,7 @@
 package com.yatrashare.fragments;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,13 +10,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -32,6 +37,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.RequestBody;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.CountryData;
@@ -41,6 +49,7 @@ import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +57,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit.Call;
 import retrofit.Callback;
+import retrofit.Response;
 import retrofit.Retrofit;
+
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,6 +106,7 @@ public class SignupFragment extends Fragment {
     public RadioButton maleRadioButton;
     @Bind(R.id.rbtn_female)
     public RadioButton femaleRadioButton;
+    private Uri selectedImageUri;
 
     public SignupFragment() {
     }
@@ -159,10 +173,102 @@ public class SignupFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == Activity.RESULT_OK) {
-            Uri imageUri = getPickImageResultUri(data);
+            selectedImageUri = getPickImageResultUri(data);
             mProfileImage.setVisibility(View.INVISIBLE);
             mProfileImageDrawee.setVisibility(View.VISIBLE);
-            mProfileImageDrawee.setImageURI(imageUri);
+            mProfileImageDrawee.setImageURI(selectedImageUri);
+
+            updateProfilePic();
+
+        }
+    }
+
+    private static final int REQUEST_READ_STORAGE = 14;
+
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_READ_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateProfilePic();
+            }
+        }
+    }
+
+    private boolean mayRequestStorage() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (mContext.checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED && mContext.checkSelfPermission(READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(mSignUpEmail, R.string.storage_permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_READ_STORAGE);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, REQUEST_READ_STORAGE);
+        }
+        return false;
+    }
+
+    public void updateProfilePic() {
+        if (Utils.isInternetAvailable(mContext)) {
+            if (selectedImageUri != null) {
+                if (!mayRequestStorage()) {
+                    return;
+                }
+
+                File file = null;
+                try {
+                    URI uri = new URI(selectedImageUri.toString());
+                    file = new File(uri);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    file = null;
+                }
+                try {
+                    if (file == null) {
+                        file = new File(Utils.getPath(selectedImageUri, mContext));
+                    }
+
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                    RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("ProfilePic", file.getName(), requestFile).build();
+
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).uploadProfilePic("", body);
+                    call.enqueue(new Callback<UserDataDTO>() {
+                        @Override
+                        public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
+                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            if (response.body() != null && response.isSuccess()) {
+                                Log.e(TAG, "Update Pic: " + response.body().Data);
+                                selectedImageUri = null;
+                                mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
+                                mSharedPrefEditor.commit();
+                                ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            t.printStackTrace();
+                            android.util.Log.e(TAG, "FAILURE RESPONSE");
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Utils.showToast(mContext, "Select Image");
+            }
         }
     }
 
@@ -216,26 +322,30 @@ public class SignupFragment extends Fragment {
             return;
         }
         mSignUpEmailLayout.setErrorEnabled(false);
-        if (TextUtils.isEmpty(password)) {
-            mSignUpPasswordLayout.setError(getString(R.string.error_required_password));
-            return;
-        }
-        mSignUpEmailLayout.setErrorEnabled(false);
-        if (!isPasswordValid(password)) {
-            mSignUpPasswordLayout.setError(getString(R.string.error_invalid_password));
-            return;
-        }
-        mSignUpPasswordLayout.setErrorEnabled(false);
+
         if (TextUtils.isEmpty(phoneNumber)) {
             mSignupPhoneLayout.setError(getString(R.string.error_required_phone));
             return;
         }
-        mSignUpPasswordLayout.setErrorEnabled(false);
+
         if (!Utils.isPhoneValid(mContext, phoneNumber)) {
             mSignupPhoneLayout.setError(getString(R.string.error_invalid_phone));
             return;
         }
+
         mSignupPhoneLayout.setErrorEnabled(false);
+
+        if (!isPasswordValid(password)) {
+            mSignUpPasswordLayout.setError(getString(R.string.error_invalid_password));
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            mSignUpPasswordLayout.setError(getString(R.string.error_required_password));
+            return;
+        }
+
+        mSignUpPasswordLayout.setErrorEnabled(false);
 
         if (maleRadioButton.isChecked()) {
             gender = "Male";

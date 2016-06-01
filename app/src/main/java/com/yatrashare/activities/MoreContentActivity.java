@@ -8,9 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -110,7 +112,7 @@ public class MoreContentActivity extends AppCompatActivity {
             View view = inflater.inflate(R.layout.more_texts, null);
 
             TextView sectionHeading = (TextView) view.findViewById(R.id.heading);
-            TextView sectionDescription = (TextView) view.findViewById(R.id.description);
+            WebView sectionDescription = (WebView) view.findViewById(R.id.description);
 
             if (TextUtils.isEmpty(data.get(i).SectionName)) {
                 sectionHeading.setVisibility(View.GONE);
@@ -121,7 +123,7 @@ public class MoreContentActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(data.get(i).Content)) {
                 sectionDescription.setVisibility(View.GONE);
             } else {
-                sectionDescription.setText(Html.fromHtml(data.get(i).Content));
+                sectionDescription.loadData(data.get(i).Content, "text/html", "utf-8");
             }
 
             mainLayout.addView(view);

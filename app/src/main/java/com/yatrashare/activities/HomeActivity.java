@@ -228,7 +228,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             userDraweeImageView.setImageURI(uri);
         }
 
-        if (!init) {
+        if (!init && !TextUtils.isEmpty(fragmentName)) {
             if (getSupportFragmentManager().getBackStackEntryCount() > 0)
                 popBackFragment(fragmentName);
         } else {
@@ -236,7 +236,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             try {
                 Fragment fragment = new HomeFragment();
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                if (init && fragmentName != null) {
+                if (init && !TextUtils.isEmpty(fragmentName)) {
                     fragmentManager.beginTransaction().add(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
                 } else {
                     fragmentManager.beginTransaction().replace(R.id.content_layout, fragment).addToBackStack(Constants.HOME_SCREEN_NAME).commit();
@@ -760,7 +760,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Are you sure?").setPositiveButton("Yes", dialogClickListener)
+                builder.setMessage("Are you sure you want to logout?").setPositiveButton("Yes", dialogClickListener)
                         .setNegativeButton("No", dialogClickListener).show();
                 break;
 

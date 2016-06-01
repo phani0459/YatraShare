@@ -87,6 +87,7 @@ public class Utils {
         File file = new File(mContext.getFilesDir(), fileName + ".ser");
         if (file.exists()) {
             file.delete();
+            profile = null;
             Log.e("Profile", " Deleted");
         }
     }
@@ -481,7 +482,7 @@ public class Utils {
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, originScree);
+                ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, false, originScree);
             }
         });
 

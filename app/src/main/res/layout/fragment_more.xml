@@ -62,7 +62,8 @@
         android:paddingLeft="8dp"
         android:paddingTop="16dp"
         android:text="@string/feedback"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorPrimary"
+        android:visibility="gone" />
 
     <View
         android:layout_width="match_parent"

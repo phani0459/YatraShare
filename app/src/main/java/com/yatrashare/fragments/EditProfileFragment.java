@@ -32,6 +32,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.okhttp.MediaType;
@@ -111,6 +112,11 @@ public class EditProfileFragment extends Fragment {
     private String userGender;
     private boolean isImageLoaded;
     private Uri selectedImageUri;
+
+    @Bind(R.id.rbtn_male_et_profile)
+    public RadioButton maleRadioButton;
+    @Bind(R.id.rbtn_female_et_profile)
+    public RadioButton femaleRadioButton;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -374,6 +380,14 @@ public class EditProfileFragment extends Fragment {
         String lastName = mSharedPreferences.getString(Constants.PREF_USER_LAST_NAME, "");
         userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
 
+        if (userGender.equalsIgnoreCase("Male")) {
+            maleRadioButton.setChecked(true);
+            femaleRadioButton.setChecked(false);
+        } else {
+            maleRadioButton.setChecked(false);
+            femaleRadioButton.setChecked(true);
+        }
+
         if (profile != null && profile.Data != null) {
             String aboutMe = profile.Data.AboutMe;
             String userName = profile.Data.UserName;
@@ -516,6 +530,15 @@ public class EditProfileFragment extends Fragment {
             return;
         }
         dobTextInputLayout.setErrorEnabled(false);
+
+        if (maleRadioButton.isChecked()) {
+            userGender = "Male";
+        } else if (femaleRadioButton.isChecked()) {
+            userGender = "Female";
+        } else {
+            Utils.showToast(mContext, "Select Gender");
+            return;
+        }
 
         if (Utils.isInternetAvailable(mContext)) {
             updateProfile(userGuid, userFirstName, userLastName, email, dob, phoneNumber, aboutMe);

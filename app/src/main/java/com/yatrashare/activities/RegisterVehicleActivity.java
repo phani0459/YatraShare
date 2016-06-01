@@ -71,6 +71,8 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
         vehicleType = getIntent().getExtras().getString("Selected Vehicle");
         userGuide = getIntent().getExtras().getString("User Guide");
 
+        regdNoEditText.setFilters(Utils.getInputFilter(15));
+
         /**
          * Car = 1
          * Bike = 2
@@ -203,24 +205,21 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
     public void registerVehicle() {
         if (Utils.isInternetAvailable(mContext)) {
             String regdNo = regdNoEditText.getText().toString();
+
             if (TextUtils.isEmpty(vehicleBrand)) {
                 Utils.showToast(mContext, "Select Vehicle Brand");
                 return;
             }
+
             if (TextUtils.isEmpty(vehicleModel)) {
                 Utils.showToast(mContext, "Select Vehicle Model");
                 return;
             }
 
-            if (TextUtils.isEmpty(regdNo)) {
+            /*if (TextUtils.isEmpty(regdNo)) {
                 Utils.showToast(mContext, "Enter Vehicle Registration Number");
                 return;
-            }
-
-            if (regdNo.length() < 6) {
-                Utils.showToast(mContext, "Enter Correct Vehicle Registration Number");
-                return;
-            }
+            }*/
 
             Utils.showProgress(true, registerProgressBar, registerBGView);
             RegisterVehicle vehicleInfo = new RegisterVehicle(vehicleType, vehicleSeats, getVehicleId(vehicleModel), vehicleColor, vehicleComfort.toUpperCase(), regdNo);
