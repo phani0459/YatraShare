@@ -70,9 +70,9 @@
     <string name="dob">Date of birth*</string>
     <string name="profile_updated_rationale">Profile updated successfully</string>
 
-    <string name="mobileNumber">Mobile Number </string>
-    <string name="email">Email:</string>
-    <string name="licenceStatus">Licence Status:</string>
+    <string name="mobileNumber">Mobile Number: </string>
+    <string name="email">Email: </string>
+    <string name="licenceStatus">Licence: </string>
 
     <!-- Strings related to login -->
     <string name="prompt_userfirstname">FirstName*</string>

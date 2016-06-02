@@ -48,8 +48,10 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
         holder.rideTimeText.setText(bookedRide.RideTime);
         holder.rideDetailsText.setText(bookedRide.Ride);
         String rideStatus = bookedRide.RideStatus != null ? bookedRide.RideStatus : "";
+        int bookedSeats = bookedRide.BookedSeats != 0 ? bookedRide.BookedSeats : 0;
         String bookingStatus = bookedRide.BookingStatus != null ? bookedRide.BookingStatus : "";
         holder.rideStatusText.setText(Html.fromHtml("<font color=\"#303F9F\">Ride Status: </font>" + rideStatus));
+        holder.bookedSeats.setText(Html.fromHtml("<font color=\"#303F9F\">Seats Booked: </font>" + bookedSeats));
         holder.bookingStatusText.setText(Html.fromHtml("<font color=\"#303F9F\">Booking Status: </font>" + bookingStatus));
 
         String profilePic = bookedRide.OwnerPicture;
@@ -116,7 +118,7 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView, btnsAboveView;
-        private TextView ownerNameText, rideTimeText, bookingStatusText, rideStatusText, rideDetailsText;
+        private TextView ownerNameText, rideTimeText, bookingStatusText, rideStatusText, rideDetailsText, bookedSeats;
         SimpleDraweeView simpleDraweeView;
         Button cancelSeatBtn, getDetailsSMSBtn;
 
@@ -129,6 +131,7 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
             rideDetailsText = (TextView) view.findViewById(R.id.tv_rideDetails);
             bookingStatusText = (TextView) view.findViewById(R.id.tv_bookingStatus);
             rideStatusText = (TextView) view.findViewById(R.id.tv_ridestatus);
+            bookedSeats = (TextView) view.findViewById(R.id.tv_bookedSeats);
             cancelSeatBtn = (Button) view.findViewById(R.id.btnCancelSeat);
             getDetailsSMSBtn = (Button) view.findViewById(R.id.btnSendSMS);
             simpleDraweeView = (SimpleDraweeView) view.findViewById(R.id.im_drawee_owner);

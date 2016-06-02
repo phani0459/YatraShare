@@ -98,6 +98,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Bind(R.id.profileRatingBar)
     public RatingBar ratingBar;
     private boolean isMobileVerified;
+    private boolean isEmailVerified;
 
     public ProfileFragment() {
     }
@@ -169,41 +170,43 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public boolean verifyEmail(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             if (event.getRawX() >= (v.getRight() - ((TextView) v).getCompoundDrawables()[2].getBounds().width())) {
-                if (Utils.isInternetAvailable(mContext)) {
-                    Utils.showProgress(true, mProgressView, mProgressBGView);
+                if (!isEmailVerified) {
+                    if (Utils.isInternetAvailable(mContext)) {
+                        Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).sendVerificationEmail(userGuide);
-                    //asynchronous call
-                    call.enqueue(new Callback<UserDataDTO>() {
-                        /**
-                         * Successful HTTP response.
-                         *
-                         * @param response server response
-                         * @param retrofit adapter
-                         */
-                        @Override
-                        public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                            android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                            if (response.body() != null) {
-                                if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
-                                    ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
-                                    Utils.deleteFile(mContext, userGuide);
+                        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).sendVerificationEmail(userGuide);
+                        //asynchronous call
+                        call.enqueue(new Callback<UserDataDTO>() {
+                            /**
+                             * Successful HTTP response.
+                             *
+                             * @param response server response
+                             * @param retrofit adapter
+                             */
+                            @Override
+                            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                                if (response.body() != null) {
+                                    if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
+                                        ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
+                                        Utils.deleteFile(mContext, userGuide);
+                                    }
                                 }
+                                Utils.showProgress(false, mProgressView, mProgressBGView);
                             }
-                            Utils.showProgress(false, mProgressView, mProgressBGView);
-                        }
 
-                        /**
-                         * Invoked when a network or unexpected exception occurred during the HTTP request.
-                         *
-                         * @param t error
-                         */
-                        @Override
-                        public void onFailure(Throwable t) {
-                            android.util.Log.e(TAG, "FAILURE RESPONSE");
-                            Utils.showProgress(false, mProgressView, mProgressBGView);
-                        }
-                    });
+                            /**
+                             * Invoked when a network or unexpected exception occurred during the HTTP request.
+                             *
+                             * @param t error
+                             */
+                            @Override
+                            public void onFailure(Throwable t) {
+                                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                                Utils.showProgress(false, mProgressView, mProgressBGView);
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -236,7 +239,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             String userSince = profile.Data.MemberSince;
 
             try {
-                if (!TextUtils.isEmpty(profile.Data.UserAvgRating)) ratingBar.setRating(Float.parseFloat(profile.Data.UserAvgRating));
+                if (!TextUtils.isEmpty(profile.Data.UserAvgRating))
+                    ratingBar.setRating(Float.parseFloat(profile.Data.UserAvgRating));
             } catch (NullPointerException e) {
                 e.printStackTrace();
             } catch (NumberFormatException e) {
@@ -254,34 +258,47 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mMobileStatus.setImageResource(mobileStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
 
                 isMobileVerified = mobileStatus.equals("2");
+                isEmailVerified = emailStatus.equals("2");
 
                 mPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
                 mPrefEditor.commit();
 
                 mEmailStatus.setImageResource(emailStatus.equals("2") ? R.drawable.verified : R.drawable.unverified);
-                String mobileHeading = mobileStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
-                        "<font color=\"#D9534F\">Not Verified</font>";
-                String mobileSuggetionText = isMobileVerified ? "Click here if you want to change your number" :
-                        "Your number is not verified \n Click here to verify";
+
+                String mobileHeading = mobileStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" : "<font color=\"#D9534F\">Not Verified</font>";
+                String mobileSuggetionText = isMobileVerified ? "" : "You have to verify your mobile number to offer a ride or book a  ride.";
+
                 mobileStatusHeading.setText(Html.fromHtml("Mobile Number: " + mobileHeading));
                 mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
-                mobileStatusText.setText(mobileSuggetionText);
-                String emailHeading = emailStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
-                        "<font color=\"#D9534F\">Not Verified</font>";
-                String emailSuggetionText = emailStatus.equals("2") ? "Click here if you want to change your email" :
-                        "Your Email is not verified \n Click here to verify";
+
+                if (!isMobileVerified) mobileStatusText.setText(mobileSuggetionText);
+                else mobileStatusText.setVisibility(View.GONE);
+
+                String emailHeading = emailStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" : "<font color=\"#D9534F\">Not Verified</font>";
+                String emailSuggetionText = emailStatus.equals("2") ? "" : "You have to verify your email to offer a ride or book a ride.";
+
                 emailStatusHeading.setText(Html.fromHtml("Email: " + emailHeading));
-                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
-                emailStatusText.setText(emailSuggetionText);
+                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, isEmailVerified ? R.drawable.verified : R.drawable.ic_action_edit, 0);
+
+                if (!isEmailVerified) emailStatusText.setText(emailSuggetionText);
+                else emailStatusText.setVisibility(View.GONE);
+
                 String licenceHeading = licenceStatus.equals("1") ? "<font color=\"#FAC001\">Pending</font>" :
-                                        licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
-                                        licenceStatus.equals("3") ? "<font color=\"#D9534F\">Rejected</font>" :
-                                                        "<font color=\"#D9534F\">Not uploaded</font>";
-                String licenceSuggetionText = licenceStatus.equals("2") ? "Your licence is approved" : licenceStatus.equals("1") ? "Your licence is Pending" :
-                        "Your Licence is rejected \n Click on Edit icon to provide Valid Licence";
-                licenceStatusHeading.setText(Html.fromHtml("Licence Status: " + licenceHeading));
+                        licenceStatus.equals("2") ? "<font color=\"#5CB85C\">Verified</font>" :
+                                licenceStatus.equals("3") ? "<font color=\"#D9534F\">Rejected</font>" :
+                                        "<font color=\"#D9534F\">Not uploaded</font>";
+                String licenceSuggetionText = licenceStatus.equals("1") ? "Licence approval will take some time." :
+                        licenceStatus.equals("3") ? "Your licence is rejected by yatrashare admin, please provide valid licence." :
+                                "Please provide valid licence to connect with more passengers.";
+
+                licenceStatusHeading.setText(Html.fromHtml("Licence: " + licenceHeading));
                 licenceStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
-                liceneceStatusText.setText(licenceSuggetionText);
+
+                if (licenceStatus.equals("2")) {
+                    liceneceStatusText.setVisibility(View.GONE);
+                } else {
+                    liceneceStatusText.setText(licenceSuggetionText);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -301,11 +318,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 } else {
                     mProfileImageDrawee.setImageURI(Constants.getDefaultPicURI());
                 }
-            } else if (!userFBId.isEmpty()) {
-                Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
-                mProfileImageDrawee.setImageURI(uri);
             } else if (!profilePic.isEmpty()) {
                 Uri uri = Uri.parse(profilePic);
+                mProfileImageDrawee.setImageURI(uri);
+            } else if (!userFBId.isEmpty()) {
+                Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
                 mProfileImageDrawee.setImageURI(uri);
             }
 

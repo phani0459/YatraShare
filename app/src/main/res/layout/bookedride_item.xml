@@ -73,6 +73,8 @@
             android:layout_marginBottom="4dp"
             android:layout_marginTop="8dip"
             android:orientation="horizontal"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:weightSum="6">
 
             <TextView
@@ -88,16 +90,18 @@
                 android:scrollHorizontally="true"
                 android:singleLine="true"
                 android:text="@string/rideHeading"
-                android:textColor="@color/colorPrimary" />
+                android:textColor="@color/colorPrimary"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_rideDetails"
                 style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_weight="5"
-                android:lines="2"
+                android:gravity="center"
+                android:maxLines="4"
+                android:minLines="2"
                 android:paddingRight="8dp"
                 android:text="JNTU" />
         </LinearLayout>
@@ -121,6 +125,19 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="Hitech City" />
+
+        <TextView
+            android:id="@+id/tv_bookedSeats"
+            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dip"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:paddingLeft="8dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="JNTU" />
 
         <TextView
             android:id="@+id/tv_bookingStatus"

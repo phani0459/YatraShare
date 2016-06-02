@@ -430,11 +430,11 @@ public class EditProfileFragment extends Fragment {
                 } else {
                     userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
                 }
-            } else if (!userFBId.isEmpty()) {
-                Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
-                userDraweeImageView.setImageURI(uri);
             } else if (!userProfilePic.isEmpty()) {
                 Uri uri = Uri.parse(userProfilePic);
+                userDraweeImageView.setImageURI(uri);
+            } else if (!userFBId.isEmpty()) {
+                Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
                 userDraweeImageView.setImageURI(uri);
             }
         }

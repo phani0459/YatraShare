@@ -292,6 +292,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/mobileNumber"
                 android:textColor="#000000" />
@@ -304,6 +305,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:gravity="center"
                 android:maxLines="2"
                 android:textColor="#000000" />
 
@@ -321,6 +323,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/email"
                 android:textColor="#000000" />
@@ -333,6 +336,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:gravity="center"
                 android:maxLines="2"
                 android:textColor="#000000" />
 
@@ -350,6 +354,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="4dp"
+                android:gravity="center_vertical"
                 android:singleLine="true"
                 android:text="@string/licenceStatus"
                 android:textColor="#000000" />
@@ -362,6 +367,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:gravity="center"
                 android:maxLines="2"
                 android:textColor="#000000" />
 

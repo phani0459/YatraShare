@@ -1,9 +1,11 @@
 package com.yatrashare.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -20,6 +22,7 @@ import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.SubRidesActivity;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
+import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.UserDataDTO;
@@ -248,10 +251,33 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
             intent.putExtra("UserGuide", userGuide);
             startActivity(intent);
         } else if (clickedItem == 2) {
-            if (Utils.isInternetAvailable(mContext)) deleteRide(offeredRide, position);
+            areYouSureDialog(offeredRide, position);
         } else if (clickedItem == 3) {
             if (Utils.isInternetAvailable(mContext)) editRide(offeredRide);
         }
+    }
+
+    public void areYouSureDialog(final OfferedRides.OfferedRideData offeredRideData, final int position) {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        if (Utils.isInternetAvailable(mContext)) {
+                            Utils.showProgress(true, mProgressView, mProgressBGView);
+                            deleteRide(offeredRideData, position);
+                        }
+                        dialog.dismiss();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage("Are you sure you want to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
     }
 
     private void editRide(final OfferedRides.OfferedRideData offeredRide) {

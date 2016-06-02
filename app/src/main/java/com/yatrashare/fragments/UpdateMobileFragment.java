@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class UpdateMobileFragment extends Fragment {
     private Context mContext;
     private String userGuid;
     private SharedPreferences.Editor mEditor;
+    private SharedPreferences mSharedPreferences;
 
 
     public UpdateMobileFragment() {
@@ -85,11 +87,14 @@ public class UpdateMobileFragment extends Fragment {
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
 
-        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
+        mSharedPreferences = Utils.getSharedPrefs(mContext);
         mEditor = mSharedPreferences.edit();
         String mobile = mSharedPreferences.getString(Constants.PREF_USER_PHONE, "");
         phoneEdit.setText(mobile);
-        phoneEdit.setEnabled(false);
+
+        if (!TextUtils.isEmpty(mobile)) phoneEdit.setEnabled(false);
+        else editMobileNumber();
+
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         phoneEdit.setFilters(Utils.getInputFilter(Utils.getMobileMaxChars(mContext)));
@@ -100,7 +105,9 @@ public class UpdateMobileFragment extends Fragment {
             countryEditText.setText(countryData.MobileCode + "   " + countryData.CountryName);
         }
 
-        if (!getArguments().getBoolean("IS VERIFIED", false)) sendVerifyCode();
+        if (!getArguments().getBoolean("IS VERIFIED", false) && !TextUtils.isEmpty(mobile)) {
+            sendVerifyCode();
+        }
 
         return view;
     }
@@ -128,6 +135,7 @@ public class UpdateMobileFragment extends Fragment {
                     android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                     if (response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
+
                             phoneEdit.setEnabled(false);
                             verificationCodeEdit.setVisibility(View.VISIBLE);
                             verifyBtnLayout.setVisibility(View.VISIBLE);
@@ -135,6 +143,7 @@ public class UpdateMobileFragment extends Fragment {
                             mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
                             mEditor.putString(Constants.PREF_USER_PHONE, mobNum);
                             mEditor.commit();
+
                             ((HomeActivity) mContext).showSnackBar(getString(R.string.mobileSaved));
                             Utils.deleteFile(mContext, userGuid);
                         } else {
@@ -156,11 +165,17 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.cancel_bt)
     public void cancelMobileNumber() {
+
+        phoneEdit.setText(mSharedPreferences.getString(Constants.PREF_USER_PHONE, ""));
+
         phoneEdit.setEnabled(false);
         verificationCodeEdit.setVisibility(View.VISIBLE);
         verificationCodeEdit.setEnabled(true);
         verifyBtnLayout.setVisibility(View.VISIBLE);
         editNumberBtnsLayout.setVisibility(View.GONE);
+
+        verifyCodeLayout.setErrorEnabled(false);
+        phoneNumberLayout.setErrorEnabled(false);
     }
 
     @OnClick(R.id.verify_code_bt)
@@ -270,6 +285,7 @@ public class UpdateMobileFragment extends Fragment {
         verificationCodeEdit.setEnabled(false);
         if (editNumberBtnsLayout.getVisibility() == View.GONE) {
             phoneEdit.setEnabled(true);
+            verifyCodeLayout.setErrorEnabled(false);
             editNumberBtnsLayout.setVisibility(View.VISIBLE);
             verifyBtnLayout.setVisibility(View.GONE);
             verificationCodeEdit.setVisibility(View.GONE);

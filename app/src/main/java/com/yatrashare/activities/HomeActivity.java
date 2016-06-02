@@ -41,6 +41,7 @@ import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
@@ -210,7 +211,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         GenericDraweeHierarchy hierarchy = userDraweeImageView.getHierarchy();
-        hierarchy.setPlaceholderImage(R.drawable.yatrashare_default);
+        hierarchy.setProgressBarImage(new ProgressBarDrawable());
         userDraweeImageView.setHierarchy(hierarchy);
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
@@ -219,11 +220,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
             }
-        } else if (!userFBId.isEmpty()) {
-            Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
-            userDraweeImageView.setImageURI(uri);
         } else if (!userProfilePic.isEmpty()) {
             Uri uri = Uri.parse(userProfilePic);
+            userDraweeImageView.setImageURI(uri);
+        } else if (!userFBId.isEmpty()) {
+            Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
             userDraweeImageView.setImageURI(uri);
         }
 

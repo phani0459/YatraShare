@@ -26,6 +26,7 @@ import com.facebook.login.widget.LoginButton;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.dtos.CountryData;
+import com.yatrashare.dtos.Profile;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
@@ -176,6 +177,58 @@ public class LoginFragment extends Fragment {
         });
     }
 
+    private void getBasicProfileInfo(String userGuid) {
+        Call<Profile> call = Utils.getYatraShareAPI(mContext).userBasicProfile(userGuid);
+        //asynchronous call
+        call.enqueue(new Callback<Profile>() {
+            /**
+             * Successful HTTP response.
+             *
+             * @param response server response
+             * @param retrofit adapter
+             */
+            @Override
+            public void onResponse(retrofit.Response<Profile> response, Retrofit retrofit) {
+                android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
+                if (response.body() != null && response.body().Data != null) {
+                    mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, response.body().Data.FirstName);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LAST_NAME, response.body().Data.LastName);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, response.body().Data.Email);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_PHONE, response.body().Data.PhoneNo);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_GENDER, response.body().Data.Gender);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data.ProfilePhoto);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_DOB, response.body().Data.Dob);
+                    Log.e(TAG, "response.body().Data.Licence1: " + response.body().Data.Licence1);
+                    Log.e(TAG, "response.body().Data.Licence2: " + response.body().Data.Licence2);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data.Licence1);
+                    mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data.Licence2);
+
+                    String mobileStatus = response.body().Data.VerificationStatus.MobileNumberStatus != null ? response.body().Data.VerificationStatus.MobileNumberStatus : "0";
+
+                    mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
+                    mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
+                    mSharedPrefEditor.commit();
+
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
+                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                }
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+            }
+
+            /**
+             * Invoked when a network or unexpected exception occurred during the HTTP request.
+             *
+             * @param t error
+             */
+            @Override
+            public void onFailure(Throwable t) {
+                android.util.Log.e(TAG, "FAILURE RESPONSE");
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+            }
+        });
+    }
+
     private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
@@ -201,10 +254,9 @@ public class LoginFragment extends Fragment {
                     mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, name);
                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, id);
                     mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body());
-                    mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+
+                    getBasicProfileInfo(response.body());
                 }
             }
 
