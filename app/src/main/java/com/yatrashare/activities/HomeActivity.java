@@ -211,6 +211,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         GenericDraweeHierarchy hierarchy = userDraweeImageView.getHierarchy();
+//        hierarchy.setPlaceholderImage(R.drawable.yatrashare_default);
         hierarchy.setProgressBarImage(new ProgressBarDrawable());
         userDraweeImageView.setHierarchy(hierarchy);
 

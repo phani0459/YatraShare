@@ -34,6 +34,7 @@ import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.adapter.AvailableRidesAdapter;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.FoundRides;
 import com.yatrashare.dtos.SearchRides;
 import com.yatrashare.dtos.UserDataDTO;
@@ -78,8 +79,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     private AvailableRidesAdapter mAdapter;
     private SearchRides searchRides;
     public String date;
-    private String whereFrom;
-    private String whereTo;
+    private String whereFrom, whereFromCity;
+    private String whereTo, whereToCity;
     private Button yesButton;
     private Button noButton;
     private ProgressBar mCreateAlertProgressBar;
@@ -123,6 +124,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                 whereFrom = foundRides.destinationPlace;
                 whereTo = foundRides.arriavalPlace;
                 date = foundRides.selectedDate;
+                whereFromCity = foundRides.destinationCity;
+                whereToCity = foundRides.arriavalCity;
             }
             if (searchRides != null) {
                 if (searchRides.Data != null && searchRides.Data.size() > 0) {
@@ -381,7 +384,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mCreateAlertProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             mCreateAlertProgressBar.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
@@ -389,6 +391,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     mCreateAlertProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
+            mCreateAlertProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
@@ -401,8 +404,10 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
     public void createEmailAlert(String email, String alertDate, final Dialog dialog) {
         String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+        CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
 
-        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).createEmailAlert(userGuid, email, alertDate, whereFrom, whereTo, rideType, vehicleType);
+        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).createEmailAlert(userGuid, email, alertDate, whereFrom, whereTo, rideType, vehicleType, whereFromCity,
+                TextUtils.isEmpty(whereToCity) ? "" : whereToCity, countryData.CountryCode);
         //asynchronous call
         call.enqueue(new Callback<UserDataDTO>() {
             /**
@@ -458,6 +463,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
             endTime = data.getStringExtra("END TIME");
             vehicleRegdType = data.getStringExtra("VEHICLE REGD");
 
+            foundRides.selectedDate = date;
+
             if (Utils.isInternetAvailable(mContext)) {
                 Utils.showProgress(true, mProgressView, mProgressBGView);
                 searchRides = null;
@@ -481,8 +488,10 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         SearchRides.SearchData searchData = mAdapter.getItem(position);
         foundRides = new FoundRides();
         foundRides.searchRides = searchRides;
-        foundRides.arriavalPlace = whereFrom;
-        foundRides.destinationPlace = whereTo;
+        foundRides.arriavalPlace = whereTo;
+        foundRides.destinationPlace = whereFrom;
+        foundRides.arriavalCity = whereToCity;
+        foundRides.destinationCity = whereFromCity;
         foundRides.selectedDate = date;
         getArguments().putSerializable("Searched Rides", foundRides);
         ((HomeActivity) mContext).loadScreen(HomeActivity.BOOK_a_RIDE_SCREEN, false, searchData, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));

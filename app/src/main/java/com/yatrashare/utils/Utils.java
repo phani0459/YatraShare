@@ -474,10 +474,10 @@ public class Utils {
         return Math.toDegrees(rad);
     }
 
-    public static void showMobileVerifyDialog(final Context mContext, final String msg, final String originScree) {
+    public static void showMobileVerifyDialog(final Context mContext, final String msg, final String originScree, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.appCompatDialog);
         builder.setTitle("Mobile Number not verified!");
-        builder.setMessage("Verify Mobile to book a seat.");
+        builder.setMessage(message);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

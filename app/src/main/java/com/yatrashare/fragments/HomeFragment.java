@@ -65,6 +65,8 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
     private SharedPreferences mSharedPreferences;
     private SerializedPlace whereFromPlace, wheretoPlace;
     private boolean isPopupInitiated;
+    private String whereToCity;
+    private String whereFromCity;
 
 
     @OnClick(R.id.swapAreas)
@@ -169,6 +171,8 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                             foundRides.destinationPlace = whereFrom;
                             foundRides.arriavalPlace = whereTo;
                             foundRides.selectedDate = date;
+                            foundRides.destinationCity = whereFromCity;
+                            foundRides.arriavalCity = whereToCity;
                             ((HomeActivity) getActivity()).loadScreen(HomeActivity.SEARCH_RIDE_SCREEN, false, foundRides, null);
                             setNullValues();
                         } else {
@@ -198,21 +202,27 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
         dateEditText.setText("");
         whereFromPlace = null;
         wheretoPlace = null;
+        whereToCity = "";
+        whereFromCity = "";
     }
 
     @OnClick(R.id.offerRide)
     public void offerRide() {
         if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
-            if (whereFromPlace != null && wheretoPlace != null && whereFromPlace.address.equalsIgnoreCase(wheretoPlace.address)) {
-                Utils.showToast(mContext, "Departure and Arrival should not be same");
-                return;
+            if (mSharedPreferences.getBoolean(Constants.PREF_MOBILE_VERIFIED, false)) {
+                if (whereFromPlace != null && wheretoPlace != null && whereFromPlace.address.equalsIgnoreCase(wheretoPlace.address)) {
+                    Utils.showToast(mContext, "Departure and Arrival should not be same");
+                    return;
+                }
+                Intent intent = new Intent(mContext, OfferRideActivity.class);
+                intent.putExtra("DEPARTURE", whereFromPlace);
+                intent.putExtra("ARRIVAL", wheretoPlace);
+                intent.putExtra("DATE", dateEditText.getText().toString());
+                startActivity(intent);
+                setNullValues();
+            } else {
+                Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to Offer Ride", Constants.HOME_SCREEN_NAME, "Verify Mobile to offer ride");
             }
-            Intent intent = new Intent(mContext, OfferRideActivity.class);
-            intent.putExtra("DEPARTURE", whereFromPlace);
-            intent.putExtra("ARRIVAL", wheretoPlace);
-            intent.putExtra("DATE", dateEditText.getText().toString());
-            startActivity(intent);
-            setNullValues();
         } else {
             Utils.showLoginDialog(mContext, Constants.HOME_SCREEN_NAME);
         }
@@ -258,9 +268,11 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 // Format the place's details and display them in the TextView.
                 if (whereFromhasFocus) {
                     whereFromPlace = place;
+                    whereFromCity = place.city;
                     whereFromEditText.setText(place.address);
                 } else {
                     wheretoPlace = place;
+                    whereToCity = place.city;
                     whereToEditText.setText(place.address);
                 }
 
