@@ -3,7 +3,6 @@ package com.yatrashare.AsyncTask;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.yatrashare.dtos.Profile;
@@ -32,7 +31,7 @@ public class FetchMyProfile extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(this);
         mSharedPrefEditor = mSharedPreferences.edit();
         mSharedPrefEditor.apply();
 

@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -132,7 +131,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             }
         });
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
         return inflatedLayout;
     }

@@ -3,7 +3,6 @@ package com.yatrashare.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,7 +45,7 @@ public class SelectCountryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_country);
         ButterKnife.bind(this);
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(this);
         mEditor = mSharedPreferences.edit();
 
         countryDatas = (ArrayList<CountryData>) getIntent().getExtras().getSerializable("Countries");

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
@@ -109,7 +108,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mContext = getActivity();
         ButterKnife.bind(this, inflatedLayout);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = Utils.getSharedPrefs(mContext);
         mPrefEditor = mSharedPreferences.edit();
 
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
@@ -288,6 +287,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
 
             String userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
+            String userFBId = mSharedPreferences.getString(Constants.PREF_USER_FB_ID, "");
 
             updateUserPreferences();
 
@@ -295,7 +295,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 profilePic = mSharedPreferences.getString(Constants.PREF_USER_PROFILE_PIC, "");
             }
 
-            if (!TextUtils.isEmpty(profilePic) && !profilePic.startsWith("/")) {
+            if (userFBId.isEmpty() && (profilePic.isEmpty() || profilePic.startsWith("/"))) {
+                if (userGender.equalsIgnoreCase("Female")) {
+                    mProfileImageDrawee.setImageURI(Constants.getDefaultFemaleURI());
+                } else {
+                    mProfileImageDrawee.setImageURI(Constants.getDefaultPicURI());
+                }
+            } else if (!userFBId.isEmpty()) {
+                Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
+                mProfileImageDrawee.setImageURI(uri);
+            } else if (!profilePic.isEmpty()) {
+                Uri uri = Uri.parse(profilePic);
+                mProfileImageDrawee.setImageURI(uri);
+            }
+
+            /*if (!TextUtils.isEmpty(profilePic) && !profilePic.startsWith("/")) {
                 Uri uri = Uri.parse(profilePic);
                 mProfileImageDrawee.setImageURI(uri);
             } else {
@@ -304,7 +318,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 } else {
                     mProfileImageDrawee.setImageURI(Constants.getDefaultPicURI());
                 }
-            }
+            }*/
 
             if (lastLoginTime != null && !lastLoginTime.isEmpty()) {
                 lastLoginTimeText.setText("Last active on " + lastLoginTime);

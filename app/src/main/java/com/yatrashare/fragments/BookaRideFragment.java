@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.TextUtils;
@@ -142,7 +141,7 @@ public class BookaRideFragment extends Fragment {
         FloatingActionButton mBookFab = (FloatingActionButton) inflatedLayout.findViewById(R.id.bookRideFab);
         FloatingActionButton mMessageFab = (FloatingActionButton) inflatedLayout.findViewById(R.id.messageRiderFab);
 
-        final SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         rideData = (SearchRides.SearchData) getArguments().getSerializable("RIDE");
@@ -190,7 +189,7 @@ public class BookaRideFragment extends Fragment {
                                 showSeatsDialog(userGuid, rideData.PossibleRideGuid, rideData.RemainingSeats);
                             } else {
 //                              Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to book a seat", Constants.BOOK_a_RIDE_SCREEN_NAME);
-                                ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, null, Constants.BOOK_a_RIDE_SCREEN_NAME);
+                                ((HomeActivity) mContext).loadScreen(HomeActivity.UPDATE_MOBILE_SCREEN, false, false, Constants.BOOK_a_RIDE_SCREEN_NAME);
                             }
                         } else {
                             Utils.showToast(mContext, "Ride is only for ladies");

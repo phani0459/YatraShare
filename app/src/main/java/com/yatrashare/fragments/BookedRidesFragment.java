@@ -3,7 +3,6 @@ package com.yatrashare.fragments;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -70,7 +69,7 @@ public class BookedRidesFragment extends Fragment implements Callback<BookedRide
         mTitle = getArguments().getInt("TITLE");
         ButterKnife.bind(this, view);
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         setEmptyRidesTexts();

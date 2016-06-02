@@ -130,26 +130,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="8dp"
+            android:paddingBottom="4dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="4dp"
-            android:weightSum="4">
+            android:paddingTop="6dp"
+            android:weightSum="5">
 
             <TextView
                 android:id="@+id/ride_car_text"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@android:style/TextAppearance.DeviceDefault.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:ellipsize="marquee"
                 android:ems="0"
+                android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:lines="2"
                 android:marqueeRepeatLimit="marquee_forever"
+                android:maxLines="4"
                 android:scrollHorizontally="true"
-                android:text="252sdsfsafv safSAsd2"
                 android:textColor="@color/colorBlack" />
 
             <TextView

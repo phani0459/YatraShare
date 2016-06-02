@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -140,7 +139,7 @@ public class SignupFragment extends Fragment {
 
         ((HomeActivity) mContext).setTitle("Sign up");
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = Utils.getSharedPrefs(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -105,7 +104,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         ButterKnife.bind(this, inflatedLayout);
         rideInfoDto = (RideInfoDto) getArguments().getSerializable("RIDE INFO");
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         luggageSpinner.setSelection(1);

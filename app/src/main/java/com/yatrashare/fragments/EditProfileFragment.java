@@ -16,7 +16,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -368,7 +367,7 @@ public class EditProfileFragment extends Fragment {
 
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.EDIT_PROFILE_SCREEN);
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         mEditor = mSharedPreferences.edit();
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
         String email = mSharedPreferences.getString(Constants.PREF_USER_EMAIL, null);
@@ -545,7 +544,7 @@ public class EditProfileFragment extends Fragment {
         }
     }
 
-    private void updateProfile(final String userGuid, String userFirstName, final String userLastName, String email, final String dob, final String phoneNumber, String aboutMe) {
+    private void updateProfile(final String userGuid, final String userFirstName, final String userLastName, String email, final String dob, final String phoneNumber, String aboutMe) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         UserProfile userProfile = new UserProfile(email, userFirstName, userLastName, phoneNumber, dob, userGender, aboutMe);
 
@@ -570,6 +569,8 @@ public class EditProfileFragment extends Fragment {
                         mEditor.putString(Constants.PREF_USER_DOB, dob);
                         mEditor.putString(Constants.PREF_USER_PHONE, phoneNumber);
                         mEditor.putString(Constants.PREF_USER_LAST_NAME, userLastName);
+                        mEditor.putString(Constants.PREF_USER_GENDER, userGender);
+                        mEditor.putString(Constants.PREF_USER_FIRST_NAME, userFirstName);
                         mEditor.apply();
                         ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
                     } else {

@@ -4,7 +4,6 @@ package com.yatrashare.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -67,7 +66,7 @@ public class RatingsFragment extends Fragment {
         emptyRidesSubHeading.setText("Once you do, you'll find them here.");
         emptyRidesImage.setBackgroundResource(R.drawable.empty_rarings);
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         return view;

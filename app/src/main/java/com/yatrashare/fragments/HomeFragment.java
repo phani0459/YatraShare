@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -106,7 +105,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
         LogWrapper logWrapper = new LogWrapper();
         UtilsLog.setLogNode(logWrapper);
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = Utils.getSharedPrefs(mContext);
 
         whereFromEditText.setOnTouchListener(this);
         whereToEditText.setOnTouchListener(this);

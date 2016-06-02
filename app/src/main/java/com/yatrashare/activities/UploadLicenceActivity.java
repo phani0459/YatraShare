@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -78,7 +77,7 @@ public class UploadLicenceActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         mContext = this;
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
 
         String licenceOne = mSharedPreferences.getString(Constants.PREF_USER_LICENCE_1, "");

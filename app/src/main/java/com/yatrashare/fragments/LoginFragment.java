@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,7 +78,7 @@ public class LoginFragment extends Fragment {
 
         ((HomeActivity) mContext).setTitle("Login");
 
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = Utils.getSharedPrefs(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
 
         /**
@@ -195,12 +194,13 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                if (response != null && response.body() != null && response.body() != null) {
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                Utils.showProgress(false, mProgressView, mProgressBGView);
+                if (response.body() != null) {
+                    Log.e(TAG, "onResponse: " + response.body());
                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, email);
                     mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, name);
                     mSharedPrefEditor.putString(Constants.PREF_USER_FB_ID, id);
-                    mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().toString());
+                    mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body());
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
                     ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));

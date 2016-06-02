@@ -14,7 +14,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -247,7 +246,7 @@ public class Utils {
 
     public static SharedPreferences getSharedPrefs(Context mContext) {
         if (mSharedPreferences == null) {
-            mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+            mSharedPreferences = mContext.getSharedPreferences(Constants.peferencesName, Context.MODE_PRIVATE);;
         }
         return mSharedPreferences;
     }
@@ -323,7 +322,7 @@ public class Utils {
     }
 
     public static boolean isLoggedIn(Context mContext) {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
             return true;
         }
@@ -366,7 +365,7 @@ public class Utils {
     }
 
     public static Spanned getCurrency(Context mContext) {
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         CountryData countryData = getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         if (countryData != null) return Html.fromHtml(countryData.CurrencySymbol);
         return Html.fromHtml("&#8377;");

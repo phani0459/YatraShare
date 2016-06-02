@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -100,7 +99,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         View inflatedLayout = inflater.inflate(R.layout.fragment_find_rides, container, false);
         mContext = getActivity();
         ButterKnife.bind(this, inflatedLayout);
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mSharedPreferences = Utils.getSharedPrefs(mContext);
 
         String mTitle = (String) getArguments().getSerializable("TITLE");
 
@@ -113,6 +112,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
         mRecyclerView.addOnScrollListener(mRecyclerViewOnScrollListener);
+
+        Log.e(TAG, "onCreateView: ");
 
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -190,6 +191,8 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
 
                             emptyRidesLayout.setVisibility(View.GONE);
                             createEmailAlertBtn.setVisibility(View.GONE);
+
+                            Log.e(TAG, "Available Rides Size:   " + searchRides.Data.size());
 
                             if (mAdapter != null) {
                                 for (int i = 0; i < searchRides.Data.size(); i++) {
@@ -358,7 +361,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
                     Utils.hideSoftKeyboard(mEmailIdEdit);
                     emailLayout.setErrorEnabled(false);
                     showEmailAlertProgress(true);
-                    createanEmailAlert(email, date, dialog);
+                    createEmailAlert(email, date, dialog);
                     dialog.setCancelable(false);
                 } else {
                     dialog.dismiss();
@@ -396,7 +399,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         noButton.setEnabled(!show);
     }
 
-    public void createanEmailAlert(String email, String alertDate, final Dialog dialog) {
+    public void createEmailAlert(String email, String alertDate, final Dialog dialog) {
         String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).createEmailAlert(userGuid, email, alertDate, whereFrom, whereTo, rideType, vehicleType);
@@ -476,6 +479,12 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     @Override
     public void onItemClick(int position) {
         SearchRides.SearchData searchData = mAdapter.getItem(position);
+        foundRides = new FoundRides();
+        foundRides.searchRides = searchRides;
+        foundRides.arriavalPlace = whereFrom;
+        foundRides.destinationPlace = whereTo;
+        foundRides.selectedDate = date;
+        getArguments().putSerializable("Searched Rides", foundRides);
         ((HomeActivity) mContext).loadScreen(HomeActivity.BOOK_a_RIDE_SCREEN, false, searchData, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
     }
 

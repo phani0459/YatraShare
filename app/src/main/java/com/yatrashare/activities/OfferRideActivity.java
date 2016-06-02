@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -287,7 +286,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         ridePriceEditText.setFilters(Utils.getInputFilter(4));
         ridePriceEditText.setText("0");
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(this);
         countryData = Utils.getCountryInfo(OfferRideActivity.this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
 
         if (countryData != null)

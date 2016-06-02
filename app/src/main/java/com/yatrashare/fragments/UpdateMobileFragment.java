@@ -4,7 +4,6 @@ package com.yatrashare.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -86,7 +85,7 @@ public class UpdateMobileFragment extends Fragment {
         cancelBt.getBackground().setLevel(0);
         resendCodeBt.getBackground().setLevel(2);
 
-        SharedPreferences mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences mSharedPreferences = Utils.getSharedPrefs(mContext);
         mEditor = mSharedPreferences.edit();
         String mobile = mSharedPreferences.getString(Constants.PREF_USER_PHONE, "");
         phoneEdit.setText(mobile);
@@ -127,7 +126,7 @@ public class UpdateMobileFragment extends Fragment {
                 @Override
                 public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
                     android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                    if (response != null && response.body() != null && response.body().Data != null) {
+                    if (response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
                             phoneEdit.setEnabled(false);
                             verificationCodeEdit.setVisibility(View.VISIBLE);
