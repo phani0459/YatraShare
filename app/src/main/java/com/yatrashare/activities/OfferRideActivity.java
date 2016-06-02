@@ -274,9 +274,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         String arrival = getIntent().getExtras().getString("ARRIVAL", "");
 
         Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 3);
+        calendar.add(Calendar.MINUTE, 00);
+
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
+
         hour = calendar.get(Calendar.HOUR);
         minute = calendar.get(Calendar.MINUTE);
 
@@ -387,7 +391,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             return;
         }
 
-        Date todaysDate = new Date();
+        /*Date todaysDate = new Date();
         String timeString = format.format(todaysDate.getTime() + Utils.TIME_CHECKER);
         try {
             Date rideTime = format.parse(rideDepartureDate + " " + rideDepartureTime);
@@ -398,7 +402,8 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
+
         if (roundTripCheckBox.isChecked()) {
             if (longRideRB.isChecked()) {
                 if (TextUtils.isEmpty(rideArrivalDate)) {
@@ -886,7 +891,6 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 }
                 mDatePickerDialog.setTitle("");
                 mDatePickerDialog.show();
-
 
 
                 mDatePickerDialog.setOnCancelListener(new DatePickerDialog.OnCancelListener() {

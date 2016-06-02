@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.utils.Constants;
@@ -36,7 +37,8 @@ public class FetchMyProfile extends IntentService {
         mSharedPrefEditor.apply();
 
         userGuide = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
-        getBasicProfileInfo(userGuide);
+
+        if (!TextUtils.isEmpty(userGuide)) getBasicProfileInfo(userGuide);
     }
 
     public void userProfileTask(final String userGuide) {
@@ -98,7 +100,15 @@ public class FetchMyProfile extends IntentService {
                     mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_1, response.body().Data.Licence1);
                     mSharedPrefEditor.putString(Constants.PREF_USER_LICENCE_2, response.body().Data.Licence2);
 
-                    String mobileStatus = response.body().Data.VerificationStatus.MobileNumberStatus != null ? response.body().Data.VerificationStatus.MobileNumberStatus : "0";
+                    String mobileStatus = "0";
+
+                    try {
+                        if (response.body().Data.VerificationStatus != null) {
+                            mobileStatus = response.body().Data.VerificationStatus.MobileNumberStatus != null ? response.body().Data.VerificationStatus.MobileNumberStatus : "0";
+                        }
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
 
                     mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);

@@ -220,7 +220,6 @@ public class ProvideRatingFragment extends Fragment {
     public void submitRating() {
         if (Utils.isInternetAvailable(mContext)) {
             Utils.hideSoftKeyboard(feedBackEditText);
-            Utils.showProgress(true, mProgressView, mProgressBGView);
             String feedBack = "", stars = "", travellerType = "";
             feedBack = feedBackEditText.getText().toString();
             stars = ratingValue.getText().toString();
@@ -237,6 +236,7 @@ public class ProvideRatingFragment extends Fragment {
 
             feedBackTextLayout.setErrorEnabled(false);
 
+            Utils.showProgress(true, mProgressView, mProgressBGView);
             if (stars.contains(".")) {
                 stars = stars.substring(0, stars.lastIndexOf("."));
             }

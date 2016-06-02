@@ -520,6 +520,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 popBackFragment(null);
             } else {
                 if (doubleBackToExitPressedOnce) {
+                    Utils.deleteFile(this, mSharedPreferences.getString(Constants.PREF_USER_GUID, ""));
                     super.onBackPressed();
                     finish();
                     return;

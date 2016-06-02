@@ -90,7 +90,7 @@
     <string name="action_sign_up">Not a member yet? Join us</string>
     <string name="forgotPwd">Forgot your password?</string>
     <string name="resetPwd">Reset</string>
-    <string name="signup_tag">If you aren’t a member yet and you log in with Facebook, we’ll register you as a new userLogin . You’ll also be agreeing to our Terms &amp; conditions</string>
+    <string name="signup_tag">If you aren’t a member yet and you log in with Facebook, we’ll register you as a new user . You’ll also be agreeing to our Terms &amp; conditions</string>
 
 
     <!-- Offer Ride Strings -->

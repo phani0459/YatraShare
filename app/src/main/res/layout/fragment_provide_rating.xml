@@ -115,14 +115,16 @@
                     android:layout_marginBottom="16dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp">
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/edittext_bg">
 
                     <EditText
                         android:id="@+id/et_feedback"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/edittext_bg"
-                        android:gravity="top"
+                        android:background="@android:color/transparent"
+                        android:inputType="textMultiLine"
+                        android:gravity="bottom"
                         android:hint="@string/feedbackEditHint"
                         android:minLines="2"
                         android:padding="8dp" />

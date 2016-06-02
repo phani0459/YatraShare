@@ -243,17 +243,22 @@ public class SignupFragment extends Fragment {
                     RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                     RequestBody body = new MultipartBuilder().type(MultipartBuilder.FORM).addFormDataPart("ProfilePic", file.getName(), requestFile).build();
 
-                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).uploadProfilePic("", body);
+                    String userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
+
+                    Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).uploadProfilePic(userGuid, body);
                     call.enqueue(new Callback<UserDataDTO>() {
                         @Override
                         public void onResponse(Response<UserDataDTO> response, Retrofit retrofit) {
                             android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+
                             if (response.body() != null && response.isSuccess()) {
                                 Log.e(TAG, "Update Pic: " + response.body().Data);
                                 selectedImageUri = null;
                                 mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
                                 mSharedPrefEditor.commit();
-                                ((HomeActivity) mContext).showSnackBar("Profile Pic updated successfully");
+                                ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
+                                ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
                             }
                         }
 
@@ -261,6 +266,7 @@ public class SignupFragment extends Fragment {
                         public void onFailure(Throwable t) {
                             t.printStackTrace();
                             android.util.Log.e(TAG, "FAILURE RESPONSE");
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
                         }
                     });
                 } catch (Exception e) {
@@ -460,7 +466,6 @@ public class SignupFragment extends Fragment {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
                 if (response != null && response.body() != null && response.body().Data != null) {
                     android.util.Log.e("SUCCEESS RESPONSE DATA", response.body().Data + "");
-                    Utils.showProgress(false, mProgressView, mProgressBGView);
                     if (response.body().Data.contains("-")) {
                         mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, mEmail);
                         mSharedPrefEditor.putString(Constants.PREF_USER_FIRST_NAME, mUserFirstName);
@@ -470,9 +475,17 @@ public class SignupFragment extends Fragment {
                         mSharedPrefEditor.putString(Constants.PREF_USER_GUID, response.body().Data);
                         mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                         mSharedPrefEditor.commit();
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
-                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+
+                        if (selectedImageUri != null) {
+                            updateProfilePic();
+                        } else {
+                            Utils.showProgress(false, mProgressView, mProgressBGView);
+                            ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
+                            ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+                        }
+
                     } else {
+                        Utils.showProgress(false, mProgressView, mProgressBGView);
                         ((HomeActivity) mContext).showSnackBar(response.body().Data);
                     }
                 }

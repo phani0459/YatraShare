@@ -560,6 +560,8 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
             } else if (selectSeatsSpinner.getAdapter().getCount() >= (seats - 1)) {
                 selectSeatsSpinner.setSelection(seats - 1);
             }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

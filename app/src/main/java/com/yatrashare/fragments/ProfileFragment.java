@@ -237,7 +237,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             String userSince = profile.Data.MemberSince;
 
             try {
-                ratingBar.setRating(Float.parseFloat(profile.Data.UserAvgRating));
+                if (!TextUtils.isEmpty(profile.Data.UserAvgRating)) ratingBar.setRating(Float.parseFloat(profile.Data.UserAvgRating));
             } catch (NullPointerException e) {
                 e.printStackTrace();
             } catch (NumberFormatException e) {

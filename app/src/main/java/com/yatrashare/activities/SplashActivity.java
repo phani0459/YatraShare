@@ -402,6 +402,11 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         super.onDestroy();
         try {
             handler.removeCallbacks(runnable);
+
+            if (mGoogleClient.isConnected()) {
+                mGoogleClient.disconnect();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -227,7 +227,6 @@ public class BookaRideFragment extends Fragment {
                         intent.putExtra("USERGUIDE", userGuid);
                         intent.putExtra("RIDE DETAILS", rideDetails);
                         startActivity(intent);
-                        ((HomeActivity) mContext).loadHomePage(false, "");
                     }
                 }
             }

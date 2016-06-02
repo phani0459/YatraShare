@@ -93,15 +93,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp">
+                android:layout_marginRight="12dp"
+                android:background="@drawable/provide_details_bg">
 
                 <EditText
                     android:id="@+id/et_provideRideDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/provide_details_bg"
-                    android:gravity="top"
+                    android:background="@android:color/transparent"
+                    android:gravity="bottom"
                     android:hint="@string/provideRidedetails"
+                    android:inputType="textMultiLine"
                     android:minLines="4"
                     android:padding="8dp" />
 
