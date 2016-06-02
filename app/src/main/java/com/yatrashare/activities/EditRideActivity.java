@@ -554,6 +554,12 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
     private void loadSelectedSeats() {
         try {
             int seats = Integer.parseInt(!TextUtils.isEmpty(rideDetails.Data.RemainingSeats) ? rideDetails.Data.RemainingSeats : "0");
+
+            if (seats <= 1 && selectSeatsSpinner.getAdapter().getCount() >= 0) {
+                selectSeatsSpinner.setSelection(0);
+                return;
+            }
+
             if (selectSeatsSpinner.getAdapter().getCount() >= seats) {
                 selectSeatsSpinner.setSelection(seats);
             } else if (selectSeatsSpinner.getAdapter().getCount() >= (seats - 1)) {
