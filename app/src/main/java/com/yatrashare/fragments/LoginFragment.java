@@ -30,6 +30,7 @@ import com.yatrashare.dtos.Profile;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
+import com.yatrashare.utils.UtilsLog;
 
 import org.json.JSONObject;
 
@@ -72,7 +73,7 @@ public class LoginFragment extends Fragment {
         mContext = getActivity();
         ButterKnife.bind(this, inflatedLayout);
 
-        mFBLoginButton.setReadPermissions("email", "public_profile", "user_birthday");
+        mFBLoginButton.setReadPermissions("email", "public_profile", "user_birthday", "user_friends");
         // If using in a fragment
         mFBLoginButton.setFragment(this);
         mCallbackManager = CallbackManager.Factory.create();
@@ -125,15 +126,28 @@ public class LoginFragment extends Fragment {
                         new GraphRequest.Callback() {
                             public void onCompleted(GraphResponse response) {
                                 try {
+                                    Log.e(TAG, "onCompleted: " + response );
                                     JSONObject object = response.getJSONObject();
                                     /*UtilsLog.e("" + object.get("name"), "FB NAME");
                                     UtilsLog.e("" + object.get("gender"), "GENDER");
                                     UtilsLog.e("" + object.get("email"), "EMAIL");
                                     UtilsLog.e("" + object.get("birthday"), "BDAY");
                                     UtilsLog.e("" + object.get("id"), "ID");*/
+
+                                    String friendsCount = "";
+                                    try {
+                                        JSONObject innerObject = object.getJSONObject("friends");
+                                        JSONObject summaryObject = innerObject.getJSONObject("summary");
+
+                                        /*UtilsLog.e("" + summaryObject.get("total_count"), "ID");*/
+
+                                        friendsCount = summaryObject.optString("total_count");
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     if (Utils.isInternetAvailable(mContext)) {
                                         registerUserinServer(object.optString("id"), object.optString("name"), object.optString("email"),
-                                                "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large");
+                                                "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large", friendsCount);
                                     } else {
                                         Utils.showProgress(false, mProgressView, mProgressBGView);
                                     }
@@ -145,7 +159,7 @@ public class LoginFragment extends Fragment {
                 );
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,birthday,picture");
+                parameters.putString("fields", "id,name,email,gender,birthday,picture,friends");
                 graphRequest.setParameters(parameters);
                 graphRequest.executeAsync();
 
@@ -229,11 +243,11 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl) {
+    private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl, String friendsCount) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         String countryCode = countryData != null ? countryData.CountryCode : "";
-        UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode);
+        UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode, friendsCount);
 
         Call<String> call = Utils.getYatraShareAPI(mContext).userFBLogin(userFBLogin);
         //asynchronous call

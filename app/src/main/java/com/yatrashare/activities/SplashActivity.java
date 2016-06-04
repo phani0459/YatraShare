@@ -126,6 +126,9 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                         getCurrentCountry();
                         break;
                     case Activity.RESULT_CANCELED:
+                        Utils.showProgress(false, splashProgress, progressBGView);
+                        Utils.showToast(this, "Turn on Location to use Yatrashare");
+                        finish();
                         break;
                 }
                 break;
@@ -149,24 +152,16 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
-                        // All location settings are satisfied. The client can
-                        // initialize location requests here.
                         getCurrentCountry();
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        // Location settings are not satisfied, but this can be fixed
-                        // by showing the user a dialog.
                         try {
-                            // Show the dialog by calling startResolutionForResult(),
-                            // and check the result in onActivityResult().
                             status.startResolutionForResult(SplashActivity.this, REQUEST_CHECK_SETTINGS);
                         } catch (IntentSender.SendIntentException e) {
-                            // Ignore the error.
+                            e.printStackTrace();
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        // Location settings are not satisfied. However, we have no way
-                        // to fix the settings so we won't show the dialog.
                         break;
                 }
             }
@@ -196,6 +191,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
     @TargetApi(Build.VERSION_CODES.M)
     private void requestLocation() {
+        Utils.showProgress(true, splashProgress, progressBGView);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             createLocationRequest();
             return;
@@ -292,12 +288,13 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             } else {
                 getCountryFromApi(latitude, longitude);
             }
+        } else {
+            Utils.showToast(this, "Cannot fetch Current Location");
         }
     }
 
     private void getCountryFromApi(double lat, double lng) {
         try {
-            Utils.showProgress(true, splashProgress, progressBGView);
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://maps.googleapis.com")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -400,12 +397,11 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     protected void onDestroy() {
         super.onDestroy();
         try {
-            handler.removeCallbacks(runnable);
-
             if (mGoogleClient.isConnected()) {
                 mGoogleClient.disconnect();
             }
 
+            handler.removeCallbacks(runnable);
         } catch (Exception e) {
             e.printStackTrace();
         }

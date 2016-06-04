@@ -107,6 +107,9 @@ public class UpdateMobileFragment extends Fragment {
 
         if (!getArguments().getBoolean("IS VERIFIED", false) && !TextUtils.isEmpty(mobile)) {
             sendVerifyCode();
+        } else {
+            verifyBt.setVisibility(View.GONE);
+            resendCodeBt.setVisibility(View.GONE);
         }
 
         return view;
@@ -139,6 +142,9 @@ public class UpdateMobileFragment extends Fragment {
                             phoneEdit.setEnabled(false);
                             verificationCodeEdit.setVisibility(View.VISIBLE);
                             verifyBtnLayout.setVisibility(View.VISIBLE);
+                            verifyBt.setVisibility(View.VISIBLE);
+                            resendCodeBt.setVisibility(View.VISIBLE);
+
                             editNumberBtnsLayout.setVisibility(View.GONE);
                             mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
                             mEditor.putString(Constants.PREF_USER_PHONE, mobNum);
@@ -172,6 +178,9 @@ public class UpdateMobileFragment extends Fragment {
         verificationCodeEdit.setVisibility(View.VISIBLE);
         verificationCodeEdit.setEnabled(true);
         verifyBtnLayout.setVisibility(View.VISIBLE);
+        verifyBt.setVisibility(View.VISIBLE);
+        resendCodeBt.setVisibility(View.VISIBLE);
+
         editNumberBtnsLayout.setVisibility(View.GONE);
 
         verifyCodeLayout.setErrorEnabled(false);

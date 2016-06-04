@@ -32,6 +32,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.squareup.okhttp.MediaType;
@@ -87,6 +88,8 @@ public class EditProfileFragment extends Fragment {
     public TextInputLayout aboutTextInputLayout;
     @Bind(R.id.editProfileAboutMeEdit)
     public EditText aboutMeEdit;
+    @Bind(R.id.aboutMeHint)
+    public TextView aboutMeHint;
     @Bind(R.id.updateUserFirstName)
     public EditText firstNameEdit;
     @Bind(R.id.updateUserLastName)
@@ -390,6 +393,12 @@ public class EditProfileFragment extends Fragment {
         if (profile != null && profile.Data != null) {
             String aboutMe = profile.Data.AboutMe;
             String userName = profile.Data.UserName;
+
+            if (TextUtils.isEmpty(aboutMe)) {
+                aboutMeHint.setVisibility(View.VISIBLE);
+            } else {
+                aboutMeHint.setVisibility(View.GONE);
+            }
 
             aboutMeEdit.setText(aboutMe);
 

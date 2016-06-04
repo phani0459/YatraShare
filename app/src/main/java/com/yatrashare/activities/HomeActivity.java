@@ -40,9 +40,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
+import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.drawable.ProgressBarDrawable;
-import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
@@ -210,10 +209,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             callUsItem.setVisible(false);
         }
 
-        GenericDraweeHierarchy hierarchy = userDraweeImageView.getHierarchy();
-//        hierarchy.setPlaceholderImage(R.drawable.yatrashare_default);
-        hierarchy.setProgressBarImage(new ProgressBarDrawable());
-        userDraweeImageView.setHierarchy(hierarchy);
+        Uri localUri = new Uri.Builder().scheme(UriUtil.LOCAL_RESOURCE_SCHEME).path(String.valueOf(R.drawable.yatrashare_default)).build();
+        userDraweeImageView.setImageURI(localUri);
 
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
             if (userGender.equalsIgnoreCase("Female")) {

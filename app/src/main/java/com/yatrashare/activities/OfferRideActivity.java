@@ -280,7 +280,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        hour = calendar.get(Calendar.HOUR);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
 
         ridePriceEditText.setFilters(Utils.getInputFilter(4));
@@ -305,7 +305,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
         offerWhereFromEdit.setText(departurePlace != null ? departurePlace.address : "");
         offerWhereToEdit.setText(arrivalPlace != null ? arrivalPlace.address : "");
-        departureDateBtn.setText(TextUtils.isEmpty(date) ? getString(R.string.departuredate) : date);
+        departureDateBtn.setText(TextUtils.isEmpty(date) ? longRideRB.isChecked() ? getString(R.string.departuredate) : "Start Date" : date);
 
         updatePrice();
 
@@ -324,6 +324,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         getSupportActionBar().setTitle("Offer a Ride");
 
         longRideRB.setChecked(true);
+        departureDateBtn.setText(getString(R.string.departuredate));
         Utils.collapse(weeksLinearLayout);
 
         offerWhereFromEdit.setOnTouchListener(this);
@@ -355,7 +356,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         RideInfoDto rideInfoDto = new RideInfoDto();
         String rideDeparture = offerWhereFromEdit.getText().toString();
         String rideArrival = offerWhereToEdit.getText().toString();
-        String rideDepartureDate = departureDateBtn.getText().toString().equalsIgnoreCase(getString(R.string.departuredate)) ? "" : departureDateBtn.getText().toString();
+        String rideDepartureDate = departureDateBtn.getText().toString().contains("Date") ? "" : departureDateBtn.getText().toString();
         String rideDepartureTime = departureTimeBtn.getText().toString().equalsIgnoreCase(getString(R.string.time)) ? "" : departureTimeBtn.getText().toString();
         String rideArrivalDate = arrivalDateBtn.getText().toString().equalsIgnoreCase(getString(R.string.returndate)) ? "" : arrivalDateBtn.getText().toString();
         String rideArrivalTime = arrivalTimeBtn.getText().toString();
@@ -707,6 +708,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     arrivalDateBtn.setVisibility(View.VISIBLE);
                     arrivalTimeBtn.setText(getString(R.string.time));
                     Utils.collapse(weeksLinearLayout);
+                    departureDateBtn.setText(getString(R.string.departuredate));
                 }
             }
         });
@@ -718,6 +720,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     arrivalDateBtn.setVisibility(View.GONE);
                     arrivalTimeBtn.setText(getString(R.string.returnTime));
                     Utils.expand(weeksLinearLayout);
+                    departureDateBtn.setText("Start Date");
                 }
             }
         });
@@ -823,7 +826,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
 
                     String previouslySelecteddate = departureDateBtn.getText().toString();
 
-                    if (!TextUtils.isEmpty(previouslySelecteddate) && !previouslySelecteddate.equalsIgnoreCase(getString(R.string.departuredate))) {
+                    if (!TextUtils.isEmpty(previouslySelecteddate) && !previouslySelecteddate.contains("Date")) {
                         try {
                             String[] strings = previouslySelecteddate.split("/");
                             for (int i = 0; i < strings.length; i++) {
@@ -873,7 +876,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         departureTime = "12:00 PM";
                     }
 
-                    if (!TextUtils.isEmpty(departureDate) && !departureDate.equalsIgnoreCase(getString(R.string.departuredate))) {
+                    if (!TextUtils.isEmpty(departureDate) && !departureDate.contains("Date")) {
                         Date date = null;
                         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
                         try {
@@ -904,10 +907,13 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                     public void onCancel(DialogInterface dialog) {
                         switch (v.getId()) {
                             case R.id.bt_departuredate:
-                                departureDateBtn.setText(getResources().getString(R.string.departuredate));
+                                if (longRideRB.isChecked()) {
+                                    departureDateBtn.setText(getString(R.string.departuredate));
+                                } else {
+                                    departureDateBtn.setText("Start Date");
+                                }
                                 break;
                             case R.id.bt_arrivaldate:
-                                arrivalDateBtn.setText(getResources().getString(R.string.returndate));
                                 break;
                         }
                     }

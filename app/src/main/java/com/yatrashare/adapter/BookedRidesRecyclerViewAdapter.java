@@ -77,7 +77,7 @@ public class BookedRidesRecyclerViewAdapter extends RecyclerView.Adapter<BookedR
             holder.getDetailsSMSBtn.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.delete, 0);
         }
 
-        if (bookingStatus.equalsIgnoreCase("Cancelled")) {
+        if (bookingStatus.equalsIgnoreCase("Cancelled") || bookingStatus.equalsIgnoreCase("Rejected")) {
             holder.cancelSeatBtn.setVisibility(View.GONE);
             holder.getDetailsSMSBtn.setVisibility(View.GONE);
             holder.btnsAboveView.setVisibility(View.GONE);

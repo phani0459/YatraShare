@@ -43,7 +43,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:background="@drawable/search_button_bg"
-            android:drawableLeft="@drawable/email"
+            android:drawableLeft="@drawable/email_white"
             android:drawablePadding="-8dp"
             android:paddingLeft="8dp"
             android:text="@string/action_sign_in"

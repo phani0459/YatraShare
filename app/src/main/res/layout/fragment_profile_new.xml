@@ -305,7 +305,6 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:gravity="center"
                 android:maxLines="2"
                 android:textColor="#000000" />
 
@@ -336,7 +335,6 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:gravity="center"
                 android:maxLines="2"
                 android:textColor="#000000" />
 
@@ -367,7 +365,6 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:gravity="center"
                 android:maxLines="2"
                 android:textColor="#000000" />
 
@@ -395,6 +392,15 @@
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/licenceStatus"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/fbFriendsText"
+                    style="?android:textAppearanceMedium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:singleLine="true"
                     android:textColor="#FFFFFF" />
 
                 <TextView

@@ -81,6 +81,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private String userGuide;
     @Bind(R.id.userSince)
     public TextView userSinceText;
+    @Bind(R.id.fbFriendsText)
+    public TextView fbFriendsText;
     @Bind(R.id.noOfRidesText)
     public TextView noOfRidesText;
     @Bind(R.id.mobileStatusHeading)
@@ -237,6 +239,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             String aboutMe = profile.Data.AboutMe;
             String offeredRides = profile.Data.OfferedRides;
             String userSince = profile.Data.MemberSince;
+            String fbFriends = profile.Data.FacebookFriends;
 
             try {
                 if (!TextUtils.isEmpty(profile.Data.UserAvgRating))
@@ -337,24 +340,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             }*/
 
-            if (lastLoginTime != null && !lastLoginTime.isEmpty()) {
+            if (!TextUtils.isEmpty(lastLoginTime)) {
                 lastLoginTimeText.setText("Last active on " + lastLoginTime);
             }
 
-            if (aboutMe != null && !aboutMe.isEmpty()) {
+            if (!TextUtils.isEmpty(aboutMe)) {
                 aboutMeText.setText(aboutMe);
             }
 
-            if (offeredRides != null && !offeredRides.isEmpty()) {
+            if (!TextUtils.isEmpty(offeredRides)) {
                 noOfRidesText.setText(offeredRides + " ride(s) Offered");
             } else {
                 noOfRidesText.setVisibility(View.GONE);
             }
 
-            if (userSince != null && !userSince.isEmpty()) {
+            if (!TextUtils.isEmpty(userSince)) {
                 userSinceText.setText("User Since " + userSince);
             } else {
                 userSinceText.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(fbFriends)) {
+                fbFriendsText.setText("You have " + fbFriends + " Facebook Friends");
+            } else {
+                fbFriendsText.setVisibility(View.GONE);
             }
 
             userTitle.setText("My Account");
