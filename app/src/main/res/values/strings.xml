@@ -282,6 +282,7 @@
     <string name="search_title">Search</string>
 
     <string name="title_activity_book_ride">BookRideActivity</string>
+    <string name="provide_rating_heading">Find a member to provide rating</string>
 
     <string name="validation_heading">Validate your phone number, so we can get in touch if you have any issues</string>
     <string name="country">Country</string>

@@ -14,9 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,6 +24,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.RatingReceiverInfo;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.UserRating;
@@ -51,32 +52,37 @@ public class ProvideRatingFragment extends Fragment {
     public TextView ratingValue;
     @Bind(R.id.et_feedback)
     public EditText feedBackEditText;
-    @Bind(R.id.btnSubmitRating)
-    public Button ratingButton;
     @Bind(R.id.sp_travellerType)
     public Spinner travellerTypeSpinner;
     @Bind(R.id.giveRatingProgress)
     public ProgressBar mProgressView;
     @Bind(R.id.ratingBGView)
     public View mProgressBGView;
-    @Bind(R.id.privideRatingLayout)
-    public LinearLayout giveFeedBackLayout;
-    @Bind(R.id.findmemberLayout)
-    public LinearLayout findMemberLayout;
-    @Bind(R.id.btnshowFindMember)
-    public Button showFindMemberBtn;
     @Bind(R.id.et_mobile_find_mem)
     public EditText findMemMobileEdit;
     @Bind(R.id.receiverInfoLayout)
     public View receiverInfoLayout;
     @Bind(R.id.tv_receiverEmail)
     public TextView ratingReceiverEmail;
+    @Bind(R.id.tv_receiverName)
+    public TextView ratingReceiverName;
     @Bind(R.id.tv_receiverMobile)
     public TextView ratingReceiverMobile;
     @Bind(R.id.im_drawee_receiver)
     public SimpleDraweeView ratingReciverDrawee;
     @Bind(R.id.feedBackTextLayout)
     public TextInputLayout feedBackTextLayout;
+    @Bind(R.id.btnfindMember)
+    public Button findMemButton;
+    @Bind(R.id.et_rating_country)
+    public EditText countryEditText;
+    @Bind(R.id.scrollView)
+    public ScrollView scrollView;
+    @Bind(R.id.mobileEt_Layout)
+    public TextInputLayout mobileTextInputLayout;
+    @Bind(R.id.btnSubmitRating)
+    public Button submitRatingButton;
+
 
     private String receiverGuid;
     private String userGuid;
@@ -92,7 +98,13 @@ public class ProvideRatingFragment extends Fragment {
         ButterKnife.bind(this, view);
         mContext = getActivity();
 
-        ratingValue.setText("0.0");
+        ratingValue.setText("1.0");
+
+        findMemButton.getBackground().setLevel(0);
+        submitRatingButton.getBackground().setLevel(8);
+
+        submitRatingButton.setEnabled(false);
+
 
         provideRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -107,14 +119,12 @@ public class ProvideRatingFragment extends Fragment {
 
         receiverGuid = getArguments().getString("Receiver GUID");
 
-        if (receiverGuid != null) {
-            ((HomeActivity) mContext).setTitle("Submit Rating");
-            giveFeedBackLayout.setVisibility(View.VISIBLE);
-            findMemberLayout.setVisibility(View.GONE);
-        } else {
-            ((HomeActivity) mContext).setTitle("Find Member");
-            giveFeedBackLayout.setVisibility(View.GONE);
-            findMemberLayout.setVisibility(View.VISIBLE);
+        ((HomeActivity) mContext).setTitle("Submit Rating");
+
+        CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
+
+        if (countryData != null) {
+            countryEditText.setText(countryData.MobileCode + "   " + countryData.CountryName);
         }
 
         return view;
@@ -128,23 +138,16 @@ public class ProvideRatingFragment extends Fragment {
         }
     }
 
-    @OnClick(R.id.btnshowFindMember)
-    public void showFindMemberLayout() {
-        showFindMemberBtn.setVisibility(View.GONE);
-        receiverInfoLayout.setVisibility(View.GONE);
-        giveFeedBackLayout.setVisibility(View.GONE);
-        findMemberLayout.setVisibility(View.VISIBLE);
-    }
-
     @OnClick(R.id.btnfindMember)
     public void findMember() {
         if (Utils.isInternetAvailable(mContext)) {
             Utils.hideSoftKeyboard(findMemMobileEdit);
             String mobile = findMemMobileEdit.getText().toString();
-            if (mobile.isEmpty()) {
-                Utils.showToast(mContext, "Enter Mobile Number");
+            if (TextUtils.isEmpty(mobile)) {
+                mobileTextInputLayout.setError("Enter Mobile Number");
             } else {
                 if (isPhoneValid(mobile)) {
+                    mobileTextInputLayout.setErrorEnabled(false);
                     Utils.showProgress(true, mProgressView, mProgressBGView);
 
                     Call<RatingReceiverInfo> call = Utils.getYatraShareAPI(mContext).getRatingReceiverUserinfoId(userGuid, mobile);
@@ -167,13 +170,16 @@ public class ProvideRatingFragment extends Fragment {
                                     Utils.showProgress(false, mProgressView, mProgressBGView);
                                     return;
                                 }
-                                showFindMemberBtn.setVisibility(View.VISIBLE);
                                 receiverInfoLayout.setVisibility(View.VISIBLE);
-                                giveFeedBackLayout.setVisibility(View.VISIBLE);
-                                findMemberLayout.setVisibility(View.GONE);
+                                scrollView.fullScroll(View.FOCUS_DOWN);
+
+                                submitRatingButton.getBackground().setLevel(1);
+
+                                submitRatingButton.setEnabled(true);
 
                                 ratingReceiverEmail.setText(response.body().Data.Email);
                                 ratingReceiverMobile.setText(response.body().Data.MobileNumber);
+                                ratingReceiverName.setText(response.body().Data.ReceiverName);
 
                                 String profilePic = response.body().Data.ReceiverProfilePic;
                                 if (profilePic != null && !profilePic.isEmpty() && !profilePic.startsWith("/")) {
@@ -203,7 +209,7 @@ public class ProvideRatingFragment extends Fragment {
                         }
                     });
                 } else {
-                    Utils.showToast(mContext, "Enter Valid Mobile Number");
+                    mobileTextInputLayout.setError("Enter Valid Mobile Number");
                 }
             }
         }

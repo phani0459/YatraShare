@@ -5,13 +5,14 @@
     android:background="@color/colorLayoutBG">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorLayoutBG">
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
 
             <include
                 android:id="@+id/findmemberLayout"
@@ -19,140 +20,121 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
-            <Button
-                android:id="@+id/btnshowFindMember"
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
                 android:layout_below="@+id/findmemberLayout"
-                android:background="#0FAAF0"
-                android:drawableLeft="@android:drawable/ic_menu_search"
-                android:drawablePadding="16dp"
-                android:drawableRight="@android:drawable/arrow_down_float"
-                android:gravity="center"
-                android:paddingLeft="8dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
-                android:text="@string/findmember"
-                android:textColor="@android:color/white"
-                android:visibility="gone" />
-
-            <include
-                android:id="@+id/receiverInfoLayout"
-                layout="@layout/rating_receiver_info"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/btnshowFindMember"
-                android:layout_margin="8dp"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/privideRatingLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/receiverInfoLayout"
-                android:layout_margin="8dp"
-                android:background="@drawable/spinner_bg"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
                 android:orientation="vertical"
-                tools:context="com.yatrashare.fragments.ProvideRatingFragment">
-
-                <TextView
-                    android:id="@+id/tv_feedbackHeading"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:gravity="center"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:paddingTop="8dp"
-                    android:text="@string/feedbackHeading"
-                    android:textColor="#000000" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="#FFFFFF" />
+                card_view:cardCornerRadius="4dp"
+                card_view:contentPadding="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <RatingBar
-                        android:id="@+id/provideRatingBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="8dp"
-                        android:numStars="5"
-                        android:paddingBottom="4dp"
-                        android:paddingTop="8dp"
-                        android:stepSize="1" />
+                    <include
+                        android:id="@+id/receiverInfoLayout"
+                        layout="@layout/rating_receiver_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tv_ratingValue"
-                        style="@style/TextAppearance.AppCompat.Medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:paddingBottom="4dp"
-                        android:paddingRight="16dp"
-                        android:paddingTop="8dp"
-                        android:text="ss" />
+                    <LinearLayout
+                        android:id="@+id/privideRatingLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:orientation="vertical"
+                        tools:context="com.yatrashare.fragments.ProvideRatingFragment">
+
+                        <TextView
+                            android:id="@+id/tv_feedbackHeading"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:paddingBottom="8dp"
+                            android:paddingTop="4dp"
+                            android:text="@string/feedbackHeading"
+                            android:textColor="#000000" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RatingBar
+                                android:id="@+id/provideRatingBar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:numStars="5"
+                                android:paddingBottom="4dp"
+                                android:paddingTop="8dp"
+                                android:rating="1"
+                                android:stepSize="1" />
+
+                            <TextView
+                                android:id="@+id/tv_ratingValue"
+                                style="@style/TextAppearance.AppCompat.Medium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:paddingBottom="4dp"
+                                android:paddingTop="8dp"
+                                android:text="ss" />
+                        </LinearLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/feedBackTextLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="16dp"
+                            android:layout_marginTop="4dp">
+
+                            <EditText
+                                android:id="@+id/et_feedback"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="top"
+                                android:hint="@string/feedbackEditHint"
+                                android:inputType="textMultiLine"
+                                android:minLines="2"
+                                android:padding="8dp" />
+                        </android.support.design.widget.TextInputLayout>
+
+                        <Spinner
+                            android:id="@+id/sp_travellerType"
+                            style="@style/Base.Widget.AppCompat.DropDownItem.Spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:entries="@array/travellerType_array"
+                            android:paddingLeft="16dp"
+                            android:paddingRight="16dp" />
+
+                        <Button
+                            android:id="@+id/btnSubmitRating"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:background="@drawable/mobile_validation_stroke"
+                            android:gravity="center"
+                            android:paddingBottom="12dp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:paddingTop="12dp"
+                            android:text="@string/provide_rating"
+                            android:textColor="@color/white" />
+
+                    </LinearLayout>
                 </LinearLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/feedBackTextLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/edittext_bg">
-
-                    <EditText
-                        android:id="@+id/et_feedback"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
-                        android:inputType="textMultiLine"
-                        android:gravity="bottom"
-                        android:hint="@string/feedbackEditHint"
-                        android:minLines="2"
-                        android:padding="8dp" />
-                </android.support.design.widget.TextInputLayout>
-
-                <Spinner
-                    android:id="@+id/sp_travellerType"
-                    style="@style/Base.Widget.AppCompat.DropDownItem.Spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:entries="@array/travellerType_array"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp" />
-
-                <Button
-                    android:id="@+id/btnSubmitRating"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:gravity="center"
-                    android:padding="24dp"
-                    android:text="@string/provide_rating"
-                    android:textColor="@color/colorPrimary" />
-
-            </LinearLayout>
+            </android.support.v7.widget.CardView>
 
         </RelativeLayout>
     </ScrollView>

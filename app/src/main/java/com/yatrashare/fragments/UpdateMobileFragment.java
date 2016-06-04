@@ -106,10 +106,10 @@ public class UpdateMobileFragment extends Fragment {
         }
 
         if (!getArguments().getBoolean("IS VERIFIED", false) && !TextUtils.isEmpty(mobile)) {
+            ((HomeActivity) mContext).setTitle("Verify Mobile Number");
             sendVerifyCode();
         } else {
-            verifyBt.setVisibility(View.GONE);
-            resendCodeBt.setVisibility(View.GONE);
+            editMobileNumber();
         }
 
         return view;
@@ -139,11 +139,11 @@ public class UpdateMobileFragment extends Fragment {
                     if (response.body() != null && response.body().Data != null) {
                         if (response.body().Data.equalsIgnoreCase("Success")) {
 
+                            ((HomeActivity) mContext).setTitle("Verify Mobile Number");
+
                             phoneEdit.setEnabled(false);
                             verificationCodeEdit.setVisibility(View.VISIBLE);
                             verifyBtnLayout.setVisibility(View.VISIBLE);
-                            verifyBt.setVisibility(View.VISIBLE);
-                            resendCodeBt.setVisibility(View.VISIBLE);
 
                             editNumberBtnsLayout.setVisibility(View.GONE);
                             mEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, false);
@@ -172,14 +172,13 @@ public class UpdateMobileFragment extends Fragment {
     @OnClick(R.id.cancel_bt)
     public void cancelMobileNumber() {
 
+        ((HomeActivity) mContext).setTitle("Verify Mobile Number");
         phoneEdit.setText(mSharedPreferences.getString(Constants.PREF_USER_PHONE, ""));
 
         phoneEdit.setEnabled(false);
         verificationCodeEdit.setVisibility(View.VISIBLE);
         verificationCodeEdit.setEnabled(true);
         verifyBtnLayout.setVisibility(View.VISIBLE);
-        verifyBt.setVisibility(View.VISIBLE);
-        resendCodeBt.setVisibility(View.VISIBLE);
 
         editNumberBtnsLayout.setVisibility(View.GONE);
 
@@ -242,7 +241,6 @@ public class UpdateMobileFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((HomeActivity) mContext).setCurrentScreen(HomeActivity.UPDATE_MOBILE_SCREEN);
-        ((HomeActivity) mContext).setTitle("Verify Mobile Number");
     }
 
     @OnClick(R.id.resend_code_bt)
@@ -290,6 +288,7 @@ public class UpdateMobileFragment extends Fragment {
 
     @OnClick(R.id.edit_number_bt)
     public void editMobileNumber() {
+        ((HomeActivity) mContext).setTitle("Edit Mobile Number");
         resendCodeBt.setText("Send Code");
         verificationCodeEdit.setEnabled(false);
         if (editNumberBtnsLayout.getVisibility() == View.GONE) {

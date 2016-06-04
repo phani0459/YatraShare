@@ -272,7 +272,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 String mobileSuggetionText = isMobileVerified ? "" : "You have to verify your mobile number to offer a ride or book a  ride.";
 
                 mobileStatusHeading.setText(Html.fromHtml("Mobile Number: " + mobileHeading));
-                mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
+                mobileStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.edit, 0);
 
                 if (!isMobileVerified) mobileStatusText.setText(mobileSuggetionText);
                 else mobileStatusText.setVisibility(View.GONE);
@@ -281,7 +281,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 String emailSuggetionText = emailStatus.equals("2") ? "" : "You have to verify your email to offer a ride or book a ride.";
 
                 emailStatusHeading.setText(Html.fromHtml("Email: " + emailHeading));
-                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, isEmailVerified ? R.drawable.verified : R.drawable.ic_action_edit, 0);
+                emailStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, isEmailVerified ? R.drawable.verified : R.drawable.edit, 0);
 
                 if (!isEmailVerified) emailStatusText.setText(emailSuggetionText);
                 else emailStatusText.setVisibility(View.GONE);
@@ -295,7 +295,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 "Please provide valid licence to connect with more passengers.";
 
                 licenceStatusHeading.setText(Html.fromHtml("Licence: " + licenceHeading));
-                licenceStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_edit, 0);
+                licenceStatusHeading.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.edit, 0);
 
                 if (licenceStatus.equals("2")) {
                     liceneceStatusText.setVisibility(View.GONE);

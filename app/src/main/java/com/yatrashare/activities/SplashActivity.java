@@ -128,7 +128,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                     case Activity.RESULT_CANCELED:
                         Utils.showProgress(false, splashProgress, progressBGView);
                         Utils.showToast(this, "Turn on Location to use Yatrashare");
-                        finish();
+                        getCountries(null, true);
                         break;
                 }
                 break;
@@ -200,18 +200,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             createLocationRequest();
             return;
         }
-        if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
-            Snackbar.make(splashLayout, R.string.location_permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{ACCESS_FINE_LOCATION}, REQUEST_LOAD_LOCATION);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{ACCESS_FINE_LOCATION}, REQUEST_LOAD_LOCATION);
-        }
+        requestPermissions(new String[]{ACCESS_FINE_LOCATION}, REQUEST_LOAD_LOCATION);
     }
 
     private void loadGetLocationDialog() {
@@ -279,6 +268,9 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         Log.e("From location long: ", "" + longitude);
 
         if (latitude != 0.0 && longitude != 0.0) {
+
+            if (mGoogleClient != null && mGoogleClient.isConnected()) mGoogleClient.disconnect();
+
             Address address = getAddress(latitude, longitude);
             if (address != null) {
                 Log.e("Country: ", "" + address.getCountryName());
@@ -286,7 +278,11 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                 mEditor.apply();
                 getCountries(address.getCountryName(), false);
             } else {
-                getCountryFromApi(latitude, longitude);
+                if (Utils.isInternetAvailable(this)) {
+                    getCountryFromApi(latitude, longitude);
+                } else {
+                    Utils.showProgress(false, splashProgress, progressBGView);
+                }
             }
         } else {
             Utils.showToast(this, "Cannot fetch Current Location");
@@ -383,6 +379,8 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                     startHomePage();
                 }
             });
+        } else {
+            Utils.showProgress(false, splashProgress, progressBGView);
         }
     }
 
@@ -438,6 +436,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
         if (addresses != null && addresses.size() > 0) {
             return addresses.get(0);
@@ -450,11 +449,13 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
      * Callback received when a permissions request has been completed.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_LOAD_LOCATION) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 createLocationRequest();
+            } else {
+                Utils.showProgress(false, splashProgress, progressBGView);
+                getCountries(null, true);
             }
         }
     }

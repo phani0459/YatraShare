@@ -185,7 +185,6 @@
                         android:paddingLeft="4dip"
                         android:paddingRight="4dip"
                         android:text="@string/cancel" />
-
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
