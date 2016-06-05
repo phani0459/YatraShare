@@ -23,6 +23,7 @@
                 android:id="@+id/im_drawee_owner"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
+                android:background="@drawable/yatrashare_default"
                 android:foregroundGravity="center"
                 android:scaleType="centerCrop"
                 fresco:roundAsCircle="true" />

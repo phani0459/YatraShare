@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -127,7 +126,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                         break;
                     case Activity.RESULT_CANCELED:
                         Utils.showProgress(false, splashProgress, progressBGView);
-                        Utils.showToast(this, "Turn on Location to use Yatrashare");
+                        Utils.showToast(this, "Turn on Location to use your current location");
                         getCountries(null, true);
                         break;
                 }

@@ -22,7 +22,6 @@ import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.SubRidesActivity;
 import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
-import com.yatrashare.dtos.MessagesList;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.UserDataDTO;

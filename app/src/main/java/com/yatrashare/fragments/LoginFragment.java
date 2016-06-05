@@ -30,7 +30,6 @@ import com.yatrashare.dtos.Profile;
 import com.yatrashare.pojos.UserFBLogin;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
-import com.yatrashare.utils.UtilsLog;
 
 import org.json.JSONObject;
 
