@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -23,9 +25,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.image.QualityInfo;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.RequestBody;
@@ -92,8 +101,11 @@ public class UploadLicenceActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(licenceOne) && !licenceOne.startsWith("/")) {
             Uri uri = Uri.parse(licenceOne);
-            licenceOneDrawee.setImageURI(uri);
-            removeLicenceOneButton.setVisibility(View.VISIBLE);
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setControllerListener(controllerOneListener)
+                    .setUri(uri)
+                    .build();
+            licenceOneDrawee.setController(controller);
         } else {
             licenceOneDrawee.setImageURI(Constants.getDefaultNoImageURI());
             removeLicenceOneButton.setVisibility(View.GONE);
@@ -105,7 +117,11 @@ public class UploadLicenceActivity extends AppCompatActivity {
 
         if (!TextUtils.isEmpty(licenceTwo) && !licenceTwo.startsWith("/")) {
             Uri uri = Uri.parse(licenceTwo);
-            licenceTwoDrawee.setImageURI(uri);
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setControllerListener(controllerTwoListener)
+                    .setUri(uri)
+                    .build();
+            licenceOneDrawee.setController(controller);
             removeLicenceTwoButton.setVisibility(View.VISIBLE);
         } else {
             licenceTwoDrawee.setImageURI(Constants.getDefaultNoImageURI());
@@ -121,6 +137,58 @@ public class UploadLicenceActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    ControllerListener controllerOneListener = new BaseControllerListener<ImageInfo>() {
+        @Override
+        public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
+            if (imageInfo == null) {
+                return;
+            }
+            QualityInfo qualityInfo = imageInfo.getQualityInfo();
+            Log.e("Final image received! "
+                    ,
+                    imageInfo.getWidth() + "dsgdsg" +
+                            qualityInfo.isOfFullQuality());
+
+            removeLicenceOneButton.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+            Log.d(TAG, "Intermediate image received");
+        }
+
+        @Override
+        public void onFailure(String id, Throwable throwable) {
+            FLog.e(getClass(), throwable, "Error loading %s", id);
+        }
+    };
+
+    ControllerListener controllerTwoListener = new BaseControllerListener<ImageInfo>() {
+        @Override
+        public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
+            if (imageInfo == null) {
+                return;
+            }
+            QualityInfo qualityInfo = imageInfo.getQualityInfo();
+            Log.e("Final image received! "
+                    ,
+                    imageInfo.getWidth() + "dsgdsg" +
+                            qualityInfo.isOfFullQuality());
+
+            removeLicenceTwoButton.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+            Log.d(TAG, "Intermediate image received");
+        }
+
+        @Override
+        public void onFailure(String id, Throwable throwable) {
+            FLog.e(getClass(), throwable, "Error loading %s", id);
+        }
+    };
 
     private static final int REQUEST_READ_STORAGE_ONE = 14;
     private static final int REQUEST_READ_STORAGE_TWO = 12;

@@ -38,6 +38,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="-16dp"
             android:foregroundGravity="center"
+            android:background="@drawable/yatrashare_default"
             android:scaleType="centerCrop"
             fresco:roundAsCircle="true" />
     </RelativeLayout>

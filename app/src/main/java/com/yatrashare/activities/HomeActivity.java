@@ -42,6 +42,7 @@ import android.widget.TextView;
 import com.facebook.FacebookSdk;
 import com.facebook.common.util.UriUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.login.LoginManager;
 import com.yatrashare.R;
@@ -212,6 +213,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         Uri localUri = new Uri.Builder().scheme(UriUtil.LOCAL_RESOURCE_SCHEME).path(String.valueOf(R.drawable.yatrashare_default)).build();
         userDraweeImageView.setImageURI(localUri);
 
+        GenericDraweeHierarchy hierarchy = userDraweeImageView.getHierarchy();
+        hierarchy.setPlaceholderImage(R.drawable.yatrashare_default);
+
         if (userFBId.isEmpty() && (userProfilePic.isEmpty() || userProfilePic.startsWith("/"))) {
             if (userGender.equalsIgnoreCase("Female")) {
                 userDraweeImageView.setImageURI(Constants.getDefaultFemaleURI());
@@ -219,9 +223,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 userDraweeImageView.setImageURI(Constants.getDefaultPicURI());
             }
         } else if (!userProfilePic.isEmpty()) {
+
+            userDraweeImageView.setHierarchy(hierarchy);
+
+            Utils.showToast(this, "ewtewt");
+
             Uri uri = Uri.parse(userProfilePic);
             userDraweeImageView.setImageURI(uri);
         } else if (!userFBId.isEmpty()) {
+
+            userDraweeImageView.setHierarchy(hierarchy);
+
             Uri uri = Uri.parse("https://graph.facebook.com/" + userFBId + "/picture?type=large");
             userDraweeImageView.setImageURI(uri);
         }

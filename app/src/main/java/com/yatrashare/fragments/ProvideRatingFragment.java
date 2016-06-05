@@ -101,14 +101,15 @@ public class ProvideRatingFragment extends Fragment {
         ratingValue.setText("1.0");
 
         findMemButton.getBackground().setLevel(0);
-        submitRatingButton.getBackground().setLevel(8);
-
-        submitRatingButton.setEnabled(false);
-
+        submitRatingButton.getBackground().setLevel(1);
 
         provideRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if (rating <= 1) {
+                    rating = 1;
+                }
+                provideRatingBar.setRating(rating);
                 ratingValue.setText(rating + "");
             }
         });
@@ -172,10 +173,6 @@ public class ProvideRatingFragment extends Fragment {
                                 }
                                 receiverInfoLayout.setVisibility(View.VISIBLE);
                                 scrollView.fullScroll(View.FOCUS_DOWN);
-
-                                submitRatingButton.getBackground().setLevel(1);
-
-                                submitRatingButton.setEnabled(true);
 
                                 ratingReceiverEmail.setText(response.body().Data.Email);
                                 ratingReceiverMobile.setText(response.body().Data.MobileNumber);

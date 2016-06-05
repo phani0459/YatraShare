@@ -170,47 +170,51 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     @OnTouch(R.id.emailStatusHeading)
     public boolean verifyEmail(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if (event.getRawX() >= (v.getRight() - ((TextView) v).getCompoundDrawables()[2].getBounds().width())) {
-                if (!isEmailVerified) {
-                    if (Utils.isInternetAvailable(mContext)) {
-                        Utils.showProgress(true, mProgressView, mProgressBGView);
+        try {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getRawX() >= (v.getRight() - ((TextView) v).getCompoundDrawables()[2].getBounds().width())) {
+                    if (!isEmailVerified) {
+                        if (Utils.isInternetAvailable(mContext)) {
+                            Utils.showProgress(true, mProgressView, mProgressBGView);
 
-                        Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).sendVerificationEmail(userGuide);
-                        //asynchronous call
-                        call.enqueue(new Callback<UserDataDTO>() {
-                            /**
-                             * Successful HTTP response.
-                             *
-                             * @param response server response
-                             * @param retrofit adapter
-                             */
-                            @Override
-                            public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
-                                android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
-                                if (response.body() != null) {
-                                    if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
-                                        ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
-                                        Utils.deleteFile(mContext, userGuide);
+                            Call<UserDataDTO> call = Utils.getYatraShareAPI(mContext).sendVerificationEmail(userGuide);
+                            //asynchronous call
+                            call.enqueue(new Callback<UserDataDTO>() {
+                                /**
+                                 * Successful HTTP response.
+                                 *
+                                 * @param response server response
+                                 * @param retrofit adapter
+                                 */
+                                @Override
+                                public void onResponse(retrofit.Response<UserDataDTO> response, Retrofit retrofit) {
+                                    android.util.Log.e("SUCCEESS RESPONSE RAW", response.raw() + "");
+                                    if (response.body() != null) {
+                                        if (!TextUtils.isEmpty(response.body().Data) && response.body().Data.equalsIgnoreCase("Success")) {
+                                            ((HomeActivity) mContext).showSnackBar("Verification Mail sent to your email");
+                                            Utils.deleteFile(mContext, userGuide);
+                                        }
                                     }
+                                    Utils.showProgress(false, mProgressView, mProgressBGView);
                                 }
-                                Utils.showProgress(false, mProgressView, mProgressBGView);
-                            }
 
-                            /**
-                             * Invoked when a network or unexpected exception occurred during the HTTP request.
-                             *
-                             * @param t error
-                             */
-                            @Override
-                            public void onFailure(Throwable t) {
-                                android.util.Log.e(TAG, "FAILURE RESPONSE");
-                                Utils.showProgress(false, mProgressView, mProgressBGView);
-                            }
-                        });
+                                /**
+                                 * Invoked when a network or unexpected exception occurred during the HTTP request.
+                                 *
+                                 * @param t error
+                                 */
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    android.util.Log.e(TAG, "FAILURE RESPONSE");
+                                    Utils.showProgress(false, mProgressView, mProgressBGView);
+                                }
+                            });
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
