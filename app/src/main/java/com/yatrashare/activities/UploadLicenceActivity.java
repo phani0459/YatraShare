@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -244,7 +246,16 @@ public class UploadLicenceActivity extends AppCompatActivity {
     }
 
     public void showSnackBar(String msg) {
-        Snackbar.make(licenceOneDrawee, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        try {
+            Snackbar snack = Snackbar.make(licenceOneDrawee, msg, Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Snackbar.make(licenceOneDrawee, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 
     @OnClick(R.id.btn_licence_One)

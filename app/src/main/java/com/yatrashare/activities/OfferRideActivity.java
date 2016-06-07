@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.google.android.gms.common.api.Status;
@@ -496,7 +498,16 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
     }
 
     public void showSnackBar(String msg) {
-        Snackbar.make(offerWhereFromEdit, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        try {
+            Snackbar snack = Snackbar.make(offerWhereFromEdit, msg, Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Snackbar.make(offerWhereFromEdit, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 
     public void loadMyRidesFragment() {

@@ -4,6 +4,7 @@ package com.yatrashare.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.yatrashare.R;
@@ -602,7 +604,16 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     }
 
     public void showSnackBar(String msg) {
-        Snackbar.make(selectModelSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        try {
+            Snackbar snack = Snackbar.make(selectModelSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Snackbar.make(selectModelSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 
     @Override

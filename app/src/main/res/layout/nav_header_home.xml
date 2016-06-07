@@ -29,6 +29,7 @@
             android:gravity="center"
             android:text="@string/login_rationale"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/white"
             android:visibility="visible" />
 
         <com.facebook.drawee.view.SimpleDraweeView
@@ -37,8 +38,8 @@
             android:layout_height="80dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="-16dp"
-            android:foregroundGravity="center"
             android:background="@drawable/yatrashare_default"
+            android:foregroundGravity="center"
             android:scaleType="centerCrop"
             fresco:roundAsCircle="true" />
     </RelativeLayout>

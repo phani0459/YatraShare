@@ -1,6 +1,7 @@
 package com.yatrashare.activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.dtos.UserDataDTO;
@@ -179,7 +181,16 @@ public class RegisterVehicleActivity extends AppCompatActivity implements Adapte
     }
 
     public void showSnackBar(String msg) {
-        Snackbar.make(vehicleBrandSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        try {
+            Snackbar snack = Snackbar.make(vehicleBrandSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Snackbar.make(vehicleBrandSpinner, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 
     private String getVehicleId(String selectedModel) {

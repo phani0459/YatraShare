@@ -1,6 +1,7 @@
 package com.yatrashare.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -74,7 +75,16 @@ public class UserBookingsActivity extends AppCompatActivity implements UserBooki
     }
 
     public void showSnackBar(String msg) {
-        Snackbar.make(recyclerView, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        try {
+            Snackbar snack = Snackbar.make(recyclerView, msg, Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Snackbar.make(recyclerView, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 
     @Override

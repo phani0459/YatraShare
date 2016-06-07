@@ -161,6 +161,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        getCurrentCountry();
                         break;
                 }
             }

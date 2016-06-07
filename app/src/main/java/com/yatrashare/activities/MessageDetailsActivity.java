@@ -2,6 +2,7 @@ package com.yatrashare.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.adapter.ChatDetailsAdapter;
@@ -169,7 +171,16 @@ public class MessageDetailsActivity extends AppCompatActivity {
     }
 
     public void showSnackBar(String msg) {
-        Snackbar.make(messagesDetailsListView, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        try {
+            Snackbar snack = Snackbar.make(messagesDetailsListView, msg, Snackbar.LENGTH_LONG).setAction("Action", null);
+            View view = snack.getView();
+            TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setTextColor(Color.WHITE);
+            snack.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Snackbar.make(messagesDetailsListView, msg, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        }
     }
 
     @Override
