@@ -221,7 +221,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
                 startActivity(intent);
                 setNullValues();
             } else {
-                Utils.showMobileVerifyDialog(getActivity(), "Mobile Number has to be verified to Offer Ride", Constants.HOME_SCREEN_NAME, "Verify Mobile to offer ride");
+                Utils.showMobileVerifyDialog(getActivity(), "Mobile Number is not verified", Constants.HOME_SCREEN_NAME, "Verify your mobile number to offer a ride");
             }
         } else {
             Utils.showLoginDialog(mContext, Constants.HOME_SCREEN_NAME);

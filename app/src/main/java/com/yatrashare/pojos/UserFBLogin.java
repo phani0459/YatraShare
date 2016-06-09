@@ -19,15 +19,19 @@ public class UserFBLogin {
     @SerializedName("CountryCode")
     String mCountryCode;
 
+    @SerializedName("Gender")
+    String mGender;
+
     @SerializedName("FriendsCount")
     String mFriendsCount;
 
-    public UserFBLogin(String email, String profilePicture, String name, String fbId, String mCountryCode, String mFriendsCount) {
+    public UserFBLogin(String email, String profilePicture, String name, String fbId, String mCountryCode, String mFriendsCount, String mGender) {
         this.mEmail = email;
         this.mProfilePicture = profilePicture;
         this.mFaceBookid = fbId;
         this.mName = name;
         this.mCountryCode = mCountryCode;
         this.mFriendsCount = mFriendsCount;
+        this.mGender = mGender;
     }
 }

@@ -145,8 +145,8 @@ public class LoginFragment extends Fragment {
                                         e.printStackTrace();
                                     }
                                     if (Utils.isInternetAvailable(mContext)) {
-                                        registerUserinServer(object.optString("id"), object.optString("name"), object.optString("email"),
-                                                "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large", friendsCount);
+                                        registerUserinServer(object.optString("id"), object.optString("first_name"), object.optString("email"),
+                                                "https://graph.facebook.com/" + object.optString("id") + "/picture?type=large", friendsCount, object.optString("gender"));
                                     } else {
                                         Utils.showProgress(false, mProgressView, mProgressBGView);
                                     }
@@ -158,7 +158,7 @@ public class LoginFragment extends Fragment {
                 );
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,birthday,picture,friends");
+                parameters.putString("fields", "id,first_name,email,gender,birthday,picture,friends");
                 graphRequest.setParameters(parameters);
                 graphRequest.executeAsync();
 
@@ -242,11 +242,11 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl, String friendsCount) {
+    private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl, String friendsCount, String gender) {
         Utils.showProgress(true, mProgressView, mProgressBGView);
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         String countryCode = countryData != null ? countryData.CountryCode : "";
-        UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode, friendsCount);
+        UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode, friendsCount, gender);
 
         Call<String> call = Utils.getYatraShareAPI(mContext).userFBLogin(userFBLogin);
         //asynchronous call

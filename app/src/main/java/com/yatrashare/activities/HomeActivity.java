@@ -512,6 +512,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
+
+        onPrepareOptionsMenu(menu);
     }
 
     boolean doubleBackToExitPressedOnce = false;
@@ -547,12 +549,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         prepareMenu();
-
-        if (getCurrentScreen() == HOME_SCREEN) {
-            toolBarLogo.setVisibility(View.VISIBLE);
-        } else {
-            toolBarLogo.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -592,12 +588,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (getCurrentScreen() == HOME_SCREEN) {
+            toolBarLogo.setVisibility(View.VISIBLE);
             if (countryData != null && !TextUtils.isEmpty(countryData.CallUs)) {
                 menu.getItem(4).setVisible(true);
             } else {
                 menu.getItem(4).setVisible(false);
             }
         } else {
+            toolBarLogo.setVisibility(View.GONE);
             menu.getItem(4).setVisible(false);
         }
 

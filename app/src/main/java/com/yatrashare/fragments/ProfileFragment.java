@@ -248,9 +248,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             try {
                 if (!TextUtils.isEmpty(profile.Data.UserAvgRating))
                     ratingBar.setRating(Float.parseFloat(profile.Data.UserAvgRating));
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-            } catch (NumberFormatException e) {
+            } catch (NullPointerException | NumberFormatException e) {
                 e.printStackTrace();
             }
 

@@ -68,6 +68,7 @@ public class UpdateMobileFragment extends Fragment {
     private String userGuid;
     private SharedPreferences.Editor mEditor;
     private SharedPreferences mSharedPreferences;
+    private boolean fromOwnScreen;
 
 
     public UpdateMobileFragment() {
@@ -92,9 +93,6 @@ public class UpdateMobileFragment extends Fragment {
         String mobile = mSharedPreferences.getString(Constants.PREF_USER_PHONE, "");
         phoneEdit.setText(mobile);
 
-        if (!TextUtils.isEmpty(mobile)) phoneEdit.setEnabled(false);
-        else editMobileNumber();
-
         userGuid = mSharedPreferences.getString(Constants.PREF_USER_GUID, "");
 
         phoneEdit.setFilters(Utils.getInputFilter(Utils.getMobileMaxChars(mContext)));
@@ -109,7 +107,7 @@ public class UpdateMobileFragment extends Fragment {
             ((HomeActivity) mContext).setTitle("Verify Mobile Number");
             sendVerifyCode();
         } else {
-            editMobileNumber();
+            editMobileNumber(null);
         }
 
         return view;
@@ -172,18 +170,22 @@ public class UpdateMobileFragment extends Fragment {
     @OnClick(R.id.cancel_bt)
     public void cancelMobileNumber() {
 
-        ((HomeActivity) mContext).setTitle("Verify Mobile Number");
-        phoneEdit.setText(mSharedPreferences.getString(Constants.PREF_USER_PHONE, ""));
+        if (fromOwnScreen) {
+            ((HomeActivity) mContext).setTitle("Verify Mobile Number");
+            phoneEdit.setText(mSharedPreferences.getString(Constants.PREF_USER_PHONE, ""));
 
-        phoneEdit.setEnabled(false);
-        verificationCodeEdit.setVisibility(View.VISIBLE);
-        verificationCodeEdit.setEnabled(true);
-        verifyBtnLayout.setVisibility(View.VISIBLE);
+            phoneEdit.setEnabled(false);
+            verificationCodeEdit.setVisibility(View.VISIBLE);
+            verificationCodeEdit.setEnabled(true);
+            verifyBtnLayout.setVisibility(View.VISIBLE);
 
-        editNumberBtnsLayout.setVisibility(View.GONE);
+            editNumberBtnsLayout.setVisibility(View.GONE);
 
-        verifyCodeLayout.setErrorEnabled(false);
-        phoneNumberLayout.setErrorEnabled(false);
+            verifyCodeLayout.setErrorEnabled(false);
+            phoneNumberLayout.setErrorEnabled(false);
+        } else {
+            ((HomeActivity)mContext).popBackFragment(getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+        }
     }
 
     @OnClick(R.id.verify_code_bt)
@@ -287,7 +289,10 @@ public class UpdateMobileFragment extends Fragment {
     }
 
     @OnClick(R.id.edit_number_bt)
-    public void editMobileNumber() {
+    public void editMobileNumber(View v) {
+        if (v != null) {
+            fromOwnScreen = true;
+        }
         ((HomeActivity) mContext).setTitle("Edit Mobile Number");
         resendCodeBt.setText("Send Code");
         verificationCodeEdit.setEnabled(false);

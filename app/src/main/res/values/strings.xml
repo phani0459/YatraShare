@@ -39,7 +39,7 @@
     <string name="offerRide">Offer a Ride</string>
     <string name="title_activity_login">Sign in</string>
     <string name="aboutMe">About me</string>
-    <string name="mandateAboutMe">Tell other members about yourself and why they should want to travel with you*</string>
+    <string name="mandateAboutMe">Tell other members about yourself and why they should want to travel with you</string>
     <string name="retry">Retry</string>
     <string name="ride_type">Ride Type</string>
 

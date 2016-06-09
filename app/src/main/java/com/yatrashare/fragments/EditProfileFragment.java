@@ -21,8 +21,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -382,12 +384,12 @@ public class EditProfileFragment extends Fragment {
         String lastName = mSharedPreferences.getString(Constants.PREF_USER_LAST_NAME, "");
         userGender = mSharedPreferences.getString(Constants.PREF_USER_GENDER, "");
 
-        if (userGender.equalsIgnoreCase("Male")) {
-            maleRadioButton.setChecked(true);
-            femaleRadioButton.setChecked(false);
-        } else {
+        if (userGender.equalsIgnoreCase("Female")) {
             maleRadioButton.setChecked(false);
             femaleRadioButton.setChecked(true);
+        } else {
+            maleRadioButton.setChecked(true);
+            femaleRadioButton.setChecked(false);
         }
 
         if (profile != null && profile.Data != null) {
@@ -414,6 +416,25 @@ public class EditProfileFragment extends Fragment {
             }
 
         }
+
+        aboutMeEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    aboutMeHint.setVisibility(View.GONE);
+                } else {
+                    aboutMeHint.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         if (!TextUtils.isEmpty(email)) {
             emailEdit.setText(email);
@@ -512,7 +533,7 @@ public class EditProfileFragment extends Fragment {
         }
 
         lastNameTextInputLayout.setErrorEnabled(false);
-        if (TextUtils.isEmpty(aboutMe)) {
+        /*if (TextUtils.isEmpty(aboutMe)) {
             aboutTextInputLayout.setError(getString(R.string.error_required_aboutme));
             return;
         }
@@ -521,7 +542,7 @@ public class EditProfileFragment extends Fragment {
             return;
         }
 
-        aboutTextInputLayout.setErrorEnabled(false);
+        aboutTextInputLayout.setErrorEnabled(false);*/
         if (TextUtils.isEmpty(phoneNumber)) {
             mUpdatePhoneLayout.setError(getString(R.string.error_required_phone));
             return;
