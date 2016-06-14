@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -122,7 +123,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        getCurrentCountry();
+                        getCurrentCountry(null);
                         break;
                     case Activity.RESULT_CANCELED:
                         Utils.showProgress(false, splashProgress, progressBGView);
@@ -136,8 +137,12 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
     protected void createLocationRequest() {
 
-        if (mGoogleClient != null && !mGoogleClient.isConnected()) {
-            mGoogleClient.connect();
+        if (mGoogleClient != null) {
+            if (!mGoogleClient.isConnected()) {
+                mGoogleClient.connect();
+            }
+        } else {
+            getCurrentCountry(null);
         }
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest);
@@ -151,7 +156,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                 final Status status = result.getStatus();
                 switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
-                        getCurrentCountry();
+                        getCurrentCountry(null);
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         try {
@@ -161,12 +166,11 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                         }
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        getCurrentCountry();
+                        getCurrentCountry(null);
                         break;
                 }
             }
         });
-
     }
 
     private static final long SPLASH_DISPLAY_LENGTH = 2000;
@@ -192,6 +196,10 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
     @TargetApi(Build.VERSION_CODES.M)
     private void requestLocation() {
         Utils.showProgress(true, splashProgress, progressBGView);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            getCurrentCountry(null);
+            return;
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             createLocationRequest();
             return;
@@ -229,33 +237,38 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         dialog.show();
     }
 
-    public void getCurrentCountry() {
+    public void getCurrentCountry(Location location) {
         GPSTracker gps = new GPSTracker(this);
 
+        double latitude = 0.0;
+        double longitude = 0.0;
         if (gps.canGetLocation()) {
-            double latitude = gps.getLatitude();
-            double longitude = gps.getLongitude();
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+        } else if (location != null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
 
-            Log.e("Current latitude: ", "" + latitude);
-            Log.e("Current longitude: ", "" + longitude);
+        Log.e("Current latitude: ", "" + latitude);
+        Log.e("Current longitude: ", "" + longitude);
 
-            if (latitude != 0.0 && longitude != 0.0) {
-                Address address = getAddress(latitude, longitude);
-                if (address != null) {
-                    Log.e("Country: ", "" + address.getCountryName());
-                    mEditor.putString(Constants.PREF_USER_COUNTRY, address.getCountryName());
-                    mEditor.apply();
-                    getCountries(address.getCountryName(), false);
-                } else {
-                    getCountryFromApi(latitude, longitude);
-                }
+        if (latitude != 0.0 && longitude != 0.0) {
+            Address address = getAddress(latitude, longitude);
+            if (address != null) {
+                Log.e("Country: ", "" + address.getCountryName());
+                mEditor.putString(Constants.PREF_USER_COUNTRY, address.getCountryName());
+                mEditor.apply();
+                getCountries(address.getCountryName(), false);
             } else {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleClient, mLocationRequest, this);
+                getCountryFromApi(latitude, longitude);
             }
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleClient, mLocationRequest, this);
         }
     }
 

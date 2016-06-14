@@ -865,6 +865,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     return;
                 }
 
+                confirmPwdLayout.setErrorEnabled(false);
+
                 if (Utils.isInternetAvailable(HomeActivity.this)) {
                     // Show a progress bar, and kick off a background task to
                     // perform the user forgot password attempt.
@@ -881,29 +883,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showChangePwdProgress(final boolean show) {
-
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         mChangePwdProgressBar.setIndeterminate(show);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mChangePwdProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-            mChangePwdProgressBar.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mChangePwdProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mChangePwdProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-
-
+        mChangePwdProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
         submitPwdButton.setEnabled(!show);
         cancelButton.setEnabled(!show);
         newPwdEdit.setEnabled(!show);

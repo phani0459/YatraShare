@@ -26,7 +26,7 @@
 
                 <TextView
                     android:id="@+id/edit_rideFrom"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_from"
@@ -43,7 +43,7 @@
 
                 <TextView
                     android:id="@+id/edit_rideTo"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_to"
@@ -234,7 +234,7 @@
 
                 <Button
                     android:id="@+id/bt_ride_departuredate"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -244,7 +244,7 @@
 
                 <Button
                     android:id="@+id/bt_ride_departuretime"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"

@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/emptyRidesHeading"
-            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+            style="@style/TextAppearance.AppCompat.SearchResult.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/emptyRidesSubHeading"
-            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

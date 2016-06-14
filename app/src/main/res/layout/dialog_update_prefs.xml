@@ -100,7 +100,7 @@
 
             <TextView
                 android:id="@+id/chatToolTip"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp" />
@@ -187,7 +187,7 @@
 
             <TextView
                 android:id="@+id/musicToolTip"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp" />
@@ -273,7 +273,7 @@
 
             <TextView
                 android:id="@+id/petsToolTip"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/chatAllowRingView"
@@ -363,7 +363,7 @@
 
             <TextView
                 android:id="@+id/foodToolTip"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp" />
@@ -450,7 +450,7 @@
 
             <TextView
                 android:id="@+id/smokeToolTip"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp" />

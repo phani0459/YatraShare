@@ -37,7 +37,7 @@
 
                 <TextView
                     android:id="@+id/tv_ownerName"
-                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -49,7 +49,7 @@
 
                 <TextView
                     android:id="@+id/tv_RideTime"
-                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
@@ -80,7 +80,7 @@
 
             <TextView
                 android:id="@+id/tv_ridesHeading"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -96,7 +96,7 @@
 
             <TextView
                 android:id="@+id/tv_rideDetails"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="5"
@@ -115,7 +115,7 @@
 
         <TextView
             android:id="@+id/tv_ridestatus"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
+            style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
@@ -134,7 +134,7 @@
 
             <TextView
                 android:id="@+id/tv_bookingStatus"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
@@ -149,7 +149,7 @@
 
             <TextView
                 android:id="@+id/tv_bookedSeats"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dip"

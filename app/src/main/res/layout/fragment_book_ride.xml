@@ -28,7 +28,7 @@
 
                 <TextView
                     android:id="@+id/rideDate"
-                    style="@android:style/TextAppearance.DeviceDefault.Small"
+                    style="@style/TextAppearance.AppCompat.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/rideTime"
-                    style="@android:style/TextAppearance.DeviceDefault.Small"
+                    style="@style/TextAppearance.AppCompat.Small"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -65,7 +65,7 @@
 
                 <TextView
                     android:id="@+id/rideFrom"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_from"
@@ -83,7 +83,7 @@
 
                 <TextView
                     android:id="@+id/rideTo"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_ride_to"
@@ -111,7 +111,7 @@
 
                 <TextView
                     android:id="@+id/seatsAvailable"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -124,7 +124,7 @@
 
                 <TextView
                     android:id="@+id/pricePerSeat"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -137,7 +137,7 @@
 
             <TextView
                 android:id="@+id/tv_user_detls_heading"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                style="@style/TextAppearance.AppCompat.SearchResult.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -171,7 +171,7 @@
 
                     <TextView
                         android:id="@+id/tv_owner_Name"
-                        style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                        style="@style/TextAppearance.AppCompat.SearchResult.Title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -183,7 +183,7 @@
 
                     <TextView
                         android:id="@+id/tv_owner_age"
-                        style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                        style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="marquee"
@@ -200,7 +200,7 @@
 
             <TextView
                 android:id="@+id/tv_owner_phone_status"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -216,7 +216,7 @@
 
             <TextView
                 android:id="@+id/tv_owner_email_status"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
@@ -232,7 +232,7 @@
 
             <TextView
                 android:id="@+id/tv_owner_licencestatus"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
@@ -255,7 +255,7 @@
 
             <TextView
                 android:id="@+id/usersPreferences"
-                style="@android:style/TextAppearance.DeviceDefault.Large"
+                style="@style/TextAppearance.AppCompat.Large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"
@@ -342,7 +342,7 @@
 
             <TextView
                 android:id="@+id/tv_byk_detls_heading"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                style="@style/TextAppearance.AppCompat.SearchResult.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -391,7 +391,7 @@
 
                     <TextView
                         android:id="@+id/tv_vehicleName"
-                        style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                        style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -403,7 +403,7 @@
 
                     <TextView
                         android:id="@+id/tv_vehiclecolor"
-                        style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                        style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="marquee"
@@ -421,7 +421,7 @@
 
                         <TextView
                             android:id="@+id/tv_cmfrt_heading"
-                            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ellipsize="marquee"
@@ -452,7 +452,7 @@
 
             <TextView
                 android:id="@+id/tv_detour"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -468,7 +468,7 @@
 
             <TextView
                 android:id="@+id/tv_luggage"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -484,7 +484,7 @@
 
             <TextView
                 android:id="@+id/tv_scheduleFlexi"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

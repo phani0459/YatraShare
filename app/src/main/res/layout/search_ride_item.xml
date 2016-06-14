@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/user_name_text"
-                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -61,7 +61,7 @@
 
                 <TextView
                     android:id="@+id/ride_time_text"
-                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
@@ -91,7 +91,7 @@
 
         <TextView
             android:id="@+id/ride_from_text"
-            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dip"
@@ -107,7 +107,7 @@
 
         <TextView
             android:id="@+id/ride_to_text"
-            style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+            style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
@@ -140,7 +140,7 @@
 
             <TextView
                 android:id="@+id/ride_car_text"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
@@ -155,7 +155,7 @@
 
             <TextView
                 android:id="@+id/ride_available_text"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -166,7 +166,7 @@
 
             <TextView
                 android:id="@+id/ride_fare_text"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

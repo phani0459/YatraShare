@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/howItWorksText"
-        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/faqsText"
-        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -50,7 +50,7 @@
 
     <TextView
         android:id="@+id/feedBackText"
-        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -73,7 +73,7 @@
 
     <TextView
         android:id="@+id/contactUsText"
-        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -94,7 +94,7 @@
 
     <TextView
         android:id="@+id/termsText"
-        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

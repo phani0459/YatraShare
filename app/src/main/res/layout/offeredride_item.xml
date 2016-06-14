@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/tv_pendingStatus"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/title_gray"
@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/tv_rideDeparturePoint"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
@@ -42,7 +42,7 @@
 
         <TextView
             android:id="@+id/tv_to"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
@@ -56,7 +56,7 @@
 
         <TextView
             android:id="@+id/tv_rideArrivalPoint"
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorAccent"
@@ -85,7 +85,7 @@
 
             <TextView
                 android:id="@+id/tv_rideDate"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="6"
@@ -125,7 +125,7 @@
 
         <TextView
             android:id="@+id/tv_remainingSeats"
-            style="@android:style/TextAppearance.DeviceDefault.Small"
+            style="@style/TextAppearance.AppCompat.Small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/seat"
@@ -154,7 +154,7 @@
 
             <TextView
                 android:id="@+id/tv_bookdSeats"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="4dp"
@@ -169,7 +169,7 @@
 
             <TextView
                 android:id="@+id/tv_seatPrice"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

@@ -42,7 +42,7 @@
 
                 <TextView
                     android:id="@+id/tv_senderName"
-                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -54,7 +54,7 @@
 
                 <TextView
                     android:id="@+id/tv_msg_time"
-                    style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                    style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
@@ -81,7 +81,7 @@
 
             <TextView
                 android:id="@+id/tv_msgDetails"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Subtitle"
+                style="@style/TextAppearance.AppCompat.SearchResult.Subtitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dip"

@@ -6,7 +6,7 @@
               android:orientation="vertical">
 
     <TextView
-        style="@android:style/TextAppearance.DeviceDefault.Large"
+        style="@style/TextAppearance.AppCompat.Large"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
@@ -24,7 +24,7 @@
         android:weightSum="4">
 
         <TextView
-            style="@android:style/TextAppearance.DeviceDefault.Medium"
+            style="@style/TextAppearance.AppCompat.Medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"

@@ -30,7 +30,7 @@
 
             <TextView
                 android:id="@+id/tv_receiverName"
-                style="@android:style/TextAppearance.DeviceDefault.SearchResult.Title"
+                style="@style/TextAppearance.AppCompat.SearchResult.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -42,7 +42,7 @@
 
             <TextView
                 android:id="@+id/tv_receiverEmail"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/tv_receiverMobile"
-                style="@android:style/TextAppearance.DeviceDefault.Small"
+                style="@style/TextAppearance.AppCompat.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="marquee"

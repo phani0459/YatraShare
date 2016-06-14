@@ -130,7 +130,7 @@
 
             <TextView
                 android:id="@+id/tv_addStopOverPoints"
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"
@@ -252,7 +252,7 @@
 
                 <Button
                     android:id="@+id/bt_departuredate"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -262,7 +262,7 @@
 
                 <Button
                     android:id="@+id/bt_departuretime"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -303,7 +303,7 @@
 
                 <Button
                     android:id="@+id/bt_arrivaldate"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -313,7 +313,7 @@
 
                 <Button
                     android:id="@+id/bt_arrivaltime"
-                    style="@android:style/TextAppearance.DeviceDefault.Medium"
+                    style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"

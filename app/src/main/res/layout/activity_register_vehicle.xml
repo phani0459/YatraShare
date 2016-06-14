@@ -14,7 +14,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -39,7 +39,7 @@
                 android:background="#FFFFFF" />
 
             <TextView
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -64,7 +64,7 @@
                 android:background="#FFFFFF" />
 
             <TextView
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -89,7 +89,7 @@
                 android:background="#FFFFFF" />
 
             <TextView
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -123,7 +123,7 @@
                 android:background="#FFFFFF" />
 
             <TextView
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -148,7 +148,7 @@
                 android:background="#FFFFFF" />
 
             <TextView
-                style="@android:style/TextAppearance.DeviceDefault.Medium"
+                style="@style/TextAppearance.AppCompat.Medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
