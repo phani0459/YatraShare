@@ -130,6 +130,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
             possibleRoutesDto.setArrivalLongitude(arrivalPlace.longitude);
             possibleRoutesDto.setDeparture(departurePlace.address);
             possibleRoutesDto.setArrival(arrivalPlace.address);
+
+            possibleRoutesDto.setArrivalCity(arrivalPlace.city);
+            possibleRoutesDto.setArrivalState(arrivalPlace.state);
+            possibleRoutesDto.setDepartureCity(departurePlace.city);
+            possibleRoutesDto.setDepartureState(departurePlace.state);
+
             possibleRoutesDto.setIsMainRoute(true);
             allPossibleRoutes.add(possibleRoutesDto);
             mainPossibleRoutes.add(possibleRoutesDto);
@@ -149,6 +155,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         possibleRoutesDto.setDeparture(departurePlace.address);
                         possibleRoutesDto.setArrival(stopOverPlaces.get(i).address + "");
                         possibleRoutesDto.setIsMainRoute(false);
+
+                        possibleRoutesDto.setArrivalCity(stopOverPlaces.get(i).city);
+                        possibleRoutesDto.setArrivalState(stopOverPlaces.get(i).state);
+                        possibleRoutesDto.setDepartureCity(departurePlace.city);
+                        possibleRoutesDto.setDepartureState(departurePlace.state);
+
                         allPossibleRoutes.add(possibleRoutesDto);
 
                         possibleRoutesDto = new RideInfoDto().new PossibleRoutesDto();
@@ -158,6 +170,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                         possibleRoutesDto.setArrivalLongitude(arrivalPlace.longitude);
                         possibleRoutesDto.setDeparture(stopOverPlaces.get(i).address + "");
                         possibleRoutesDto.setArrival(arrivalPlace.address + "");
+
+                        possibleRoutesDto.setDepartureCity(stopOverPlaces.get(i).city);
+                        possibleRoutesDto.setDepartureState(stopOverPlaces.get(i).state);
+                        possibleRoutesDto.setArrivalCity(arrivalPlace.city);
+                        possibleRoutesDto.setArrivalState(arrivalPlace.state);
+
                         possibleRoutesDto.setIsMainRoute(false);
                         allPossibleRoutes.add(possibleRoutesDto);
 
@@ -169,6 +187,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i + 1).longitude);
                             possibleRoutesDto.setDeparture(stopOverPlaces.get(i).address + "");
                             possibleRoutesDto.setArrival(stopOverPlaces.get(i + 1).address + "");
+
+                            possibleRoutesDto.setDepartureCity(stopOverPlaces.get(i).city);
+                            possibleRoutesDto.setDepartureState(stopOverPlaces.get(i).state);
+                            possibleRoutesDto.setArrivalCity(stopOverPlaces.get(i + 1).city);
+                            possibleRoutesDto.setArrivalState(stopOverPlaces.get(i + 1).state);
+
                             possibleRoutesDto.setIsMainRoute(false);
                             allPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -181,6 +205,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i).longitude);
                             possibleRoutesDto.setDeparture(departurePlace.address);
                             possibleRoutesDto.setArrival(stopOverPlaces.get(i).address + "");
+
+                            possibleRoutesDto.setDepartureCity(departurePlace.city);
+                            possibleRoutesDto.setDepartureState(departurePlace.state);
+                            possibleRoutesDto.setArrivalCity(stopOverPlaces.get(i).city);
+                            possibleRoutesDto.setArrivalState(stopOverPlaces.get(i).state);
+
                             possibleRoutesDto.setIsMainRoute(false);
                             mainPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -192,6 +222,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setArrivalLongitude(arrivalPlace.longitude);
                             possibleRoutesDto.setDeparture(stopOverPlaces.get(i).address + "");
                             possibleRoutesDto.setArrival(arrivalPlace.address + "");
+
+                            possibleRoutesDto.setDepartureCity(stopOverPlaces.get(i).city);
+                            possibleRoutesDto.setDepartureState(stopOverPlaces.get(i).state);
+                            possibleRoutesDto.setArrivalCity(arrivalPlace.city);
+                            possibleRoutesDto.setArrivalState(arrivalPlace.state);
+
                             possibleRoutesDto.setIsMainRoute(false);
                             mainPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -203,6 +239,12 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                             possibleRoutesDto.setArrivalLongitude(stopOverPlaces.get(i + 1).longitude);
                             possibleRoutesDto.setDeparture(stopOverPlaces.get(i).address + "");
                             possibleRoutesDto.setArrival(stopOverPlaces.get(i + 1).address + "");
+
+                            possibleRoutesDto.setDepartureCity(stopOverPlaces.get(i).city);
+                            possibleRoutesDto.setDepartureState(stopOverPlaces.get(i).state);
+                            possibleRoutesDto.setArrivalCity(stopOverPlaces.get(i + 1).city);
+                            possibleRoutesDto.setArrivalState(stopOverPlaces.get(i + 1).state);
+
                             possibleRoutesDto.setIsMainRoute(false);
                             mainPossibleRoutes.add(possibleRoutesDto);
                         }
@@ -477,6 +519,9 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
                 stopOver.setStopOverLatitude(stopOverPlaces.get(i).latitude);
                 stopOver.setStopOverLongitude(stopOverPlaces.get(i).longitude);
                 stopOver.setStopOverLocation(stopOverPlaces.get(i).address + "");
+
+                stopOver.setStopOverCity(stopOverPlaces.get(i).city);
+                stopOver.setStopOverState(stopOverPlaces.get(i).state + "");
                 latLngs.add(stopOver);
             }
         }
@@ -742,7 +787,7 @@ public class OfferRideActivity extends AppCompatActivity implements View.OnTouch
         try {
             Time tme = new Time(hr, min, 0);//seconds by default set to zero
             Format formatter = new SimpleDateFormat("hh:mm a");
-            return formatter.format(tme);
+            return formatter.format(tme).toUpperCase();
         } catch (Exception e) {
             return "" + hr + ":" + min;
         }

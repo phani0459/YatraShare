@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -39,10 +37,7 @@ import com.yatrashare.pojos.RideInfoDto;
 import com.yatrashare.utils.Constants;
 import com.yatrashare.utils.Utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -235,15 +230,15 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     }
 
     public void addMainRoute(RideInfoDto.PossibleRoutesDto route, String duration, String distance, int order, boolean isLast, boolean isMain) {
-        Address arrivalAddress = getAddress(route.getArrivalLatitude(), route.getArrivalLongitude());
-        Address departureAddress = getAddress(route.getDepartureLatitude(), route.getDepartureLongitude());
+        /*Address arrivalAddress = getAddress(route.getArrivalLatitude(), route.getArrivalLongitude());
+        Address departureAddress = getAddress(route.getDepartureLatitude(), route.getDepartureLongitude());*/
 
         String mDeparture;
         String mArrival;
-        String mDepartureCity = "";
-        String mArrivalCity = "";
-        String mDepartureState = "";
-        String mArrivalState = "";
+        String mDepartureCity;
+        String mArrivalCity;
+        String mDepartureState;
+        String mArrivalState;
         String mRoutePrice;
         String mreadOnly;
         String mkilometers;
@@ -254,13 +249,11 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         mDeparture = route.getDeparture();
         mArrival = route.getArrival();
 
-        if (arrivalAddress != null && departureAddress != null) {
-            mDepartureCity = departureAddress.getLocality();
-            mArrivalCity = arrivalAddress.getLocality();
+        mDepartureCity = route.getDepartureCity();
+        mArrivalCity = route.getArrivalCity();
 
-            mDepartureState = departureAddress.getAdminArea();
-            mArrivalState = arrivalAddress.getAdminArea();
-        }
+        mDepartureState = route.getDepartureState();
+        mArrivalState = route.getArrivalState();
 
         mRoutePrice = "";
 
@@ -304,29 +297,24 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
     private void getStopOvers() {
         if (rideInfoDto.getmStopOvers() != null && rideInfoDto.getmStopOvers().size() > 0) {
             for (int i = 0; i < rideInfoDto.getmStopOvers().size(); i++) {
-                String mstopover_location = "";
-                String mStopOverState = "";
+                String mStopOverLocation;
+                String mStopOverState;
                 String mOrder;
                 String mLatitude;
                 String mLongitude;
-                String mstopoverAddressDetails;
-                String mStopOverCity = "";
-                Address address = getAddress(rideInfoDto.getmStopOvers().get(i).getStopOverLatitude(), rideInfoDto.getmStopOvers().get(i).getStopOverLongitude());
+                String mStopOverAddressDetails;
+                String mStopOverCity;
+//                Address address = getAddress(rideInfoDto.getmStopOvers().get(i).getStopOverLatitude(), rideInfoDto.getmStopOvers().get(i).getStopOverLongitude());
 
                 mLatitude = rideInfoDto.getmStopOvers().get(i).getStopOverLatitude() + "";
                 mLongitude = rideInfoDto.getmStopOvers().get(i).getStopOverLongitude() + "";
-                mstopoverAddressDetails = rideInfoDto.getmStopOvers().get(i).getStopOverLocation();
+                mStopOverAddressDetails = rideInfoDto.getmStopOvers().get(i).getStopOverLocation();
                 mOrder = (i + 1) + "";
+                mStopOverCity = rideInfoDto.getmStopOvers().get(i).getStopOverCity();
+                mStopOverState = rideInfoDto.getmStopOvers().get(i).getStopOverState();
+                mStopOverLocation = rideInfoDto.getmStopOvers().get(i).getStopOverLocation();
 
-                if (address != null) {
-                    mStopOverCity = address.getLocality();
-                    mStopOverState = address.getAdminArea();
-                    if (address.getMaxAddressLineIndex() >= 2) {
-                        mstopover_location = address.getAddressLine(0) + address.getAddressLine(1);
-                    }
-                }
-
-                RideInfo.StopOverPoints stopOverPoint = new RideInfo().new StopOverPoints(mstopover_location, mStopOverState, mOrder, mLatitude, mLongitude, mstopoverAddressDetails, mStopOverCity);
+                RideInfo.StopOverPoints stopOverPoint = new RideInfo().new StopOverPoints(mStopOverLocation, mStopOverState, mOrder, mLatitude, mLongitude, mStopOverAddressDetails, mStopOverCity);
 
                 stopOverPoints.add(stopOverPoint);
             }
@@ -413,7 +401,7 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         }
     }
 
-    public Address getAddress(double latitude, double longitude) {
+    /*public Address getAddress(double latitude, double longitude) {
         Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
         List<Address> addresses = null;
         try {
@@ -424,10 +412,9 @@ public class PublishRideFragment extends Fragment implements AdapterView.OnItemS
         if (addresses != null && addresses.size() > 0) {
             return addresses.get(0);
         } else {
-            Log.e(TAG, "getAddress: ");
             return null;
         }
-    }
+    }*/
 
 
     private void getMainRoutes(final int pos, final ArrayList<RideInfoDto.PossibleRoutesDto> possibleRoutesDtos, final boolean isMain) {

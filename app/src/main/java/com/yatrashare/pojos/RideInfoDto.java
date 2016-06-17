@@ -173,6 +173,26 @@ public class RideInfoDto implements Serializable {
         }
 
         String stopOverLocation;
+
+        String stopOverCity;
+
+        public String getStopOverState() {
+            return stopOverState;
+        }
+
+        public void setStopOverState(String stopOverState) {
+            this.stopOverState = stopOverState;
+        }
+
+        public String getStopOverCity() {
+            return stopOverCity;
+        }
+
+        public void setStopOverCity(String stopOverCity) {
+            this.stopOverCity = stopOverCity;
+        }
+
+        String stopOverState;
     }
 
     public class PossibleRoutesDto implements Serializable {
@@ -242,5 +262,42 @@ public class RideInfoDto implements Serializable {
         public void setDeparture(String departure) {
             this.departure = departure;
         }
+
+        public String getArrivalCity() {
+            return arrivalCity;
+        }
+
+        public void setArrivalCity(String arrivalCity) {
+            this.arrivalCity = arrivalCity;
+        }
+
+        public String getDepartureCity() {
+            return departureCity;
+        }
+
+        public void setDepartureCity(String departureCity) {
+            this.departureCity = departureCity;
+        }
+
+        public String getArrivalState() {
+            return arrivalState;
+        }
+
+        public void setArrivalState(String arrivalState) {
+            this.arrivalState = arrivalState;
+        }
+
+        public String getDepartureState() {
+            return departureState;
+        }
+
+        public void setDepartureState(String departureState) {
+            this.departureState = departureState;
+        }
+
+        String arrivalCity;
+        String departureCity;
+        String arrivalState;
+        String departureState;
     }
 }
