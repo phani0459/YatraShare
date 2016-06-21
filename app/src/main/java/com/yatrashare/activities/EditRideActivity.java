@@ -507,7 +507,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
             return;
         }
 
-        Date todaysDate = new Date();
+        /*Date todaysDate = new Date();
         String timeString = format.format(todaysDate.getTime() + Utils.TIME_CHECKER);
         try {
             Date rideTime = format.parse(departureDate + " " + departureTime);
@@ -518,7 +518,7 @@ public class EditRideActivity extends AppCompatActivity implements AdapterView.O
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
 
         UpdateRide updateRide = new UpdateRide(rideDetails.Data.PossibleRideGuid, seatsSelected, departureDate, departureTime, selectedTimeFlexi, ladiesOnlyCheckBox.isChecked() + "",
                 selectedDetour, selectedLuggageSize, otherDetails, ridePrice, getVehicleId(selectedModel));

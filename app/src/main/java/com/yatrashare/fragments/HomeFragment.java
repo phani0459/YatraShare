@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
              * page size
              */
             Utils.showProgress(true, mProgressView, mProgressBGView);
-            FindRide findRide = new FindRide(whereFrom, whereTo,
+            FindRide findRide = new FindRide(whereFromCity, whereToCity,
                     date, "ALLTYPES", "1", "1", "24", "All", "1", "1", Constants.PAGE_SIZE + "", "0");
 
             Gson gson = new Gson();

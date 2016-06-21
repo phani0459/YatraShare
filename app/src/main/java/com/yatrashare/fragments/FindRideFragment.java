@@ -165,7 +165,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
     }
 
     public void searchRides() {
-        FindRide findRide = new FindRide(whereFrom, whereTo,
+        FindRide findRide = new FindRide(whereFromCity, whereToCity,
                 date, comfortLevel, currentPage + "", startTime, endTime, gender, rideType, vehicleType, Constants.PAGE_SIZE + "", vehicleRegdType);
 
         Gson gson = new Gson();
