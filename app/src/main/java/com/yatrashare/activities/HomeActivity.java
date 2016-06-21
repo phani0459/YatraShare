@@ -800,18 +800,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (checkSelfPermission(CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
             return true;
         }
-        if (shouldShowRequestPermissionRationale(CALL_PHONE)) {
-            Snackbar.make(navigationView, R.string.call_permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{CALL_PHONE}, REQUEST_CALL_PHONE);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{CALL_PHONE}, REQUEST_CALL_PHONE);
-        }
+        requestPermissions(new String[]{CALL_PHONE}, REQUEST_CALL_PHONE);
         return false;
     }
 

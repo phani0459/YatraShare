@@ -21,7 +21,7 @@ import com.yatrashare.activities.EditRideActivity;
 import com.yatrashare.activities.HomeActivity;
 import com.yatrashare.activities.OfferRideActivity;
 import com.yatrashare.activities.SubRidesActivity;
-import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
+import com.yatrashare.adapter.OfferedRidesAdapter;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.RideDetails;
 import com.yatrashare.dtos.UserDataDTO;
@@ -38,7 +38,7 @@ import retrofit.Retrofit;
  * A fragment representing a list of Items.
  * <p/>
  */
-public class OfferedRidesFragment extends Fragment implements Callback<OfferedRides>, OfferedRidesRecyclerViewAdapter.SetOnItemClickListener {
+public class OfferedRidesFragment extends Fragment implements Callback<OfferedRides>, OfferedRidesAdapter.SetOnItemClickListener {
     private static final String TAG = OfferedRidesFragment.class.getSimpleName();
 
     private android.content.Context mContext;
@@ -56,7 +56,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
     public ProgressBar mProgressView;
     @Bind(R.id.bukdRidesProgressBGView)
     public View mProgressBGView;
-    private OfferedRidesRecyclerViewAdapter adapter;
+    private OfferedRidesAdapter adapter;
     private String userGuide;
     private LinearLayoutManager mLayoutManager;
     private int currentPage = 1;
@@ -141,7 +141,7 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                     adapter.addItem(offeredRides.Data.get(i));
                 }
             } else {
-                adapter = new OfferedRidesRecyclerViewAdapter(mContext, offeredRides.Data, mTitle, this);
+                adapter = new OfferedRidesAdapter(mContext, offeredRides.Data, mTitle, this);
                 recyclerView.setAdapter(adapter);
             }
         } else {

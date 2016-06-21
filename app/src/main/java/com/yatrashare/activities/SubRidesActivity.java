@@ -16,7 +16,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.yatrashare.R;
-import com.yatrashare.adapter.OfferedRidesRecyclerViewAdapter;
+import com.yatrashare.adapter.OfferedRidesAdapter;
 import com.yatrashare.dtos.OfferedRides;
 import com.yatrashare.dtos.OfferedSubRides;
 import com.yatrashare.dtos.UserDataDTO;
@@ -29,7 +29,7 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Retrofit;
 
-public class SubRidesActivity extends AppCompatActivity implements Callback<OfferedSubRides>, OfferedRidesRecyclerViewAdapter.SetOnItemClickListener {
+public class SubRidesActivity extends AppCompatActivity implements Callback<OfferedSubRides>, OfferedRidesAdapter.SetOnItemClickListener {
     private static final String TAG = SubRidesActivity.class.getSimpleName();
 
     private android.content.Context mContext;
@@ -47,7 +47,7 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
     public ProgressBar mProgressView;
     @Bind(R.id.bukdRidesProgressBGView)
     public View mProgressBGView;
-    private OfferedRidesRecyclerViewAdapter adapter;
+    private OfferedRidesAdapter adapter;
     private String userGuide;
     private OfferedRides.OfferedRideData offeredRideData;
 
@@ -113,7 +113,7 @@ public class SubRidesActivity extends AppCompatActivity implements Callback<Offe
         if (offeredSubRides != null && offeredSubRides.Data != null && offeredSubRides.Data.size() > 0) {
             emptyRidesLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            adapter = new OfferedRidesRecyclerViewAdapter(this, offeredSubRides.Data, mTitle, this, "Sample");
+            adapter = new OfferedRidesAdapter(this, offeredSubRides.Data, mTitle, this, "Sample");
             recyclerView.setAdapter(adapter);
         } else {
             recyclerView.setVisibility(View.GONE);

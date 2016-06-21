@@ -80,6 +80,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
         searchView.setIconifiedByDefault(false);
         searchView.setIconified(false);
         searchView.setQueryHint(getString(R.string.search_title));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setOnCloseListener(this);
         searchView.setOnQueryTextListener(this);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -135,7 +136,7 @@ public class SearchPlacesActivity extends AppCompatActivity implements SearchVie
                         serializedPlace.address = response.body().result.formatted_address;
                         serializedPlace.latitude = response.body().result.geometry.location.lat;
                         serializedPlace.longitude = response.body().result.geometry.location.lng;
-                        serializedPlace.city = city;
+                        serializedPlace.city = !TextUtils.isEmpty(city) ? city : state;
                         serializedPlace.state = state;
 
                         Intent returnIntent = new Intent();

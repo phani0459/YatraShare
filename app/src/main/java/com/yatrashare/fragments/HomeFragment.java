@@ -143,6 +143,9 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
              * page size
              */
             Utils.showProgress(true, mProgressView, mProgressBGView);
+            Log.e(TAG, "Where From City " + whereFromCity);
+            Log.e(TAG, "Where To City " + whereToCity);
+
             FindRide findRide = new FindRide(whereFromCity, whereToCity,
                     date, "ALLTYPES", "1", "1", "24", "All", "1", "1", Constants.PAGE_SIZE + "", "0");
 
@@ -300,27 +303,6 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             isPopupInitiated = true;
             Intent intent = new Intent(mContext, SearchPlacesActivity.class);
             startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
-            /*try {
-                // The autocomplete activity requires Google Play Services to be available. The intent
-                // builder checks this and throws an exception if it is not the case.
-                Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
-                        .setBoundsBias(Utils.createBoundsWithMinDiagonal(mContext))
-                        .build(getActivity());
-                startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
-            } catch (GooglePlayServicesRepairableException e) {
-                // Indicates that Google Play Services is either not installed or not up to date. Prompt
-                // the user to correct the issue.
-                GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(),
-                        0 *//* requestCode *//*).show();
-            } catch (GooglePlayServicesNotAvailableException e) {
-                // Indicates that Google Play Services is not available and the problem is not easily
-                // resolvable.
-                String message = "Google Play Services is not available: " +
-                        GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
-
-                Log.e(TAG, message);
-                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-            }*/
         }
     }
 

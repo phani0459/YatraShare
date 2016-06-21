@@ -19,7 +19,7 @@ import com.yatrashare.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class OfferedRidesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<OfferedRides.OfferedRideData> mValues;
     ArrayList<OfferedSubRides.SubRideData> subRides;
@@ -27,7 +27,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
     SetOnItemClickListener setOnItemClickListener;
     private Context mContext;
 
-    public OfferedRidesRecyclerViewAdapter(Context mContext, ArrayList<OfferedRides.OfferedRideData> data, int mTitle, SetOnItemClickListener setOnItemClickListener) {
+    public OfferedRidesAdapter(Context mContext, ArrayList<OfferedRides.OfferedRideData> data, int mTitle, SetOnItemClickListener setOnItemClickListener) {
         mValues = data;
         this.mTitle = mTitle;
         this.setOnItemClickListener = setOnItemClickListener;
@@ -69,7 +69,7 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
         notifyItemInserted(mValues.size());
     }
 
-    public OfferedRidesRecyclerViewAdapter(Context mContext, ArrayList<OfferedSubRides.SubRideData> subRides, int mTitle, SetOnItemClickListener setOnItemClickListener, String todo) {
+    public OfferedRidesAdapter(Context mContext, ArrayList<OfferedSubRides.SubRideData> subRides, int mTitle, SetOnItemClickListener setOnItemClickListener, String todo) {
         this.subRides = subRides;
         this.mTitle = mTitle;
         this.setOnItemClickListener = setOnItemClickListener;
@@ -109,6 +109,8 @@ public class OfferedRidesRecyclerViewAdapter extends RecyclerView.Adapter<Recycl
                     }
                 } else {
                     holder.pendingText.setVisibility(View.GONE);
+                    holder.editRide.setVisibility(View.INVISIBLE);
+                    holder.deleteRide.setVisibility(View.VISIBLE);
                 }
 
             } else {

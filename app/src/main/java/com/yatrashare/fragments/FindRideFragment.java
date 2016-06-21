@@ -114,8 +114,6 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         mRecyclerView.addItemDecoration(new VerticalSpaceItemDecoration(8));
         mRecyclerView.addOnScrollListener(mRecyclerViewOnScrollListener);
 
-        Log.e(TAG, "onCreateView: ");
-
         Bundle bundle = getArguments();
         if (bundle != null) {
             this.foundRides = (FoundRides) bundle.getSerializable("Searched Rides");
