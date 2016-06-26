@@ -46,6 +46,7 @@
     <!-- Strings related to Ride Filter-->
     <string name="rideTypeHeading">Ride  Type</string>
     <string name="oddeven">Car/Bike Type</string>
+    <string name="allRides">All Rides</string>
     <string name="longRide">Long Ride</string>
     <string name="dailyRide">Daily Ride</string>
     <string name="odd">Odd</string>

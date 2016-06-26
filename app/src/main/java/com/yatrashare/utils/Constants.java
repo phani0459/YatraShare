@@ -16,6 +16,12 @@ public class Constants {
     public static final int TYPE_LOADING = 4;
     public static final String peferencesName = "Yatrashare_Prefs";
 
+    public static final String allRides = "0";
+    public static final String longRide = "1";
+    public static final String dailyRide = "2";
+    public static final String vehicleBike = "1";
+    public static final String vehicleCar = "2";
+
     public static Uri getDefaultFemaleURI() {
         Uri uri = Uri.parse(defaultFemaleURL);
         return uri;

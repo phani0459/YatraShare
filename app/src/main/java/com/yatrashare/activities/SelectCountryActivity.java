@@ -78,8 +78,9 @@ public class SelectCountryActivity extends AppCompatActivity {
         }
     }
 
-    public void startHomePage() {
+    public void startLoginPage() {
         Intent mainIntent = new Intent(SelectCountryActivity.this, HomeActivity.class);
+        mainIntent.putExtra("FROM COUNTRY", true);
         overridePendingTransition(R.anim.jump_to_down, R.anim.jump_from_down);
         startActivity(mainIntent);
         finish();
@@ -100,14 +101,14 @@ public class SelectCountryActivity extends AppCompatActivity {
                         mEditor.apply();
                         Utils.saveCountryInfo(SelectCountryActivity.this, response.body().Data, countryName);
                         Utils.showProgress(false, splashProgress, progressBGView);
-                        startHomePage();
+                        startLoginPage();
                     }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
                     Utils.showProgress(false, splashProgress, progressBGView);
-                    startHomePage();
+                    startLoginPage();
                 }
             });
         }

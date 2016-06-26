@@ -147,7 +147,7 @@ public class HomeFragment extends Fragment implements View.OnTouchListener {
             Log.e(TAG, "Where To City " + whereToCity);
 
             FindRide findRide = new FindRide(whereFromCity, whereToCity,
-                    date, "ALLTYPES", "1", "1", "24", "All", "1", "1", Constants.PAGE_SIZE + "", "0");
+                    date, "ALLTYPES", "1", "1", "24", "All", "0", "1", Constants.PAGE_SIZE + "", "0");
 
             Gson gson = new Gson();
             Log.e(TAG, "searchRide: " + gson.toJson(findRide));

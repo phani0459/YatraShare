@@ -30,6 +30,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -169,7 +170,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         countryData = Utils.getCountryInfo(this, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
 
-        loadHomePage(true, "");
+        if (getIntent().getExtras().getBoolean("FROM COUNTRY", false)) {
+            loadScreen(LOGIN_SCREEN, true, null, "");
+        } else {
+            loadHomePage(true, "");
+        }
     }
 
     public void showSnackBar(String msg) {
@@ -280,8 +285,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                         bundle.putString(Constants.ORIGIN_SCREEN_KEY, originScreen);
                         loginFragment.setArguments(bundle);
                         if (init) {
-                            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
-                                    .add(R.id.content_layout, loginFragment).addToBackStack(Constants.LOGIN_SCREEN_NAME).commit();
+                            getSupportFragmentManager().beginTransaction().add(R.id.content_layout, loginFragment).commit();
                         } else {
                             getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left)
                                     .replace(R.id.content_layout, loginFragment).addToBackStack(Constants.LOGIN_SCREEN_NAME).commit();
@@ -525,6 +529,10 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         } else {
             if (getCurrentScreen() == WEB_SCREEN) {
                 loadScreen(MORE_SCREEN, false, null, Constants.WEB_SCREEN_NAME);
+            }
+            if (getCurrentScreen() == LOGIN_SCREEN) {
+                loadHomePage(false, null);
+                return;
             }
             if (getCurrentScreen() != HOME_SCREEN) {
                 popBackFragment(null);

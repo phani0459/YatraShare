@@ -336,9 +336,9 @@ public class OfferedRidesFragment extends Fragment implements Callback<OfferedRi
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         adapter.remove(position);
                         if (mContext instanceof HomeActivity) {
-                            ((HomeActivity) mContext).showSnackBar("Success");
+                            ((HomeActivity) mContext).showSnackBar("Ride deleted successfully");
                         } else {
-                            ((OfferRideActivity) mContext).showSnackBar("Success");
+                            ((OfferRideActivity) mContext).showSnackBar("Ride deleted successfully");
                         }
 
                         if (adapter.getItemCount() == 0) {

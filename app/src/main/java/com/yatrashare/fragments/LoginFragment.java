@@ -25,6 +25,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.LoginActivity;
 import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.pojos.UserFBLogin;
@@ -60,6 +61,7 @@ public class LoginFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mSharedPrefEditor;
     private Context mContext;
+    private boolean isHome;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -72,12 +74,18 @@ public class LoginFragment extends Fragment {
         mContext = getActivity();
         ButterKnife.bind(this, inflatedLayout);
 
+        isHome = !mContext.toString().contains("LoginActivity");
+
         mFBLoginButton.setReadPermissions("email", "public_profile", "user_birthday", "user_friends");
         // If using in a fragment
         mFBLoginButton.setFragment(this);
         mCallbackManager = CallbackManager.Factory.create();
 
-        ((HomeActivity) mContext).setTitle("Login");
+        if (isHome) {
+            ((HomeActivity) mContext).setTitle("Login");
+        } else {
+            ((LoginActivity) mContext).setTitle("Login");
+        }
 
         mSharedPreferences = Utils.getSharedPrefs(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
@@ -98,14 +106,22 @@ public class LoginFragment extends Fragment {
         mLoginWithEmailButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                if (isHome) {
+                    ((HomeActivity) mContext).loadScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                } else {
+                    ((LoginActivity) mContext).loadScreen(1);
+                }
             }
         });
 
         mSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) mContext).loadScreen(HomeActivity.SIGNUP_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                if (isHome) {
+                    ((HomeActivity) mContext).loadScreen(HomeActivity.SIGNUP_SCREEN, false, null, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                } else {
+                    ((LoginActivity) mContext).setTitle("Login");
+                }
             }
         });
 
@@ -116,7 +132,9 @@ public class LoginFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.LOGIN_SCREEN);
+        if (isHome) {
+            ((HomeActivity) mContext).setCurrentScreen(HomeActivity.LOGIN_SCREEN);
+        }
         mFBLoginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -125,6 +143,7 @@ public class LoginFragment extends Fragment {
                         new GraphRequest.Callback() {
                             public void onCompleted(GraphResponse response) {
                                 try {
+                                    Utils.showProgress(true, mProgressView, mProgressBGView);
                                     Log.e(TAG, "onCompleted: " + response );
                                     JSONObject object = response.getJSONObject();
                                     /*UtilsLog.e("" + object.get("name"), "FB NAME");
@@ -222,8 +241,12 @@ public class LoginFragment extends Fragment {
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
 
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                    if (isHome) {
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
+                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                    } else {
+                        ((LoginActivity) mContext).startHomePage();
+                    }
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }
@@ -237,13 +260,16 @@ public class LoginFragment extends Fragment {
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                if (isHome) {
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                } else {
+                    ((LoginActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
             }
         });
     }
 
     private void registerUserinServer(final String id, final String name, final String email, String profilePicUrl, String friendsCount, String gender) {
-        Utils.showProgress(true, mProgressView, mProgressBGView);
         CountryData countryData = Utils.getCountryInfo(mContext, mSharedPreferences.getString(Constants.PREF_USER_COUNTRY, ""));
         String countryCode = countryData != null ? countryData.CountryCode : "";
         UserFBLogin userFBLogin = new UserFBLogin(email, profilePicUrl, name, id, countryCode, friendsCount, gender);
@@ -260,7 +286,6 @@ public class LoginFragment extends Fragment {
             @Override
             public void onResponse(retrofit.Response<String> response, Retrofit retrofit) {
                 android.util.Log.e("SUCCEESS RESPONSE", response.raw() + "");
-                Utils.showProgress(false, mProgressView, mProgressBGView);
                 if (response.body() != null) {
                     Log.e(TAG, "onResponse: " + response.body());
                     mSharedPrefEditor.putString(Constants.PREF_USER_EMAIL, email);
@@ -282,7 +307,11 @@ public class LoginFragment extends Fragment {
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                if (isHome) {
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                } else {
+                    ((LoginActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
                 LoginManager.getInstance().logOut();
             }
         });

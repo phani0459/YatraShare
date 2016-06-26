@@ -58,7 +58,6 @@ import retrofit.Retrofit;
  */
 public class FindRideFragment extends Fragment implements AvailableRidesAdapter.OnItemClickListener {
 
-
     private static final String TAG = FindRideFragment.class.getSimpleName();
     private Context mContext;
     @Bind(R.id.availableRidesList)
@@ -233,7 +232,7 @@ public class FindRideFragment extends Fragment implements AvailableRidesAdapter.
         });
     }
 
-    public String rideType = "1";
+    public String rideType = "0";
     public String vehicleType = "1";
     public String comfortLevel = "ALLTYPES";
     public String gender = "All";

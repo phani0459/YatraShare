@@ -106,7 +106,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         if (countryData != null) {
             startHandler();
         } else {
-            loadGetLocationDialog();
+            getCountries(null, true);
         }
 
         if (mSharedPreferences.getBoolean(Constants.PREF_LOGGEDIN, false)) {
@@ -399,6 +399,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
 
     public void startHomePage() {
         Intent mainIntent = new Intent(SplashActivity.this, HomeActivity.class);
+        mainIntent.putExtra("FROM COUNTRY", false);
         overridePendingTransition(R.anim.jump_to_down, R.anim.jump_from_down);
         startActivity(mainIntent);
         finish();

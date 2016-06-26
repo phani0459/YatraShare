@@ -29,6 +29,14 @@
             android:padding="4dp">
 
             <RadioButton
+                android:id="@+id/rbtn_allRides"
+                style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:text="@string/allRides" />
+
+            <RadioButton
                 android:id="@+id/rbtn_longRide"
                 style="@style/Widget.AppCompat.CompoundButton.RadioButton"
                 android:layout_width="wrap_content"

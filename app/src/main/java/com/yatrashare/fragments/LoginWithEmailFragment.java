@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.LoginActivity;
 import com.yatrashare.dtos.Profile;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.UserFgtPassword;
@@ -88,6 +90,7 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     public View mProgressBGView;
     private EditText fgtEmailIdEdit;
     private EditText fgtPhoneEdit;
+    private boolean isHome;
 
     @Nullable
     @Override
@@ -96,7 +99,13 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
         View inflatedLayout = inflater.inflate(R.layout.fragment_email_login, null);
         mContext = getActivity();
 
-        ((HomeActivity) mContext).setTitle("Login with email");
+        isHome = !mContext.toString().contains("LoginActivity");
+
+        if (isHome) {
+            ((HomeActivity) mContext).setTitle("Login with email");
+        } else {
+            ((LoginActivity) mContext).setTitle("Login with email");
+        }
         ButterKnife.bind(this, inflatedLayout);
 
         Button mForgotPwdTextView = (Button) inflatedLayout.findViewById(R.id.btn_fgtPwd);
@@ -139,7 +148,9 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN);
+        if (isHome) {
+            ((HomeActivity) mContext).setCurrentScreen(HomeActivity.LOGIN_WITH_EMAIL_SCREEN);
+        }
     }
 
     private void showForgotPwdDialog() {
@@ -268,7 +279,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                 if (response.body() != null && response.body().Data != null) {
                     if (response.body().Data.equalsIgnoreCase("Success")) {
                         dialog.dismiss();
-                        ((HomeActivity) mContext).showSnackBar(getString(R.string.resetpwd_ratioanle));
+                        if (isHome) {
+                            ((HomeActivity) mContext).showSnackBar(getString(R.string.resetpwd_ratioanle));
+                        } else {
+                            ((LoginActivity) mContext).showSnackBar(getString(R.string.resetpwd_ratioanle));
+                        }
                     } else {
                         fgtPhoneLayout.setError(response.body().Data);
                     }
@@ -464,7 +479,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                     }
                 } else {
                     Utils.showProgress(false, mProgressView, mProgressBGView);
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                    if (isHome) {
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                    } else {
+                        ((LoginActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                    }
                 }
             }
 
@@ -477,7 +496,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                if (isHome) {
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                } else {
+                    ((LoginActivity) mContext).showSnackBar(getString(R.string.error_invalid_login));
+                }
             }
         });
     }
@@ -513,8 +536,15 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
                     mSharedPrefEditor.putBoolean(Constants.PREF_MOBILE_VERIFIED, mobileStatus.equals("2"));
                     mSharedPrefEditor.putBoolean(Constants.PREF_LOGGEDIN, true);
                     mSharedPrefEditor.commit();
-                    ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
-                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                    if (isHome) {
+                        ((HomeActivity) mContext).showSnackBar(getString(R.string.success_login));
+                        ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY));
+                    } else {
+                        ((LoginActivity) mContext).showSnackBar(getString(R.string.success_login));
+                        Intent mainIntent = new Intent(mContext, HomeActivity.class);
+                        startActivity(mainIntent);
+                        ((LoginActivity) mContext).finish();
+                    }
                 }
                 Utils.showProgress(false, mProgressView, mProgressBGView);
             }
@@ -528,7 +558,11 @@ public class LoginWithEmailFragment extends Fragment implements LoaderManager.Lo
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                if (isHome) {
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                } else {
+                    ((LoginActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
             }
         });
     }

@@ -42,6 +42,8 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
     public RadioButton genderAllRadioBtn;
     @Bind(R.id.rbtn_dailyRide)
     public RadioButton dailyRideRadioButton;
+    @Bind(R.id.rbtn_allRides)
+    public RadioButton allRideRadioButton;
     @Bind(R.id.rbtn_ladiesOnly)
     public RadioButton ladiesOnlyRadioBtn;
     @Bind(R.id.rg_vehicleRegdType)
@@ -125,8 +127,10 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
 
         if (rideType.equalsIgnoreCase("2")) {
             dailyRideRadioButton.setChecked(true);
-        } else {
+        } else if (rideType.equalsIgnoreCase("1")) {
             longRideRadioBtn.setChecked(true);
+        } else {
+            allRideRadioButton.setChecked(true);
         }
 
     }
@@ -285,6 +289,9 @@ public class RideFilterActivity extends AppCompatActivity implements View.OnClic
     private void getDetails() {
         int rideTypeBtn = rideTypeRadioGroup.getCheckedRadioButtonId();
         switch (rideTypeBtn) {
+            case R.id.rbtn_allRides:
+                rideType = "0";
+                break;
             case R.id.rbtn_longRide:
                 rideType = "1";
                 break;

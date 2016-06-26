@@ -51,11 +51,9 @@
         <activity
             android:name=".activities.RideFilterActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activities.MoreContentActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".activities.SearchPlacesActivity"
             android:configChanges="keyboard|keyboardHidden"
@@ -65,7 +63,6 @@
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait"
@@ -109,6 +106,9 @@
 
         <activity
             android:name=".activities.EditRideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.LoginActivity"
             android:screenOrientation="portrait" />
     </application>
 

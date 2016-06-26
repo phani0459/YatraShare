@@ -41,6 +41,7 @@ import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.RequestBody;
 import com.yatrashare.R;
 import com.yatrashare.activities.HomeActivity;
+import com.yatrashare.activities.LoginActivity;
 import com.yatrashare.dtos.CountryData;
 import com.yatrashare.dtos.UserDataDTO;
 import com.yatrashare.pojos.UserSignUp;
@@ -106,6 +107,7 @@ public class SignupFragment extends Fragment {
     @Bind(R.id.rbtn_female)
     public RadioButton femaleRadioButton;
     private Uri selectedImageUri;
+    private boolean isHome;
 
     public SignupFragment() {
     }
@@ -115,6 +117,8 @@ public class SignupFragment extends Fragment {
         mContext = getActivity();
         View inflatedLayout = inflater.inflate(R.layout.fragment_signup, null, false);
         ButterKnife.bind(this, inflatedLayout);
+
+        isHome = !mContext.toString().contains("LoginActivity");
 
         RelativeLayout mProfileImageLayout = (RelativeLayout) inflatedLayout.findViewById(R.id.profileImageLayout);
 
@@ -137,7 +141,11 @@ public class SignupFragment extends Fragment {
 
         Button mSignUpButton = (Button) inflatedLayout.findViewById(R.id.signUpButton);
 
-        ((HomeActivity) mContext).setTitle("Sign up");
+        if (isHome) {
+            ((HomeActivity) mContext).setTitle("Sign up");
+        } else {
+            ((LoginActivity) mContext).setTitle("Sign up");
+        }
 
         mSharedPreferences = Utils.getSharedPrefs(mContext);
         mSharedPrefEditor = mSharedPreferences.edit();
@@ -165,7 +173,11 @@ public class SignupFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((HomeActivity) mContext).setCurrentScreen(HomeActivity.SIGNUP_SCREEN);
+        if (isHome) {
+            ((HomeActivity) mContext).setCurrentScreen(HomeActivity.SIGNUP_SCREEN);
+        } else {
+            ((LoginActivity) mContext).setTitle("Sign up");
+        }
     }
 
     @Override
@@ -256,8 +268,13 @@ public class SignupFragment extends Fragment {
                                 selectedImageUri = null;
                                 mSharedPrefEditor.putString(Constants.PREF_USER_PROFILE_PIC, response.body().Data);
                                 mSharedPrefEditor.commit();
-                                ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
-                                ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+                                if (isHome) {
+                                    ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
+                                    ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+                                } else {
+                                    ((LoginActivity) mContext).showSnackBar(getString(R.string.success_signup));
+                                    ((LoginActivity) mContext).startHomePage();
+                                }
                             }
                         }
 
@@ -479,13 +496,22 @@ public class SignupFragment extends Fragment {
                             updateProfilePic();
                         } else {
                             Utils.showProgress(false, mProgressView, mProgressBGView);
-                            ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
-                            ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+                            if (isHome) {
+                                ((HomeActivity) mContext).showSnackBar(getString(R.string.success_signup));
+                                ((HomeActivity) mContext).loadHomePage(false, getArguments().getString(Constants.ORIGIN_SCREEN_KEY, null));
+                            } else {
+                                ((LoginActivity) mContext).showSnackBar(getString(R.string.success_signup));
+                                ((LoginActivity) mContext).startHomePage();
+                            }
                         }
 
                     } else {
                         Utils.showProgress(false, mProgressView, mProgressBGView);
-                        ((HomeActivity) mContext).showSnackBar(response.body().Data);
+                        if (isHome) {
+                            ((HomeActivity) mContext).showSnackBar(response.body().Data);
+                        } else {
+                            ((LoginActivity) mContext).showSnackBar(response.body().Data);
+                        }
                     }
                 }
             }
@@ -499,7 +525,11 @@ public class SignupFragment extends Fragment {
             public void onFailure(Throwable t) {
                 android.util.Log.e(TAG, "FAILURE RESPONSE");
                 Utils.showProgress(false, mProgressView, mProgressBGView);
-                ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                if (isHome) {
+                    ((HomeActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                } else {
+                    ((LoginActivity) mContext).showSnackBar(getString(R.string.tryagain));
+                }
             }
         });
 
